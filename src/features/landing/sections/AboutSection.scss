@@ -1,0 +1,182 @@
+$btn-bg-cl: #2563EB;
+
+.about-section{
+    background: linear-gradient(180deg, #698EFB 0%, #BEE7FD 100%);
+    display: flex;
+    justify-content: center;
+    gap: 142px;
+    align-items: center;
+    padding: 78px;
+
+    .about-section-left{
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+
+        .apple-span-block{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            width: 250px;
+            height:28px;
+            background-color: #EEF2FF;
+            border-radius: 9999px;
+
+            .circle{
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background-color: #60A5FA;
+            }
+
+            span{
+                font-size: 13px;
+                color: #2563EB;
+                font-weight: 500;
+            }
+        }
+
+        h1{
+            font-size: 58px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+
+            .highlight{
+                color: #2563EB;
+            }
+        }
+
+        p{
+            font-size: 18px;
+            font-weight: 400;
+            color: #4B5563;
+        }
+
+        .button-get-started-block{
+            margin-top:8px;
+            
+            .get-started-button{
+                width: 222px;
+                height: 56px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 8px;
+                color:#FFFFFF;
+                border:none;
+                border-radius: 8px;
+                background-color: $btn-bg-cl;
+                font-size:14px;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .about-section-right{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 32px;
+
+        .img-block{
+            position: relative;
+
+            img{
+                width: 500px;
+                height: 289.34px;
+                border-radius: 24px;
+            }
+
+            .stat-card{
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 154px;
+                height: 74px;
+                border-radius: 16px;
+                padding: 12px;
+                gap: 12px;
+                background-color: #FFFFFF;
+                top: 16px;
+                left: -64px; 
+
+                .stat-card-icon{
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 50%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: #FEF2F2;
+                }
+
+                .stat-card-info{
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+
+                    p{
+                        font-size: 12px;
+                        color: #6B7280;
+                    }
+
+                    .number{
+                        font-size: 20px;
+                        font-weight: 700;
+                        color: #111827;
+                        line-height: 28px;
+                    }
+
+                    .minnumber{
+                        font-size: 13px;
+                        font-weight: 400;
+                        color: #6B7280;
+                    }
+                }
+            }
+
+            .stat-card.step{
+                top: 196px;
+                left: -64px;
+                
+                .stat-card-icon.step{
+                    background-color: #E0F7FE;
+                }
+
+            }
+
+            .stat-card.exercise{
+                top:16px;
+                left:400px;
+
+                .stat-card-icon.exercise{
+                    background-color: #EEF2FF;
+                }
+            }
+
+            .stat-card.progress{
+                top:196px;
+                left:400px;
+
+                .stat-card-icon.progress{
+                    background-color: #E0F2FE;
+                }
+
+                .stat-card-info.progress{
+                    .number.progress{
+                        color: #2563EB;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+

@@ -8,7 +8,7 @@ $btn-bg-cl: #2563EB;
     align-items: center;
     padding: 78px;
 
-    .about-section-left{
+    .left-container{
         display: flex;
         flex-direction: column;
         gap: 24px;
@@ -74,7 +74,7 @@ $btn-bg-cl: #2563EB;
         }
     }
 
-    .about-section-right{
+    .right-container{
         display: flex;
         justify-content: center;
         align-items: center;

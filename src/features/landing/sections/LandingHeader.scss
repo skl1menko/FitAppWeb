@@ -7,7 +7,7 @@
     background-color: #fff;
     height: 65px;
 
-    .landing-navbar-logo{
+    .navbar-logo-cont{
         display: flex;
         align-items: center;
         width: 135px;
@@ -20,7 +20,7 @@
         }
     }
 
-    .landing-navbar-links{
+    .navbar-links-cont{
         display: flex;
         gap: 48px;
         font-weight: 500;
@@ -33,11 +33,11 @@
         }
     }
 
-    .landing-navbar-buttons{
+    .navbar-btns-cont{
         display: flex;
         gap:16px;
 
-        .landing-navbar-log-in{
+        .log-in-btn{
             border: none;
             background: none;
             font-weight: 500;
@@ -45,7 +45,7 @@
             color: #374151;
         }
 
-        .landing-navbar-get-started{
+        .get-started-btn{
             width: 125px;
             height: 44px;
             border-radius: 8px;

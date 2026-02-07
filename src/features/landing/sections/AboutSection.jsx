@@ -9,7 +9,7 @@ import AppleWatch from '../../../assets/AppleWatch.jpeg'
 const AboutSection = () => {
     return(
         <div className="about-section">
-            <div className="about-section-left">
+            <div className="left-container">
                 <div className="apple-span-block">
                     <span className="circle"></span>
                     <span>Now with Apple Health Integration</span>
@@ -22,7 +22,7 @@ const AboutSection = () => {
                     <button className='get-started-button'>Start Tracking Free <IoArrowForwardOutline /></button>
                 </div>
             </div>
-            <div className="about-section-right">
+            <div className="right-container">
                 <div className="img-block">
                     <img src={AppleWatch} alt="Apple Watch" />
                     <div className="stat-card">

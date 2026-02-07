@@ -7,19 +7,19 @@ const LandingHeader = () => {
         <div>
             <header>
                 <nav className="landing-navbar">
-                    <div className="landing-navbar-logo">
+                    <div className="navbar-logo-cont">
                         <img src={Logo} alt="Logo" className="landing-logo-image" />
                         <span>PowerFit</span>
                     </div>
-                    <div className="landing-navbar-links">
+                    <div className="navbar-links-cont">
                         <Link>About</Link>
                         <Link>Features</Link>
                         <Link>Tracking</Link>
                         <Link>Analytics</Link>
                     </div>
-                    <div className="landing-navbar-buttons">
-                        <button className="landing-navbar-log-in">Log In</button>
-                        <button className="landing-navbar-get-started">Get Started</button>
+                    <div className="navbar-btns-cont">
+                        <button className="log-in-btn">Log In</button>
+                        <button className="get-started-btn">Get Started</button>
                     </div>
                 </nav>
             </header>

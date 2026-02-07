@@ -1,0 +1,38 @@
+.card-cont{
+    width: 384px;
+    height: 304px;
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #F3F4F6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 33px;
+
+    .icon-cont{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+    }
+
+    .heading-cont{
+        margin-bottom: 12px;
+
+        h3{
+            font-style: bold;
+            font-size: 17px;
+        }
+    }
+
+    .par-cont{
+        p{
+            font-size:14px;
+            color: #4B5563;
+            line-height: 1.7;
+        }
+    }
+}

@@ -1,0 +1,50 @@
+.analytics-cards-content-cont{
+    width: 384px;
+    height: 346px;
+    background-color: #1E293B;
+    border-radius: 16px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    gap:24px;
+    padding: 24px;
+
+    .analytics-cards-heading-cont{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        
+        .analytics-cards-icon-cont{
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(59, 130, 246, 0.3);
+        }
+
+        h3{
+            font-size:17px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+    }
+
+    .analytics-cards-main-cont{
+        display:flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    p{
+        font-size: 13px;
+        font-weight: 400;
+        color: #9CA3AF;
+        line-height: 1.5;
+    }
+
+    
+}
+

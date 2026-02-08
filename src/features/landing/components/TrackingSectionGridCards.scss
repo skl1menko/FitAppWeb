@@ -1,0 +1,35 @@
+.grid-card-cont{
+    display: flex;
+    flex-direction: row;
+    width: 276px;
+    height: 68px;
+    gap: 16px;
+
+    .grid-icon-cont{
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .grid-text-cont{
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        h4{
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        p{
+            font-size: 13px;
+            font-weight: 400;
+            color: #4B5563;
+            line-height: 1.5;
+        }
+    }
+
+}

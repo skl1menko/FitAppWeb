@@ -16,6 +16,7 @@ const LandingHeader = () => {
                         <Link>Features</Link>
                         <Link>Tracking</Link>
                         <Link>Analytics</Link>
+                        <Link>Apple Health</Link>
                     </div>
                     <div className="navbar-btns-cont">
                         <button className="log-in-btn">Log In</button>

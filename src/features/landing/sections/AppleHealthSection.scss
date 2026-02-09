@@ -1,0 +1,118 @@
+.ah-section-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 96px 112px;
+
+    .ah-content-cont{
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between ;
+        padding: 64px;
+        border-radius: 24px;
+        background-color: #F8F9FC;
+        gap: 48px;
+        width: 100%;
+
+        .ah-left-cont{
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+
+            .ah-integ-cont{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: row;
+                gap:8px;
+                border-radius: 9999px;
+                padding: 4px 12px;
+                background-color: #F0F0F0;
+                width: fit-content;
+
+                span{
+                    font-size: 12px;
+                    font-weight: 500;
+                    color: #DC2626;
+                }
+
+            }
+
+            .ah-heading-cont{
+                display:flex;
+                flex-direction: column;
+                gap:24px;
+                
+                h2{
+                    font-size: 35px;
+                    font-weight: 700;
+                }
+
+                p{
+                    font-size: 16px;
+                    font-weight: 400;
+                    line-height: 1.5;
+                    color: #4B5563;
+                }
+            }
+
+            .ah-list-cont{
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+
+                .ah-list-item{
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 12px;
+
+                    .ah-list-icon{
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 9999px;
+                        background-color: #F0F0F0;
+                    }
+
+                    p{
+                        font-size: 15px;
+                        font-weight: 400;
+                    }
+                }
+            }
+
+        }
+
+        .ah-right-cont{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-right: 100px;
+            .activity-rings{
+               position: relative;
+               width: 310px;
+               height: 310px;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+
+               svg{
+                position: absolute;
+                transform: scaleY(-1);
+               }
+
+               .activity-rings-inner{
+                width: 165px;
+                height: 165px;
+                border-radius: 50%;
+                background-color: #F8F9FC;
+                z-index: 1;
+               }
+            }
+        }
+    }
+}

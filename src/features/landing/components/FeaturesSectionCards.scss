@@ -33,6 +33,75 @@
             font-size:14px;
             color: #4B5563;
             line-height: 1.7;
+            word-wrap: break-word;
         }
+    }
+
+    // Планшеты и меньше (до 1024px)
+    @media (max-width: 1024px) {
+        width: 320px;
+        height: auto;
+        min-height: 280px;
+        padding: 28px;
+    }
+
+    // Планшеты (до 768px)
+    @media (max-width: 768px) {
+        .card-cont{
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            min-height: 240px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+
+            .icon-cont{
+                margin-bottom: 20px;
+            }
+
+            .heading-cont{
+                margin-bottom: 10px;
+
+                h3{
+                    font-size: 16px;
+                }
+            }
+
+            .par-cont{
+                p{
+                    font-size: 13px;
+                }
+            }
+        }
+    }
+
+    // Мобильные устройства (до 480px)
+    @media (max-width: 480px) {
+        
+                padding: 20px;
+                min-height: 220px;
+
+                .icon-cont{
+                    width: 44px;
+                    height: 44px;
+                    margin-bottom: 16px;
+                }
+
+                .heading-cont{
+                    h3{
+                        font-size: 15px;
+                    }
+                }
+
+                .par-cont{
+                    p{
+                        font-size: 13px;
+                        line-height: 1.6;
+                    }
+                }
+        
     }
 }

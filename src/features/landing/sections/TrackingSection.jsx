@@ -40,10 +40,10 @@ const TrackingSecton = () => {
                     designed for speed and accuracy in the gym.</p>
                 </div>
                 <div className="grid-info-cont">
-                    <TrackingSectionGridCards bgColor="#F0F0F0" icon={<FaBalanceScale size={20} color='#4F46E5' />} h4Text="Weight & Sets" pText={<>Log weight in kg or lbs with<br/>automatic plate calculation.</>}/>
-                    <TrackingSectionGridCards bgColor="#FCE7F3" icon={<FiRepeat size={20} color='#4F46E5' />} h4Text="Repetitions" pText={<>Track reps and RPE (Rate of<br/>Perceived Exertion).</>}/>
-                    <TrackingSectionGridCards bgColor="#FCE7F3" icon={<FaRegClock size={20} color='#4F46E5' />} h4Text="Duration & Rest" pText={<>Built-in rest timer and workout<br/>duration tracking.</>}/>
-                    <TrackingSectionGridCards bgColor="#DBEAFE" icon={<GoPulse size={20} color='#4F46E5' />} h4Text="History" pText={<>Instant access to previous<br/>performance for every exercise.</>}/>
+                    <TrackingSectionGridCards bgColor="#F0F0F0" icon={<FaBalanceScale size={20} color='#4F46E5' />} h4Text="Weight & Sets" pText={<>Log weight in kg or lbs with<br/> automatic plate calculation.</>}/>
+                    <TrackingSectionGridCards bgColor="#FCE7F3" icon={<FiRepeat size={20} color='#4F46E5' />} h4Text="Repetitions" pText={<>Track reps and RPE (Rate of<br/> Perceived Exertion).</>}/>
+                    <TrackingSectionGridCards bgColor="#FCE7F3" icon={<FaRegClock size={20} color='#4F46E5' />} h4Text="Duration & Rest" pText={<>Built-in rest timer and workout<br/> duration tracking.</>}/>
+                    <TrackingSectionGridCards bgColor="#DBEAFE" icon={<GoPulse size={20} color='#4F46E5' />} h4Text="History" pText={<>Instant access to previous<br/> performance for every exercise.</>}/>
                 </div>
             </div>
         </div>

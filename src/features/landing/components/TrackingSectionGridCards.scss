@@ -1,9 +1,14 @@
 .grid-card-cont{
     display: flex;
     flex-direction: row;
-    width: 276px;
-    height: 68px;
+    width: 100%;
+    max-width: 276px;
+    height: auto;
+    min-height: 68px;
     gap: 16px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 8px;
 
     .grid-icon-cont{
         width: 40px;
@@ -18,10 +23,15 @@
         display: flex;
         flex-direction: column;
         gap: 4px;
+        flex: 1;
+        min-width: 0;
 
         h4{
             font-size: 15px;
             font-weight: 700;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
 
         p{
@@ -29,7 +39,84 @@
             font-weight: 400;
             color: #4B5563;
             line-height: 1.5;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+
+            br{
+                display: none;
+            }
         }
     }
 
+}
+
+// Tablet adaptations
+@media (max-width: 1024px) {
+    .grid-card-cont {
+        max-width: 100%;
+        border: 1px solid #E5E7EB;
+    }
+}
+
+// Mobile adaptations
+@media (max-width: 768px) {
+    .grid-card-cont {
+        width: 100%;
+        height: auto;
+        min-height: 60px;
+        gap: 12px;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        padding: 8px;
+
+        .grid-icon-cont {
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+
+            svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        .grid-text-cont {
+            gap: 2px;
+
+            h4 {
+                font-size: 14px;
+            }
+
+            p {
+                font-size: 12px;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .grid-card-cont {
+        gap: 10px;
+        border: 1px solid #E5E7EB;
+
+        .grid-icon-cont {
+            width: 32px;
+            height: 32px;
+
+            svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        .grid-text-cont {
+            h4 {
+                font-size: 13px;
+            }
+
+            p {
+                font-size: 11px;
+            }
+        }
+    }
 }

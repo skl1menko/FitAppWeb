@@ -8,11 +8,21 @@ const LandingPage = () => {
     return (
         <div>
             <LandingHeader />
-            <AboutSection />
-            <FeaturesSection />
-            <TrackingSection />
-            <AnalyticsSection />
-            <AppleHealthSection />
+            <div id="about">
+                <AboutSection />
+            </div>
+            <div id="features">
+                <FeaturesSection />
+            </div>
+            <div id="tracking">
+                <TrackingSection />
+            </div>
+            <div id="analytics">
+                <AnalyticsSection />
+            </div>
+            <div id="apple-health">
+                <AppleHealthSection />
+            </div>
         </div>
     )
 }

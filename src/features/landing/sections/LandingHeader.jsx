@@ -10,22 +10,29 @@ const LandingHeader = () => {
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     }
+
+    const scrollToSection = (id) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+            setIsMenuOpen(false);
+        }
+    }
     
     return (
         <div>
             <header>
                 <nav className="landing-navbar">
-                    <div className="navbar-logo-cont">
+                    <div className="navbar-logo-cont" onClick={() => scrollToSection('about')}>
                         <img src={Logo} alt="Logo" className="landing-logo-image" />
                         <span>PowerFit</span>
                     </div>
                     <div className={`navbar-links-cont ${isMenuOpen ? 'active' : ''}`}>
-                        <Link onClick={() => setIsMenuOpen(false)}>About</Link>
-                        <Link onClick={() => setIsMenuOpen(false)}>Features</Link>
-                        <Link onClick={() => setIsMenuOpen(false)}>Tracking</Link>
-                        <Link onClick={() => setIsMenuOpen(false)}>Analytics</Link>
-                        <Link onClick={() => setIsMenuOpen(false)}>Apple Health</Link>
-
+                        <Link onClick={() => scrollToSection('about')}>About</Link>
+                        <Link onClick={() => scrollToSection('features')}>Features</Link>
+                        <Link onClick={() => scrollToSection('tracking')}>Tracking</Link>
+                        <Link onClick={() => scrollToSection('analytics')}>Analytics</Link>
+                        <Link onClick={() => scrollToSection('apple-health')}>Apple Health</Link>
                         <button className="log-in-btn mobile-only">Log In</button>
                     </div>
                     <div className="navbar-btns-cont">

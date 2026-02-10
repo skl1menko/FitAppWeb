@@ -1,0 +1,88 @@
+.features-section-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 64px;
+    padding: 80px;
+    background-color: #F9FAFB;
+    
+    .top-cont{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 16px;
+        
+        h1{
+            font-weight: bold;
+            font-size:30px;
+        }
+
+        span{
+            font-size: 17px;
+            color: #6B7280;
+        }
+    }
+
+    .bottom-cont{
+        display: flex;
+        gap:32px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    // Планшеты и меньше (до 1024px)
+    @media (max-width: 1024px) {
+        padding: 60px 40px;
+        gap: 48px;
+
+        .bottom-cont{
+            gap: 24px;
+        }
+    }
+
+    // Планшеты (до 768px)
+    @media (max-width: 768px) {
+        padding: 48px 24px;
+        gap: 40px;
+
+        .top-cont{
+            gap: 12px;
+
+            h1{
+                font-size: 24px;
+            }
+
+            span{
+                font-size: 15px;
+            }
+        }
+
+        .bottom-cont{
+            gap: 20px;
+            width: 100%;
+        }
+    }
+
+    // Мобильные устройства (до 480px)
+    @media (max-width: 480px) {
+        padding: 32px 16px;
+        gap: 32px;
+
+        .top-cont{
+            h1{
+                font-size: 22px;
+            }
+
+            span{
+                font-size: 14px;
+                padding: 0 8px;
+            }
+        }
+
+        .bottom-cont{
+            gap: 16px;
+        }
+    }
+}

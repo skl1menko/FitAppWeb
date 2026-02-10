@@ -1,0 +1,207 @@
+.analytics-section-container{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content: center;
+    background-color: #111827;
+
+    .analytics-content-cont{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap:64px;
+        padding: 80px;
+
+        .analytics-heading-cont{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+
+            h2{
+                font-size: 35px;
+                font-weight: 700;
+                color: #FFFFFF;
+            }
+
+            p{
+                font-size: 19px;
+                font-weight: 400;
+                color: #9CA3AF;
+                text-align: center;
+            }
+        }
+
+        .analytics-cards-cont{
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+
+    }
+}
+
+
+
+.circular-progress {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: conic-gradient(#FB923C 0% 75%, #525252 75% 100%);
+
+    .circular-progress-inner{
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background-color: #1E293B;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4px;
+        
+        .progress-value{
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .progress-label{
+            font-size: 15px;
+            font-weight: 400;
+            color: #9CA3AF;
+        }
+    }
+
+}
+
+
+.stat-card-cont{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+
+    .stat-card{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: 48px;
+        border-radius: 8px;
+        padding: 12px;
+        background-color: rgb(55, 65, 81, 0.5);
+        
+        span{
+            font-size: 13px;
+            font-weight: 400;
+            color: #9CA3AF;
+        }
+
+        p{
+            font-size: 15px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+    }
+}
+
+// Media Queries
+@media (max-width: 1024px) and (min-width: 769px) {
+    .analytics-section-container {
+        .analytics-content-cont {
+            padding: 60px 40px;
+            gap: 48px;
+
+            .analytics-heading-cont {
+                h2 {
+                    font-size: 32px;
+                }
+
+                p {
+                    font-size: 18px;
+                }
+            }
+
+            .analytics-cards-cont {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+                max-width: 850px;
+                width: 100%;
+
+                & > *:nth-child(3) {
+                    grid-column: 1 / -1;
+                    justify-self: center;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .analytics-section-container {
+        .analytics-content-cont {
+            .analytics-cards-cont {
+                gap: 24px;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .analytics-section-container {
+        .analytics-content-cont {
+            padding: 40px 20px;
+            gap: 40px;
+
+            .analytics-heading-cont {
+                h2 {
+                    font-size: 28px;
+                }
+
+                p {
+                    font-size: 17px;
+                }
+            }
+
+            .analytics-cards-cont {
+                gap: 20px;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .analytics-section-container {
+        .analytics-content-cont {
+            padding: 30px 16px;
+            gap: 32px;
+
+            .analytics-heading-cont {
+                h2 {
+                    font-size: 24px;
+                }
+
+                p {
+                    font-size: 15px;
+                }
+            }
+
+            .analytics-cards-cont {
+                gap: 16px;
+            }
+        }
+    }
+}

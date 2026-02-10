@@ -1,0 +1,116 @@
+.analytics-cards-content-cont{
+    width: 384px;
+    height: 346px;
+    background-color: #1E293B;
+    border-radius: 16px;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap:24px;
+    padding: 24px;
+
+    .analytics-cards-heading-cont{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        height: 40px;
+        flex-shrink: 0;
+        
+        .analytics-cards-icon-cont{
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(59, 130, 246, 0.3);
+        }
+
+        h3{
+            font-size:17px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+    }
+
+    .analytics-cards-main-cont{
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        min-height: 150px;
+    }
+
+    p{
+        font-size: 13px;
+        font-weight: 400;
+        color: #9CA3AF;
+        line-height: 1.5;
+        flex-shrink: 0;
+    }
+
+    
+}
+
+// Media Queries
+@media (max-width: 1280px) and (min-width: 1025px) {
+    .analytics-cards-content-cont {
+        width: 340px;
+        height: 320px;
+
+        p{
+            br{
+                display: none;
+            }
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .analytics-cards-content-cont {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        min-height: 320px;
+
+        p {
+            font-size: 13px;
+            br{
+                display: none;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .analytics-cards-content-cont {
+        max-width: 450px;
+        min-height: 300px;
+        padding: 22px;
+        gap: 22px;
+
+        p {
+            font-size: 12.5px;
+            br{
+                display: none;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .analytics-cards-content-cont {
+        max-width: 100%;
+        padding: 20px;
+        gap: 20px;
+        min-height: 280px;
+
+        p {
+            font-size: 12px;
+            br{
+                display: none;
+            }
+        }
+    }
+}

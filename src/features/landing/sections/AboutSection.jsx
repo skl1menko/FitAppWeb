@@ -25,10 +25,10 @@ const AboutSection = () => {
             <div className="right-container">
                 <div className="img-block">
                     <img src={AppleWatch} alt="Apple Watch" />
-                    <div className="stat-card">
+                    <div className="stat-card kcal">
                         <div className="stat-card-icon">
                             <RiFireLine size={24} color="#FF5733" />
-                        </div>
+                        </div>  
                         <div className="stat-card-info">
                             <p>MOVE</p>
                             <div> <span className='number'>487</span> <span className='minnumber'>kcal</span></div>

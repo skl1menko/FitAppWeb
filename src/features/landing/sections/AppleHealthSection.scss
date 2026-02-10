@@ -31,12 +31,16 @@
                 background-color: #F0F0F0;
                 width: fit-content;
 
+                svg {
+                    flex-shrink: 0;
+                }
+
                 span{
                     font-size: 12px;
                     font-weight: 500;
                     color: #DC2626;
+                    white-space: nowrap;
                 }
-
             }
 
             .ah-heading-cont{
@@ -47,12 +51,13 @@
                 h2{
                     font-size: 35px;
                     font-weight: 700;
+                    line-height: 1.2;
                 }
 
                 p{
                     font-size: 16px;
                     font-weight: 400;
-                    line-height: 1.5;
+                    line-height: 1.6;
                     color: #4B5563;
                 }
             }
@@ -76,15 +81,16 @@
                         height: 24px;
                         border-radius: 9999px;
                         background-color: #F0F0F0;
+                        flex-shrink: 0;
                     }
 
                     p{
                         font-size: 15px;
                         font-weight: 400;
+                        line-height: 1.4;
                     }
                 }
             }
-
         }
 
         .ah-right-cont{
@@ -92,26 +98,220 @@
             justify-content: center;
             align-items: center;
             padding-right: 100px;
+            flex-shrink: 0;
+
             .activity-rings{
                position: relative;
-               width: 310px;
-               height: 310px;
+               width: 400px;
+               height: 400px;
                display: flex;
                justify-content: center;
                align-items: center;
 
                svg{
                 position: absolute;
+                width: 100%;
+                height: 100%;
                 transform: scaleY(-1);
                }
 
                .activity-rings-inner{
-                width: 165px;
-                height: 165px;
+                position: absolute;
+                width: 32.5%;
+                height: 32.5%;
                 border-radius: 50%;
                 background-color: #F8F9FC;
                 z-index: 1;
                }
+            }
+        }
+    }
+}
+
+// Responsive Styles
+@media (max-width: 1200px) {
+    .ah-section-container {
+        .ah-content-cont {
+            .ah-left-cont {
+                .ah-heading-cont {
+                    h2 {
+                        font-size: 32px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .ah-section-container {
+        padding: 64px 48px;
+
+        .ah-content-cont {
+            padding: 48px;
+            gap: 32px;
+
+            .ah-left-cont {
+                gap: 20px;
+
+                .ah-heading-cont {
+                    h2 {
+                        font-size: 30px;
+                    }
+
+                    p {
+                        font-size: 15px;
+                    }
+                }
+            }
+
+            .ah-right-cont {
+                padding-right: 50px;
+
+                .activity-rings {
+                    width: 350px;
+                    height: 350px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .ah-section-container {
+        padding: 48px 24px;
+
+        .ah-content-cont {
+            flex-direction: column;
+            padding: 32px;
+            gap: 32px;
+
+            .ah-left-cont {
+                width: 100%;
+                gap: 20px;
+
+                .ah-heading-cont {
+                    gap: 16px;
+
+                    h2 {
+                        font-size: 26px;
+                        
+                
+                    }
+
+                    p {
+                        font-size: 14px;
+                        line-height: 1.5;
+                        
+                        br {
+                            display: none;
+                        }
+                    }
+                }
+
+                .ah-list-cont {
+                    gap: 14px;
+
+                    .ah-list-item {
+                        p {
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+
+            .ah-right-cont {
+                padding-right: 0;
+                width: 100%;
+
+                .activity-rings {
+                    width: 300px;
+                    height: 300px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .ah-section-container {
+        padding: 32px 16px;
+
+        .ah-content-cont {
+            padding: 24px;
+            gap: 24px;
+
+            .ah-left-cont {
+                gap: 16px;
+
+                .ah-integ-cont {
+                    padding: 3px 10px;
+                    gap: 6px;
+
+                    svg {
+                        width: 14px;
+                        height: 14px;
+                    }
+
+                    span {
+                        font-size: 11px;
+                    }
+                }
+
+                .ah-heading-cont {
+                    gap: 12px;
+
+                    h2 {
+                        font-size: 22px;
+                    }
+
+                    p {
+                        font-size: 13px;
+                    }
+                }
+
+                .ah-list-cont {
+                    gap: 12px;
+
+                    .ah-list-item {
+                        gap: 10px;
+
+                        .ah-list-icon {
+                            width: 22px;
+                            height: 22px;
+
+                            svg {
+                                width: 11px;
+                                height: 11px;
+                            }
+                        }
+
+                        p {
+                            font-size: 13px;
+                        }
+                    }
+                }
+            }
+
+            .ah-right-cont {
+                .activity-rings {
+                    width: 250px;
+                    height: 250px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 360px) {
+    .ah-section-container {
+        .ah-content-cont {
+            .ah-left-cont {
+                .ah-heading-cont {
+                    h2 {
+                        font-size: 20px;
+                    }
+                }
             }
         }
     }

@@ -21,7 +21,7 @@ const ActivityRings = () => {
 
     return(
         <div className="activity-rings">
-           <svg width={510} height={510} viewBox='0 0 510 510'>
+           <svg viewBox='0 0 510 510'>
                 {rings.map((ring, index) => {
                     const circumference = 2 * Math.PI * ring.radius;
                     const strokeDasharray = `${(ring.progress / 100) * circumference} ${circumference}`;
@@ -65,7 +65,7 @@ const AppleHealthSection = () => {
                        <span>Apple Health Integration</span> 
                     </div>
                     <div className="ah-heading-cont">
-                        <h2>Syncs Seamlessly with<br/>Apple Health</h2>
+                        <h2>Syncs Seamlessly with<br/> Apple Health</h2>
                         <p>Your workouts automatically sync to Apple Health, contributing to
                             <br/> your Activity Rings. Close your rings while you lift.
                         </p>

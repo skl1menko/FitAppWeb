@@ -14,7 +14,7 @@ const AboutSection = () => {
                     <span className="circle"></span>
                     <span>Now with Apple Health Integration</span>
                 </div>
-                <h1>Track Every Rep.<br/><span className="highlight">Master Your Fitness.</span></h1>
+                <h1>Track Every Rep<br/><span className="highlight">Master Your Fitness</span></h1>
                 <p>The ultimate workout tracker for serious lifters. Monitor exercises,<br/>
                 sets, weights, and duration with precision analytics to optimize your<br/>
                 training volume.</p>

@@ -1,0 +1,12 @@
+.auth-page-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    justify-content: column;
+    align-items: center;
+    background-image: url('../../assets/auth-bg.png');
+    background-size: cover;
+    background-position: center;
+
+}

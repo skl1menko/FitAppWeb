@@ -1,0 +1,129 @@
+.auth-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    animation: slideFromLeft 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    @keyframes slideFromLeft {
+        0% {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideFromRight {
+        0% {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    &.signup-form{
+        gap:23px;
+        animation: slideFromRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .input-container{
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+
+        .input-cont{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            border-radius: 12px;
+            background-color: rgba($color: #fff, $alpha: 0.1);
+            padding: 16px;
+            svg{
+                color: #9CA3AF;
+                width: 24px;
+                height: 24px;
+            }
+
+            input{
+                font-size: 16px;
+                color: #9CA3AF;
+                background-color: transparent;
+                border: none;
+                outline: none;
+                width: 100%;
+
+                // Цвет placeholder
+                &::placeholder {
+                    color: #9CA3AF;
+                    opacity: 1;
+                }
+
+                // Отключаем стили автозаполнения браузера
+                &:-webkit-autofill,
+                &:-webkit-autofill:hover,
+                &:-webkit-autofill:focus,
+                &:-webkit-autofill:active {
+                    -webkit-text-fill-color: #9CA3AF !important;
+                    transition: background-color 5000s ease-in-out 0s;
+                }
+            }
+        }
+    }
+
+    .forgot-password-cont{
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+        a{
+            color: #3B82F6;
+            font-size: 14px;
+            text-decoration: none;
+
+            &:hover{
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .submit-btn-cont{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        
+        .submit-btn{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            background-color: #2563EB;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px;
+            color: #fff;
+            font-weight: bold;
+            padding: 18px 0px;
+
+            &:hover{
+                background-color: #3B82F6;
+            }
+
+            &:active{
+                transform: scale(0.96);
+            }
+        }
+    }
+}

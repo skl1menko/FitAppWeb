@@ -1,15 +1,25 @@
 import './AuthCont.scss'
-import { FaGoogle,FaApple } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 import LogInForm from './LogInForm';
 import SignUpForm from './SignUpForm';
 import { useNavigate, useLocation } from 'react-router';
-
+import { useState } from 'react';
 const AuthCont = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
     const authType = location.pathname === '/auth/signup' ? 'signup' : 'login';
+    const [selectedRole, setSelectedRole] = useState('');
 
+    const handleGoogleLogin = () => {
+        if (authType === 'signup' && !selectedRole) {
+            alert('Please select a role before continuing with Google Sign-In.');
+            return;
+        }
+
+        const role = authType === 'signup' ? selectedRole : '';
+        window.location.href = `http://localhost:3000/api/auth/google?role=${role}`;
+    };
 
     return(
         <div className="auth-content-container">
@@ -35,7 +45,7 @@ const AuthCont = () => {
                 {authType === 'login' ? (
                     <LogInForm />
                 ) : (
-                    <SignUpForm />
+                    <SignUpForm onRoleChange={setSelectedRole}/>
                 )}
             </div>
             <div className="separator-cont">
@@ -47,8 +57,7 @@ const AuthCont = () => {
             </div>
             <div className="social-auth-cont">
                 <div className="social-auth-btn-cont">
-                    <button className="social-auth-btn"><FaGoogle/> Google</button>
-                    <button className="social-auth-btn"><FaApple/> Apple</button>
+                    <button className="social-auth-btn" onClick={handleGoogleLogin}><FaGoogle/> Google</button>
                 </div>
                 <div className="agree-policy-cont">
                     <span>By continuing, you agree to our <a href="#">Terms of Service</a> and <br/><a href="#">Privacy Policy</a>.</span>

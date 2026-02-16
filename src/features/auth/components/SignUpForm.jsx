@@ -2,10 +2,10 @@ import { MdEmail } from "react-icons/md";
 import { MdOutlineLock } from "react-icons/md";
 import { IoMdPerson } from "react-icons/io";
 import {useNavigate} from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import authService from "../../../services/authService";
 
-const SignUpForm = () => {
+const SignUpForm = ({ onRoleChange }) => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
@@ -20,6 +20,13 @@ const SignUpForm = () => {
             [e.target.name]: e.target.value
         })
     };
+
+    // Передаем выбранную роль в родительский компонент (AuthCont)
+    useEffect(() => {
+        if (onRoleChange) {
+            onRoleChange(formData.role);
+        }
+    }, [formData.role, onRoleChange]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

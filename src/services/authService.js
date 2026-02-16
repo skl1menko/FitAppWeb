@@ -30,6 +30,10 @@ const authService ={
 
         return response.data;
     },
+
+    loginWithGoogle: async () => {
+        window.location.href = `http://localhost:3000/api/auth/google?role=${role}`;
+    },
     
     logout: () => {
         localStorage.removeItem('token');

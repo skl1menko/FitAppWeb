@@ -1,0 +1,31 @@
+.auth-page-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    justify-content: column;
+    align-items: center;
+    background-image: url('../../assets/auth-bg.png');
+    background-size: cover;
+    background-position: center;
+}
+
+// Адаптация
+@media (max-width: 768px) {
+    .auth-page-container {
+        padding: 0 16px;
+        min-height: 100vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-page-container {
+        padding: 0 12px;
+        background-image: url('../../assets/mobile-bg.jpg');
+        background-size: auto;
+        background-color: black;
+    
+    }
+
+
+}

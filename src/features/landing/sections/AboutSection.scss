@@ -70,6 +70,12 @@ $btn-bg-cl: #2563EB;
                 background-color: $btn-bg-cl;
                 font-size:14px;
                 font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+
+                &:hover{
+                    background-color: #1D4ED8;
+                }
             }
         }
     }

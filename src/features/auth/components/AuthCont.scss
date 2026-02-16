@@ -7,6 +7,8 @@
     border-radius: 16px;
     backdrop-filter: blur(10px);
     gap: 24px;
+    margin-top: -10px;
+    max-width: 100%;
 
     .auth-content-heading-cont{
         display: flex;
@@ -19,11 +21,12 @@
         h1{
             color: #ffffff;
             font-size: 24px;
-            font-weight: bold
+            font-weight: bold;
         }
         p{
             color: #D1D5DB;
             font-size: 16px;
+            text-align: center;
         }
     }
 
@@ -32,15 +35,19 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
+        padding: 0px 20px;
+        width: 100%;
         
         .auth-link-cont{
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 17px 73px;
+            padding: 17px;
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            flex: 1;
+            max-width: 200px;
             
             &::after{
                 content: '';
@@ -69,6 +76,8 @@
             span{
                 color: rgba($color: #ffffff, $alpha: 0.5);
                 transition: color 0.3s ease;
+                white-space: nowrap;
+                font-size: 16px;
             }
         }
     }
@@ -89,11 +98,11 @@
         }
 
         .separator-text{
-            width: 100%;
+            white-space: nowrap;
 
             span{
-            color: #9CA3AF;
-            font-size: 16px;
+                color: #9CA3AF;
+                font-size: 16px;
             }
         }
 
@@ -118,6 +127,7 @@
             align-items: center;
             flex-direction: row;
             gap: 16px;
+            width: 100%;
 
             .social-auth-btn{
                 display: flex;
@@ -130,6 +140,7 @@
                 border: none;
                 cursor: pointer;
                 transition: all 0.2s ease;
+                flex: 1;
 
                 &:hover{
                     background-color: rgba($color: #ffffff, $alpha: 0.2);
@@ -172,6 +183,104 @@
 
                 &:hover{
                     text-decoration: underline;
+                }
+            }
+        }
+    }
+}
+
+// Адаптация
+@media (max-width: 768px) {
+    .auth-content-container {
+        padding: 30px 0px;
+        margin-top: 0;
+        gap: 20px;
+
+        .auth-content-heading-cont {
+            padding: 0px 60px;
+        }
+
+        .separator-cont {
+            padding: 0px 30px;
+        }
+
+        .auth-form-cont {
+            padding: 0px 30px;
+        }
+
+        .type-auth-cont {
+            .auth-link-cont {
+                padding: 15px;
+                max-width: 150px;
+            }
+        }
+
+        .social-auth-cont {
+            .social-auth-btn-cont {
+                .social-auth-btn {
+                    padding: 12px 40px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-content-container {
+        padding: 24px 0px;
+        gap: 16px;
+        border-radius: 12px;
+        margin-top: 50px;
+
+        .auth-content-heading-cont {
+            padding: 0px 20px;
+
+            h1 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+        }
+
+        .type-auth-cont {
+            padding: 0px 16px;
+
+            .auth-link-cont {
+                padding: 12px;
+                max-width: none;
+
+                span {
+                    font-size: 15px;
+                }
+            }
+        }
+
+        .separator-cont {
+            padding: 0px 20px;
+            gap: 12px;
+
+            .separator-text {
+                span {
+                    font-size: 14px;
+                }
+            }
+        }
+
+        .auth-form-cont {
+            padding: 0px 20px;
+        }
+
+        .social-auth-cont {
+            padding: 0px 16px;
+
+            .social-auth-btn-cont {
+                gap: 12px;
+
+                .social-auth-btn {
+                    padding: 12px 16px;
+                    font-size: 14px;
                 }
             }
         }

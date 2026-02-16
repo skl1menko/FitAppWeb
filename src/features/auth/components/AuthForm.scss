@@ -34,11 +34,25 @@
         animation: slideFromRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
+
     .input-container{
         display: flex;
         flex-direction: column;
         gap: 16px;
         width: 100%;
+
+        .input-row{
+            display: flex;
+            flex-direction: row;
+            gap: 16px;
+            width: 407.66px;
+            max-width: 100%;
+
+            .input-cont{
+                padding: 16px 12px;
+                flex: 1;
+            }
+        }
 
         .input-cont{
             display: flex;
@@ -48,6 +62,7 @@
             border-radius: 12px;
             background-color: rgba($color: #fff, $alpha: 0.1);
             padding: 16px;
+
             svg{
                 color: #9CA3AF;
                 width: 24px;
@@ -96,6 +111,88 @@
         }
     }
 
+    .role-select-cont{
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+
+        .role-label{
+            font-size: 13px;
+            color: #9CA3AF;
+            margin: 0;
+        }
+
+        .role-options{
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            width: 100%;
+
+            .role-option{
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                padding: 10px;
+                border-radius: 10px;
+                background-color: rgba($color: #fff, $alpha: 0.1);
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: 2px solid transparent;
+
+                input[type="radio"]{
+                    appearance: none;
+                    width: 16px;
+                    height: 16px;
+                    border: 2px solid #9CA3AF;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    position: relative;
+                    transition: all 0.2s ease;
+
+                    &:checked{
+                        border-color: #2563EB;
+                        background-color: #2563EB;
+
+                        &::after{
+                            content: '';
+                            position: absolute;
+                            width: 6px;
+                            height: 6px;
+                            border-radius: 50%;
+                            background-color: #fff;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                        }
+                    }
+                }
+
+                span{
+                    font-size: 14px;
+                    color: #9CA3AF;
+                    font-weight: 500;
+                    transition: all 0.2s ease;
+                }
+
+                &:hover{
+                    background-color: rgba($color: #fff, $alpha: 0.15);
+                }
+
+                &:has(input:checked){
+                    border-color: #2563EB;
+                    background-color: rgba($color: #2563EB, $alpha: 0.15);
+
+                    span{
+                        color: #3B82F6;
+                    }
+                }
+            }
+        }
+    }
+
     .submit-btn-cont{
         display: flex;
         justify-content: center;
@@ -123,6 +220,78 @@
 
             &:active{
                 transform: scale(0.96);
+            }
+        }
+    }
+}
+
+// Адаптация
+@media (max-width: 768px) {
+    .auth-form {
+        .input-container {
+            .input-row {
+                width: 100%;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-form {
+        .input-container {
+            gap: 12px;
+
+            .input-row {
+                flex-direction: column;
+                gap: 12px;
+
+                .input-cont {
+                    padding: 14px 12px;
+                }
+            }
+
+            .input-cont {
+                padding: 14px 12px;
+
+                svg {
+                    width: 20px;
+                    height: 20px;
+                }
+
+                input {
+                    font-size: 16px;
+                }
+            }
+        }
+
+        .role-select-cont {
+            .role-label {
+                font-size: 12px;
+            }
+
+            .role-options {
+                gap: 8px;
+
+                .role-option {
+                    padding: 8px 6px;
+                    gap: 4px;
+
+                    input[type="radio"] {
+                        width: 14px;
+                        height: 14px;
+                    }
+
+                    span {
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+
+        .submit-btn-cont {
+            .submit-btn {
+                padding: 16px 0px;
+                font-size: 15px;
             }
         }
     }

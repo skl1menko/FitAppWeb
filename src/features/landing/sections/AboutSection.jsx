@@ -4,9 +4,12 @@ import { RiFireLine } from "react-icons/ri";
 import { GoPulse } from "react-icons/go";
 import { IoFootstepsOutline } from "react-icons/io5";
 import { IoIosTrendingUp } from "react-icons/io";
+import { useNavigate } from 'react-router';
 
 import AppleWatch from '../../../assets/AppleWatch.jpeg'
 const AboutSection = () => {
+    const navigate = useNavigate();
+
     return(
         <div className="about-section">
             <div className="left-container">
@@ -19,7 +22,7 @@ const AboutSection = () => {
                 sets, weights, and duration with precision analytics to optimize your<br/>
                 training volume.</p>
                 <div className="button-get-started-block">
-                    <button className='get-started-button'>Start Tracking Free <IoArrowForwardOutline /></button>
+                    <button className='get-started-button' onClick={() => navigate('/auth/signup')}>Start Tracking Free <IoArrowForwardOutline /></button>
                 </div>
             </div>
             <div className="right-container">

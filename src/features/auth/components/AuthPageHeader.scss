@@ -16,3 +16,25 @@
         font-weight: bold;
     }
 }
+
+// Адаптация
+@media (max-width: 768px) {
+    .auth-page-header-cont {
+        padding: 20px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-page-header-cont {
+        padding: 16px 20px;
+
+        img {
+            width: 28px;
+            height: 28px;
+        }
+
+        h1 {
+            font-size: 18px;
+        }
+    }
+}

@@ -1,11 +1,11 @@
 import "./LandingHeader.scss"
 import Logo from '../../../assets/Logo.svg'
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useState } from "react";
-
 const LandingHeader = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const navigate = useNavigate();
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -33,11 +33,11 @@ const LandingHeader = () => {
                         <Link onClick={() => scrollToSection('tracking')}>Tracking</Link>
                         <Link onClick={() => scrollToSection('analytics')}>Analytics</Link>
                         <Link onClick={() => scrollToSection('apple-health')}>Apple Health</Link>
-                        <button className="log-in-btn mobile-only">Log In</button>
+                        <button className="log-in-btn mobile-only" onClick={() => navigate('/auth/login')}>Log In</button>
                     </div>
                     <div className="navbar-btns-cont">
-                        <button className="log-in-btn desktop-only">Log In</button>
-                        <button className="get-started-btn">Get Started</button>
+                        <button className="log-in-btn desktop-only" onClick={() => navigate('/auth/login')}>Log In</button>
+                        <button className="get-started-btn" onClick={() => navigate('/auth/signup')}>Get Started</button>
 
                         <button className={`burger-menu ${isMenuOpen ? 'active' : ''}`} onClick={toggleMenu}>
                                 <span></span>

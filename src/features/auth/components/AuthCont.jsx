@@ -1,11 +1,14 @@
-import { useState } from 'react'
 import './AuthCont.scss'
 import { FaGoogle,FaApple } from "react-icons/fa";
 import LogInForm from './LogInForm';
 import SignUpForm from './SignUpForm';
+import { useNavigate, useLocation } from 'react-router';
+
 const AuthCont = () => {
 
-    const [authType, setAuthType] = useState('login')
+    const navigate = useNavigate();
+    const location = useLocation();
+    const authType = location.pathname === '/auth/signup' ? 'signup' : 'login';
 
 
     return(
@@ -17,13 +20,13 @@ const AuthCont = () => {
            <div className="type-auth-cont">
                 <div 
                     className={`auth-link-cont ${authType === 'login' ? 'active' : ''}`}
-                    onClick={() => setAuthType('login')}
+                    onClick={() => navigate('/auth/login')}
                 >
                     <span>Log In</span>
                 </div>
                 <div 
                     className={`auth-link-cont ${authType === 'signup' ? 'active' : ''}`}
-                    onClick={() => setAuthType('signup')}
+                    onClick={() => navigate('/auth/signup')}
                 >
                     <span>Sign Up</span>
                 </div>

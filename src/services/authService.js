@@ -9,9 +9,9 @@ const authService ={
             role
         });
 
-        if (response.data.data.token) {
+        if (response.data.data) {
             localStorage.setItem('token', response.data.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.data.user));
+            localStorage.setItem('user', JSON.stringify(response.data.data));
         }
 
         return response.data;
@@ -23,9 +23,9 @@ const authService ={
             password
         });
 
-        if (response.data.data.token) {
+        if (response.data.data) {
             localStorage.setItem('token', response.data.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.data.user));
+            localStorage.setItem('user', JSON.stringify(response.data.data));
         }
 
         return response.data;

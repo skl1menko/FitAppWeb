@@ -4,6 +4,8 @@ import AuthPage from './features/auth/AuthPage.jsx'
 import LandingPage from './features/landing/LandingPage.jsx'
 import ProtectedRoute from './routes/ProtectedRoute.jsx'
 import GoogleCallback from './features/auth/components/GoogleCallback.jsx'
+import DashboardPage from './features/dashboard/DashboardPage.jsx'
+import MainLayout from './layout/MainLayout.jsx'
 function App() {
  
 
@@ -16,7 +18,19 @@ function App() {
         <Route path="/auth/signup" element={<AuthPage />} />
         <Route path='/auth/callback' element={<GoogleCallback />} />
 
-        <Route path="/dashboard" element={<ProtectedRoute><div>Dashboard</div></ProtectedRoute>} />
+
+        <Route element = {
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+         }>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/workouts" element={<div>Workouts Page</div>} />
+          <Route path="/exercises" element={<div>Exercises Page</div>} />
+          <Route path="/progress" element={<div>Progress Page</div>} />
+          <Route path="/schedule" element={<div>Schedule Page</div>} />
+        </Route>
+        
       </Routes>
     </BrowserRouter>
   )

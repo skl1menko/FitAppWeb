@@ -13,8 +13,11 @@ const GoogleCallback = () => {
             localStorage.setItem('token', token);
 
             authService.getProfile()
-                .then(data => {
-                    localStorage.setItem('user', JSON.stringify(data));
+                .then(response => {
+                    // Сохраняем user из response.data
+                    if (response.data) {
+                        localStorage.setItem('user', JSON.stringify(response.data));
+                    }
                     navigate('/dashboard');
                 })
                 .catch(() => {

@@ -1,6 +1,5 @@
 import './AppleHealthSection.scss'
-import { FaHeart } from "react-icons/fa";
-import { CiHeart } from "react-icons/ci";
+import { FaHeart, CiHeart } from "../../../assets/icons";
 
 const AHList = ({ text }) => {
     return(

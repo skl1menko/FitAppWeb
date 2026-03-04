@@ -1,7 +1,5 @@
 import "./AnalyticsSection.scss"
-import { IoStatsChart } from "react-icons/io5";
-import { RiFireLine } from "react-icons/ri";
-import { FiCalendar } from "react-icons/fi";
+import { IoStatsChart, RiFireLine, FiCalendar } from "../../../assets/icons";
 import AnalyticsSectionCards from "../components/AnalyticsSectionCards";
 
 const AnalyticsCard1 = () => {

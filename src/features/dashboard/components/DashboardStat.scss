@@ -1,0 +1,66 @@
+.stat-card-cont {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+
+    .stat-card-content {
+        padding: 20px;
+        .top-stat-cont {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap:143px;
+            margin-bottom: 16px;
+            .icon-cont {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 14px;
+                padding: 10px;
+                background-color: rgba($color: #fff, $alpha: 0.2);
+            }
+
+            .mini-stat-cont {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                font-size: 16px;
+                color: #fff;
+                border-radius: 9999px;
+                background-color: rgba($color: #fff, $alpha: 0.2);
+                padding: 6px 10px;
+            }
+        }
+
+        .mid-stat-cont {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 4px;
+            span{
+                font-size: 16px;
+                color: rgba($color: #fff, $alpha: 0.7);
+            }
+        }
+
+        .bot-stat-cont {
+            display:flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 4px;
+            h1{
+                font-size: 24px;
+                color: #fff;
+                font-weight: bold;
+            }
+            span{
+                font-size: 16px;
+                color: rgba($color: #fff, $alpha: 0.7);
+            }
+        }
+    }
+
+
+}

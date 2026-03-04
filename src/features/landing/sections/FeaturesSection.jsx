@@ -1,8 +1,6 @@
 import "./FeaturesSection.scss"
 import FeaturesSectionCards from "../components/FeaturesSectionCards";
-import { LuDumbbell } from "react-icons/lu";
-import { GoPulse } from "react-icons/go";
-import { VscGraph } from "react-icons/vsc";
+import { LuDumbbell, GoPulse, VscGraph } from "../../../assets/icons";
 
 
 

@@ -1,5 +1,5 @@
 import './AuthCont.scss'
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle } from "../../../assets/icons";
 import LogInForm from './LogInForm';
 import SignUpForm from './SignUpForm';
 import { useNavigate, useLocation } from 'react-router';

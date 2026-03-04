@@ -1,5 +1,4 @@
-import { MdEmail } from "react-icons/md";
-import { MdOutlineLock } from "react-icons/md";
+import { MdEmail, MdOutlineLock } from "../../../assets/icons";
 import '../components/AuthForm.scss'
 import { useNavigate } from "react-router";
 import { useState } from "react";

@@ -1,10 +1,6 @@
 import './TrackingSection.scss'
 import TrackingSectionSets from '../components/TrackingSectionSets';
-import { GoCheckCircleFill } from "react-icons/go";
-import { FaBalanceScale } from "react-icons/fa";
-import { FiRepeat } from "react-icons/fi";
-import { FaRegClock } from "react-icons/fa6";
-import { GoPulse } from "react-icons/go";
+import { GoCheckCircleFill, FaBalanceScale, FiRepeat, FaRegClock, GoPulse } from "../../../assets/icons";
 import TrackingSectionGridCards from '../components/TrackingSectionGridCards';
 
 const TrackingSecton = () => {

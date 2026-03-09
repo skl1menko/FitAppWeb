@@ -1,0 +1,40 @@
+.goal-ring-cont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    svg circle {
+        transition: stroke-dashoffset 0.6s ease;
+    }
+
+    .goal-ring-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        color: #fff;
+    }
+
+    .goal-ring-label-cont {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+
+        .goal-ring-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .goal-ring-percent {
+            font-size: 14px;
+            font-weight: 400;
+            color: #9CA3AF;
+        }
+    }
+
+
+}

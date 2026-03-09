@@ -4,6 +4,8 @@ import DashboardStat from "./components/DashboardStat"
 import DatePickerCustom from "../../components/DatePickerCustom"
 import { IoFootstepsOutline, RiFireLine, FaRegClock, CiHeart } from "../../assets/icons";
 import healthMetricsService from "../../services/healthMetricsService";
+import ActivityOverview from "./components/ActivityOverview/ActivityOverview";
+import GoalCard from "./components/GoalCard";
 
 const DashboardPage = () => {
 
@@ -58,6 +60,18 @@ const DashboardPage = () => {
                     <DashboardStat color="#11BC94" icon={<FaRegClock color="#fff" size={24} />} trend="0%" label="Active Minutes" num={12} text="min" />
 
                     <DashboardStat color="#fd5e61eb" icon={<CiHeart color="#fff" size={24} />} trend={calcTrend(t?.avgHeartRate, y?.avgHeartRate)} label="AVG Heart Rate" num={t?.avgHeartRate || 0} text="bpm" />
+                </div>
+                <div className="dashboard-overview-cont">
+                    <div className="dashboard-charts-cont">
+                        <ActivityOverview />
+                    </div>
+                    <div className="dashboard-goals-cont">
+                    <GoalCard
+                        steps={t?.totalStepCount || 0}
+                        calories={t?.totalEnergyBurned || 0}
+                        activeMin={12}
+                    />
+                    </div>
                 </div>
                 
             </div>

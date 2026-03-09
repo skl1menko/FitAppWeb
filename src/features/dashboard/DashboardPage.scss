@@ -3,18 +3,19 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap:24px;
     background-color: #F9FAFB;
-
     .dashboard-main-content{
         padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        padding: 24px 75px;
 
         .dashboard-top-bar{
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
 
             .dashboard-title{
                 font-size: 22px;
@@ -24,11 +25,23 @@
         }
 
         .dashboard-stats-cont{
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 16px;
+        }
+
+        .dashboard-overview-cont{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+
+            .dashboard-charts-cont{
+                grid-column: span 3;
+            }
+
+            .dashboard-goals-cont{
+                grid-column: span 1;
+            }
         }
     }
     

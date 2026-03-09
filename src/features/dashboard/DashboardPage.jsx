@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
 import "./DashboardPage.scss"
 import DashboardStat from "./components/DashboardStat"
-import { IoFootstepsOutline, RiFireLine, FaRegClock, CiHeart, FiCalendar,BsChevronDown } from "../../assets/icons";
+import DatePickerCustom from "../../components/DatePickerCustom"
+import { IoFootstepsOutline, RiFireLine, FaRegClock, CiHeart } from "../../assets/icons";
 import healthMetricsService from "../../services/healthMetricsService";
 
 const DashboardPage = () => {
 
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [metrics, setMetrics] = useState({ today: null, yesterday: null });
 
     const calcTrend = (today, yesterday) => {
@@ -18,8 +18,8 @@ const DashboardPage = () => {
     };
 
     useEffect(() => {
-        const today = new Date();
-        const yesterday = new Date(today);
+        const today = new Date(selectedDate);
+        const yesterday = new Date(selectedDate);
         yesterday.setDate(today.getDate() - 1);
 
         const fmt = (d) => d.toISOString().split('T')[0];
@@ -38,7 +38,7 @@ const DashboardPage = () => {
         }).catch((error) => {
             console.error('Ошибка при загрузке метрик:', error);
         });
-    }, [])
+    }, [selectedDate]);
 
 
     const t = metrics?.today;
@@ -47,6 +47,9 @@ const DashboardPage = () => {
     return (
         <div className="dashboard-main-cont">
             <div className="dashboard-main-content">
+                <div className="dashboard-top-bar">
+                    <DatePickerCustom value={selectedDate} onChange={setSelectedDate} />
+                </div>
                 <div className="dashboard-stats-cont">
                     <DashboardStat color="#577BFF" icon={<IoFootstepsOutline color="#fff" size={24} />} trend={calcTrend(t?.totalStepCount, y?.totalStepCount)} label="Steps Today" num={t?.totalStepCount || 0} text="steps" />
 

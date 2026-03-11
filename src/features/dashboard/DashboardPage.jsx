@@ -5,7 +5,8 @@ import DatePickerCustom from "../../components/DatePickerCustom"
 import { IoFootstepsOutline, RiFireLine, FaRegClock, CiHeart } from "../../assets/icons";
 import healthMetricsService from "../../services/healthMetricsService";
 import ActivityOverview from "./components/ActivityOverview/ActivityOverview";
-import GoalCard from "./components/GoalCard";
+import GoalCard from "./components/GoalCard/GoalCard";
+import RecentWorkoutsCard from "./components/RecentWorkoutsCard";
 
 const DashboardPage = () => {
 
@@ -64,6 +65,7 @@ const DashboardPage = () => {
                 <div className="dashboard-overview-cont">
                     <div className="dashboard-charts-cont">
                         <ActivityOverview />
+                        <RecentWorkoutsCard />
                     </div>
                     <div className="dashboard-goals-cont">
                     <GoalCard

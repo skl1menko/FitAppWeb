@@ -25,8 +25,8 @@ export { GiProgression } from "react-icons/gi";
 // calendar icon, repeat icon
 export { FiCalendar, FiRepeat } from "react-icons/fi";
 
-// chevron down icon
-export { BsChevronDown } from "react-icons/bs";
+// chevron down icon, chevron right icon
+export { BsChevronDown, BsChevronRight } from "react-icons/bs";
 
 
 

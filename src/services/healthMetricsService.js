@@ -1,7 +1,7 @@
 import api from './api';
 
 const healthMetricsService = {
-    getAll: (period_type = null) => {
+    getAll: (period_type = 'daily') => {
         const params = period_type ? {period_type} : {};
         return api.get('/health-metrics',{params});
     },

@@ -1,6 +1,6 @@
 import './GoalCard.scss';
 import GoalRing from './GoalRing';
-import { RiFireLine, IoFootstepsOutline, FaRegClock } from '../../../assets/icons';
+import { RiFireLine, IoFootstepsOutline, FaRegClock } from '../../../../assets/icons';
 
 const GoalProgressBar = ({ label, value, goal, unit, color }) => {
     const pct = Math.min((value / goal) * 100, 100);

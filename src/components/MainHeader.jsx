@@ -1,12 +1,7 @@
 import './MainHeader.scss'
 import Logo from '../assets/Logo.svg'
 import Avatar from '../assets/mobile-bg.jpg'
-import { LuLayoutDashboard, LuMenu, LuX } from "react-icons/lu";
-import { PiBarbellLight } from "react-icons/pi";
-import { MdSportsGymnastics } from "react-icons/md";
-import { GiProgression } from "react-icons/gi";
-import { FiCalendar } from "react-icons/fi";
-import { BsChevronDown } from "react-icons/bs";
+import { LuLayoutDashboard, LuMenu, LuX, PiBarbellLight, MdSportsGymnastics, GiProgression, FiCalendar, BsChevronDown } from "../assets/icons";
 import { NavLink, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import authService from '../services/authService';

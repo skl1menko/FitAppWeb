@@ -1,9 +1,5 @@
 import './AboutSection.scss'
-import { IoArrowForwardOutline } from "react-icons/io5";
-import { RiFireLine } from "react-icons/ri";
-import { GoPulse } from "react-icons/go";
-import { IoFootstepsOutline } from "react-icons/io5";
-import { IoIosTrendingUp } from "react-icons/io";
+import { IoArrowForwardOutline, RiFireLine, GoPulse, IoFootstepsOutline, FaArrowTrendUp } from "../../../assets/icons";
 import { useNavigate } from 'react-router';
 
 import AppleWatch from '../../../assets/AppleWatch.jpeg'
@@ -57,7 +53,7 @@ const AboutSection = () => {
                     </div>
                     <div className="stat-card progress">
                         <div className="stat-card-icon progress">
-                            <IoIosTrendingUp size={24} color="#60A5FA" />
+                            <FaArrowTrendUp size={24} color="#60A5FA" />
                         </div>
                         <div className="stat-card-info progress">
                             <p>PROGRESS</p>

@@ -1,0 +1,107 @@
+.stat-card-cont {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    min-width: 0;
+    width: 100%;
+
+    .stat-card-content {
+        padding: 20px;
+        width: 100%;
+        box-sizing: border-box;
+
+        .top-stat-cont {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 16px;
+            .icon-cont {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 14px;
+                padding: 10px;
+                background-color: rgba($color: #fff, $alpha: 0.2);
+                flex-shrink: 0;
+            }
+
+            .mini-stat-cont {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                font-size: 16px;
+                color: #fff;
+                border-radius: 9999px;
+                background-color: rgba($color: #fff, $alpha: 0.2);
+                padding: 6px 10px;
+                white-space: nowrap;
+            }
+        }
+
+        .mid-stat-cont {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 4px;
+            span{
+                font-size: 16px;
+                color: rgba($color: #fff, $alpha: 0.7);
+            }
+        }
+
+        .bot-stat-cont {
+            display:flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 4px;
+            h1{
+                font-size: 24px;
+                color: #fff;
+                font-weight: bold;
+            }
+            span{
+                font-size: 16px;
+                color: rgba($color: #fff, $alpha: 0.7);
+            }
+        }
+    }
+
+    @media (max-width: 640px) {
+        border-radius: 12px;
+
+        .stat-card-content {
+            padding: 14px;
+
+            .top-stat-cont {
+                margin-bottom: 10px;
+
+                .icon-cont {
+                    padding: 7px;
+                    border-radius: 10px;
+
+                    svg {
+                        width: 18px;
+                        height: 18px;
+                    }
+                }
+
+                .mini-stat-cont {
+                    font-size: 12px;
+                    padding: 4px 8px;
+                }
+            }
+
+            .mid-stat-cont span {
+                font-size: 12px;
+            }
+
+            .bot-stat-cont {
+                h1 { font-size: 18px; }
+                span { font-size: 12px; }
+            }
+        }
+    }
+}

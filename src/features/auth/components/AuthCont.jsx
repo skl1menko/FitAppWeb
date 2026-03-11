@@ -1,5 +1,5 @@
 import './AuthCont.scss'
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle } from "../../../assets/icons";
 import LogInForm from './LogInForm';
 import SignUpForm from './SignUpForm';
 import { useNavigate, useLocation } from 'react-router';
@@ -18,7 +18,8 @@ const AuthCont = () => {
         }
 
         const role = authType === 'signup' ? selectedRole : '';
-        window.location.href = `http://localhost:3000/api/auth/google?role=${role}`;
+        const base = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+        window.location.href = `${base}/auth/google?role=${role}`;
     };
 
     return(

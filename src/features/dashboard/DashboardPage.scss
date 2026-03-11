@@ -1,10 +1,110 @@
+body.dashboard-body {
+    background-color: #F9FAFB;
+}
+
 .dashboard-main-cont{
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap:24px;
     background-color: #F9FAFB;
+    min-height: 100vh;
 
-    
+    .dashboard-main-content{
+        width: 100%;
+        max-width: 1600px;
+        padding: 24px 75px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        box-sizing: border-box;
+
+        .dashboard-top-bar{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+
+            .dashboard-title{
+                font-size: 22px;
+                font-weight: 700;
+                color: #1F2937;
+            }
+        }
+
+        .dashboard-stats-cont{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .dashboard-overview-cont{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+
+            .dashboard-charts-cont{
+                grid-column: span 3;
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+                min-width: 0;
+            }
+
+            .dashboard-goals-cont{
+                grid-column: span 1;
+                min-width: 0;
+            }
+        }
+    }
+
+    // Large tablets (≤ 1200px): 4 stats → 2 columns, overview stacks
+    @media (max-width: 1200px) {
+        .dashboard-main-content {
+            padding: 24px 32px;
+
+            .dashboard-stats-cont {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-overview-cont {
+                grid-template-columns: 1fr;
+
+                .dashboard-charts-cont {
+                    grid-column: span 1;
+                }
+
+                .dashboard-goals-cont {
+                    grid-column: span 1;
+                }
+            }
+        }
+    }
+
+    // Mobile (≤ 640px): compact padding, 2-column stats
+    @media (max-width: 640px) {
+        .dashboard-main-content {
+            padding: 16px;
+            gap: 16px;
+
+            .dashboard-stats-cont {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .dashboard-overview-cont {
+                grid-template-columns: 1fr;
+                gap: 12px;
+
+                .dashboard-charts-cont {
+                    grid-column: span 1;
+                    gap: 12px;
+                }
+
+                .dashboard-goals-cont {
+                    grid-column: span 1;
+                }
+            }
+        }
+    }
 }

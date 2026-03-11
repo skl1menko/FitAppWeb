@@ -1,0 +1,145 @@
+.activity-overview-container {
+    padding: 24px;
+    gap: 20px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+
+    .overview-header-container {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+
+        .overview-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+
+            h2 {
+                font-size: 24px;
+                font-weight: 700;
+                color: #1F2937;
+            }
+
+            .week-picker {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+
+                .week-picker-btn {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 24px;
+                    height: 24px;
+                    border: 1px solid #E5E7EB;
+                    border-radius: 8px;
+                    background: #fff;
+                    cursor: pointer;
+                    transition: background-color 0.15s, border-color 0.15s;
+
+                    &:hover {
+                        background: #EFF6FF;
+                        border-color: #155DFC;
+
+                        .week-arrow {
+                            color: #155DFC;
+                        }
+                    }
+                }
+
+                .week-arrow {
+                    color: #6B7280;
+                    transition: color 0.15s;
+
+                    &--left {
+                        transform: rotate(90deg);
+                    }
+
+                    &--right {
+                        transform: rotate(-90deg);
+                    }
+                }
+
+                .week-picker-label {
+                    font-size: 13px;
+                    font-weight: 500;
+                    color: #6B7280;
+                    white-space: nowrap;
+                }
+            }
+        }
+    }
+
+    .overview-selector-cont {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        .selector-cont {
+            position: relative;
+            display: inline-flex;
+            padding: 4px;
+            border-radius: 14px;
+            background-color: #f3f4f6;
+
+
+            .selector-pill {
+                position: absolute;
+                top: 4px;
+                height: calc(100% - 8px);
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+                transition: left 0.2s ease, width 0.2s ease;
+                pointer-events: none;
+            }
+
+            .selector-btn {
+                position: relative;
+                z-index: 1;
+                flex: 1;
+                text-align: center;
+                white-space: nowrap;
+                border-radius: 10px;
+                padding: 6px 12px;
+                font-size: 13px;
+                font-weight: 500;
+                color: #6B7280;
+                cursor: pointer;
+                transition: color 0.2s;
+                border: none;
+                background-color: transparent;
+
+                &:hover {
+                    color: #155DFC;
+                }
+            }
+        }
+    }
+
+    // Mobile
+    @media (max-width: 640px) {
+        padding: 16px;
+
+        .overview-header-container {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+
+            .overview-header h2 {
+                font-size: 18px;
+            }
+        }
+
+        .overview-selector-cont {
+            gap: 8px;
+        }
+    }
+
+}

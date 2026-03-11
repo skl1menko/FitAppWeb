@@ -36,5 +36,16 @@
         }
     }
 
+    @media (max-width: 640px) {
+        gap: 6px;
 
+        .goal-ring-label-cont {
+            .goal-ring-label {
+                font-size: 12px;
+            }
+            .goal-ring-percent {
+                font-size: 12px;
+            }
+        }
+    }
 }

@@ -68,4 +68,10 @@
             }
         }
     }
+
+    // Mobile
+    @media (max-width: 640px) {
+        padding: 16px;
+        gap: 16px;
+    }
 }

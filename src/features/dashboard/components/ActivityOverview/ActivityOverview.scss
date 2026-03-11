@@ -8,8 +8,10 @@
 
     .overview-header-container {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
 
         .overview-header {
             display: flex;
@@ -77,6 +79,7 @@
         flex-direction: row;
         align-items: center;
         gap: 12px;
+        flex-wrap: wrap;
 
         .selector-cont {
             position: relative;
@@ -117,6 +120,25 @@
                     color: #155DFC;
                 }
             }
+        }
+    }
+
+    // Mobile
+    @media (max-width: 640px) {
+        padding: 16px;
+
+        .overview-header-container {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+
+            .overview-header h2 {
+                font-size: 18px;
+            }
+        }
+
+        .overview-selector-cont {
+            gap: 8px;
         }
     }
 

@@ -10,6 +10,11 @@ import RecentWorkoutsCard from "./components/RecentWorkoutsCard";
 
 const DashboardPage = () => {
 
+    useEffect(() => {
+        document.body.classList.add('dashboard-body');
+        return () => document.body.classList.remove('dashboard-body');
+    }, []);
+
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [metrics, setMetrics] = useState({ today: null, yesterday: null });
 

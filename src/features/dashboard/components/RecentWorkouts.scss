@@ -126,4 +126,31 @@
         font-size: 0.85rem;
         flex-shrink: 0;
     }
+
+    // Mobile
+    @media (max-width: 640px) {
+        padding: 16px;
+
+        .rw-item {
+            gap: 10px;
+        }
+
+        .rw-icon-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+
+            svg {
+                font-size: 1.1rem;
+            }
+        }
+
+        .rw-meta {
+            display: none;
+        }
+
+        .rw-chevron {
+            display: none;
+        }
+    }
 }

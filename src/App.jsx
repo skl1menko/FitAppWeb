@@ -5,7 +5,9 @@ import LandingPage from './features/landing/LandingPage.jsx'
 import ProtectedRoute from './routes/ProtectedRoute.jsx'
 import GoogleCallback from './features/auth/components/GoogleCallback.jsx'
 import DashboardPage from './features/dashboard/DashboardPage.jsx'
+import WorkoutPage from './features/workout/WorkoutPage.jsx'
 import MainLayout from './layout/MainLayout.jsx'
+import WorkoutDetails from "./features/workout/components/WorkoutDetails.jsx"
 function App() {
  
 
@@ -25,7 +27,8 @@ function App() {
           </ProtectedRoute>
          }>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/workouts" element={<div>Workouts Page</div>} />
+          <Route path="/workouts" element={<WorkoutPage />} />
+          <Route path="/workout/:workoutId" element={<WorkoutDetails />} />
           <Route path="/exercises" element={<div>Exercises Page</div>} />
           <Route path="/progress" element={<div>Progress Page</div>} />
           <Route path="/schedule" element={<div>Schedule Page</div>} />

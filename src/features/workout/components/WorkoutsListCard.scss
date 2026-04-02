@@ -17,17 +17,24 @@
 
     .workout-left-cont {
         display: flex;
+        flex: 1;
+        min-width: 0;
         flex-direction: row;
+        align-items: flex-start;
         gap: 12px;
 
         .workout-icon-cont {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 14px;
             background-color: rgba($color: #3B82F6, $alpha: 0.1);
-            padding: 10px 10px 3px 10px;
+            padding: 10px;
         }
 
         .workout-info-cont {
             display: flex;
+            min-width: 0;
             flex-direction: column;
             gap: 8px;
 
@@ -66,14 +73,99 @@
     .workout-right-cont {
         display: flex;
         flex-direction: column;
+        align-items: flex-start;
+        margin-left: auto;
+        min-width: 124px;
+        flex-shrink: 0;
         gap: 8px;
 
         span {
             display: flex;
             align-items: center;
+            justify-content: flex-start;
             gap: 4px;
             color: #99A1AF;
             font-size: 14px;
+            text-align: left;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
         }
+    }
+}
+
+@media (max-width: 1024px) {
+    .workout-cont {
+        padding: 14px;
+
+        .workout-left-cont {
+            .workout-info-cont {
+                .workout-stat-cont {
+                    flex-wrap: wrap;
+                    row-gap: 8px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .workout-cont {
+        gap: 10px;
+
+        .workout-left-cont {
+
+
+            .workout-info-cont {
+                gap: 6px;
+
+                .workout-label {
+                    span {
+                        font-size: 15px;
+                    }
+                }
+
+                .workout-stat-cont {
+
+                    span {
+                        font-size: 13px;
+                    }
+                }
+            }
+        }
+
+        .workout-right-cont {
+            min-width: 112px;
+
+            span {
+                font-size: 13px;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .workout-cont {
+        padding: 12px;
+
+        .workout-left-cont {
+            gap: 10px;
+
+
+            .workout-info-cont {
+                .workout-label {
+                    gap: 6px;
+
+                    span {
+                        font-size: 14px;
+                    }
+                }
+
+            }
+        }
+
+        .workout-right-cont {
+            min-width: 104px;
+        }
+
     }
 }

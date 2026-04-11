@@ -1,0 +1,409 @@
+
+body.workout-page-body {
+    background-color: #F9FAFB;
+}
+.workout-details-page {
+    --wd-bg: #eff6ff;
+    --wd-surface: #ffffff;
+    --wd-surface-soft: #f8fbff;
+    --wd-text: #0f172a;
+    --wd-muted: #64748b;
+    --wd-primary: #2563eb;
+    --wd-primary-dark: #1d4ed8;
+    --wd-border: #dbeafe;
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 24px 75px;
+    min-height: 100vh;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .back-btn {
+        display: flex;
+        align-self: flex-start;
+        align-items: center;
+        gap: 8px;
+        padding: 15px 20px;
+        background-color: #3B82F6;
+        color: #fff;
+        border: none;
+        border-radius: 14px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+            transform: translateY(-1px);
+            background-color: #2563EB;
+        }
+    }
+
+    .workout-header {
+        display: flex;
+        flex-direction: column;
+        align-self: flex-start;
+        width: fit-content;
+        max-width: 100%;
+        background-color: #ffffff;
+        border: 1px solid var(--wd-border);
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08);
+        gap: 16px;
+
+        .workout-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            h1 {
+                margin: 0;
+                color: var(--wd-text);
+                line-height: 1.1;
+            }
+
+            .workout-badge {
+                padding: 8px 12px;
+                border-radius: 999px;
+                font-size: 12px;
+                font-weight: 700;
+                color: var(--wd-primary-dark);
+                background: rgba(37, 99, 235, 0.12);
+                border: 1px solid rgba(37, 99, 235, 0.24);
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+            }
+        }
+
+        .workout-header-cont {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            &.stats {
+                display: flex;
+                flex-direction: row;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 12px;
+                background: var(--wd-surface-soft);
+
+                .wk-hd-cont-stats {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    border-left: 1px solid #e2e8f0;
+                    padding-left: 12px;
+                    min-width: 130px;
+
+                    &:first-child {
+                        border-left: none;
+                        padding-left: 0;
+                    }
+
+                    span {
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        font-weight: 500;
+                        color: var(--wd-muted);
+                    }
+
+                    span:not(.label) {
+                        font-size: 16px;
+                        font-weight: 700;
+                        color: #0f172a;
+                    }
+
+                }
+
+                .wk-hd-cont-stats.two {
+                    align-items: center;
+                }
+
+            }
+        }
+
+        .workout-notes {
+            margin: 0;
+            color: var(--wd-text);
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 12px 14px;
+            line-height: 1.5;
+        }
+    }
+
+    .exercises-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .exercise-card {
+        background: var(--wd-surface);
+        border-radius: 16px;
+        border: 1px solid #dbeafe;
+        border-left: 4px solid #3b82f6;
+        padding: 16px;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.07);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 26px rgba(15, 23, 42, 0.1);
+        }
+
+        .exercise-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+
+            h3 {
+                margin: 0;
+                color: var(--wd-text);
+                font-size: 31px;
+                letter-spacing: -0.02em;
+            }
+
+            .muscle-group-tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(14, 165, 233, 0.15);
+                border: 1px solid rgba(14, 165, 233, 0.35);
+                color: #0369a1;
+                border-radius: 999px;
+                padding: 6px 10px;
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: capitalize;
+                white-space: nowrap;
+            }
+        }
+
+        .exercise-tonnage {
+            margin: 10px 0 12px;
+            color: var(--wd-muted);
+            font-weight: 600;
+        }
+
+        .sets-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #fff;
+            margin: 0;
+        }
+
+    }
+
+    .sets-table {
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed;
+        border-collapse: separate;
+        border-spacing: 0;
+
+        th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #eff6ff;
+            color: #1e3a8a;
+            font-size: 12px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            border-bottom: 1px solid #dbeafe;
+        }
+
+        th + th,
+        td + td {
+            border-left: 1px solid #e2e8f0;
+        }
+
+        thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        tbody tr:hover {
+            background: #e0f2fe;
+        }
+    }
+
+    .sets-table th,
+    .sets-table td {
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 10px 12px;
+        color: #0f172a;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    .sets-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .sets-table td {
+        font-weight: 600;
+    }
+
+    @media (max-width: 1100px) {
+        padding: 25px;
+
+        .workout-header {
+            padding: 18px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 16px;
+        gap: 16px;
+
+        .back-btn {
+            font-size: 14px;
+            padding: 12px 14px;
+        }
+
+        .workout-header {
+            padding: 16px;
+
+            .workout-title-row h1 {
+                font-size: 29px;
+            }
+
+            .workout-header-cont.stats {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px;
+                padding: 10px;
+
+                .wk-hd-cont-stats {
+                    min-width: 0;
+                    padding-left: 8px;
+                    align-items: flex-start;
+                }
+
+                .wk-hd-cont-stats.two {
+                    align-items: flex-start;
+                }
+
+                .wk-hd-cont-stats:first-child {
+                    padding-left: 0;
+                }
+            }
+
+        }
+
+        .exercise-card {
+            padding: 14px;
+
+            .exercise-tonnage {
+                font-size: 17px;
+            }
+        }
+
+        .sets-table-wrap {
+            overflow-x: hidden;
+            margin: 0 auto;
+        }
+
+        .sets-table {
+            width: 100%;
+            min-width: 0;
+            table-layout: fixed;
+        }
+
+        .sets-table th,
+        .sets-table td {
+            text-align: center;
+            padding: 8px 6px;
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .workout-header {
+            .workout-title-row {
+                h1 {
+                    font-size: 22px;
+                }
+
+                .workout-badge {
+                    font-size: 12px;
+                    letter-spacing: 0.04em;
+                }
+            }
+
+            .workout-header-cont.stats {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px;
+                padding: 10px;
+
+                .wk-hd-cont-stats {
+                    min-width: 0;
+                    padding-left: 8px;
+                    align-items: flex-start;
+
+                    span:not(.label) {
+                        font-size: 14px;
+                    }
+
+                    .label {
+                        font-size: 12px;
+                    }
+                }
+
+                .wk-hd-cont-stats.two {
+                    align-items: flex-start;
+                }
+
+                .wk-hd-cont-stats:first-child {
+                    padding-left: 0;
+                }
+            }
+        }
+
+        .exercise-card {
+            .exercise-head {
+                h1 {
+                    font-size: 22px;
+                }
+            }
+
+            .exercise-tonnage {
+                font-size: 14px;
+            }
+        }
+
+
+        .sets-table th,
+        .sets-table td {
+            padding: 7px 15px;
+            font-size: 13px;
+        }
+    }
+}

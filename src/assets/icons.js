@@ -1,5 +1,5 @@
 //google icon, heart icon, balance scale icon
-export { FaGoogle, FaHeart, FaBalanceScale } from "react-icons/fa";
+export { FaGoogle, FaHeart, FaBalanceScale, FaPlus } from "react-icons/fa";
 
 //clock icon, trending up icon, trending down icon
 export { FaArrowTrendUp, FaArrowTrendDown, FaRegClock } from "react-icons/fa6";
@@ -20,10 +20,10 @@ export { IoMdPerson } from "react-icons/io";
 export { PiBarbellLight } from "react-icons/pi";
 
 // progression icon
-export { GiProgression } from "react-icons/gi";
+export { GiProgression, GiWeight } from "react-icons/gi";
 
 // calendar icon, repeat icon
-export { FiCalendar, FiRepeat } from "react-icons/fi";
+export { FiCalendar, FiRepeat, FiArrowLeft, FiClock, FiFileText, FiZap } from "react-icons/fi";
 
 // chevron down icon, chevron right icon
 export { BsChevronDown, BsChevronRight } from "react-icons/bs";
@@ -31,7 +31,7 @@ export { BsChevronDown, BsChevronRight } from "react-icons/bs";
 
 
 // heart icon outline
-export { CiHeart } from "react-icons/ci";
+export { CiHeart, CiCircleCheck } from "react-icons/ci";
 
 // fire icon
 export { RiFireLine } from "react-icons/ri";

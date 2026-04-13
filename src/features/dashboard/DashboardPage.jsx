@@ -7,13 +7,11 @@ import healthMetricsService from "../../services/healthMetricsService";
 import ActivityOverview from "./components/ActivityOverview/ActivityOverview";
 import GoalCard from "./components/GoalCard/GoalCard";
 import RecentWorkoutsCard from "./components/RecentWorkoutsCard";
+import useBodyClass from "../../hooks/useBodyClass";
 
 const DashboardPage = () => {
 
-    useEffect(() => {
-        document.body.classList.add('dashboard-body');
-        return () => document.body.classList.remove('dashboard-body');
-    }, []);
+    useBodyClass("dashboard-body");
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [metrics, setMetrics] = useState({ today: null, yesterday: null });

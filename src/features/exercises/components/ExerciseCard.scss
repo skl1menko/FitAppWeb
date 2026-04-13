@@ -1,0 +1,209 @@
+.exercise-card-cont {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+
+    .exercise-card-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 0;
+        position: relative;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        height: 100%;
+        background-color: #fff;
+        padding: 10px;
+        padding-top: 44px;
+
+        .exercise-img-cont {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            width: 100%;
+
+            .exercise-muscle-cont {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                z-index: 2;
+
+                .exercise-badge {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                    max-width: 160px;
+                        padding: 6px 12px;
+                        border-radius: 999px;
+                        border: 1px solid #c8d4f8;
+                        background: linear-gradient(135deg, #eef3ff 0%, #f8faff 100%);
+                        color: #2f466f;
+                        font-size: 12px;
+                        font-weight: 700;
+                        letter-spacing: 0.04em;
+                        text-transform: uppercase;
+                        box-shadow: 0 4px 12px rgba(47, 70, 111, 0.12);
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                
+                        &.badge-chest {
+                            border-color: #f8c6a6;
+                            background: linear-gradient(135deg, #fff2e9 0%, #ffe7d8 100%);
+                            color: #a44a1f;
+                        }
+                
+                        &.badge-back {
+                            border-color: #b9d6ff;
+                            background: linear-gradient(135deg, #eaf3ff 0%, #ddebff 100%);
+                            color: #22538f;
+                        }
+                
+                        &.badge-shoulders {
+                            border-color: #d0c0ff;
+                            background: linear-gradient(135deg, #f3eeff 0%, #e9e1ff 100%);
+                            color: #5a3da0;
+                        }
+                
+                        &.badge-arms {
+                            border-color: #f7b9df;
+                            background: linear-gradient(135deg, #ffeff8 0%, #ffe2f3 100%);
+                            color: #9b2f6f;
+                        }
+                
+                        &.badge-legs {
+                            border-color: #aee7ca;
+                            background: linear-gradient(135deg, #e9faef 0%, #ddf6e8 100%);
+                            color: #1f7a4d;
+                        }
+                
+                        &.badge-core {
+                            border-color: #f4d7a4;
+                            background: linear-gradient(135deg, #fff8e9 0%, #fff0d5 100%);
+                            color: #92610b;
+                        }
+                
+                        &.badge-cardio {
+                            border-color: #f8b3b3;
+                            background: linear-gradient(135deg, #ffeded 0%, #ffe1e1 100%);
+                            color: #a12b2b;
+                        }
+                
+                        &.badge-general {
+                            border-color: #cfd6e8;
+                            background: linear-gradient(135deg, #f4f6fb 0%, #e9edf6 100%);
+                            color: #3d4b68;
+                        }
+                    }
+            }
+
+            
+
+            .exercise-img {
+                width: 100%;
+                max-width: 235px;
+                aspect-ratio: 1 / 1;
+                height: auto;
+                overflow: hidden;
+                border-radius: 10px;
+                margin: 0 auto;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                }
+            }
+
+
+        }
+
+        .exercise-name-cont {
+            width: 100%;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #eceff5;
+           
+
+            h1 {
+                font-size: 16px;
+                line-height: 1.35;
+                margin: 0;
+                text-align: center;
+            }
+        }
+    }
+
+}
+
+@media (max-width: 1024px) {
+    .exercise-card-cont {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .exercise-card-cont {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+
+        .exercise-card-content {
+            padding: 6px;
+            padding-top: 30px;
+            border-radius: 10px;
+
+            .exercise-img-cont {
+                gap: 6px;
+
+                .exercise-muscle-cont {
+                    top: 6px;
+                    right: 6px;
+
+                    .exercise-badge {
+                        max-width: 72px;
+                        font-size: 9px;
+                        padding: 3px 6px;
+                    }
+                }
+
+                .exercise-img {
+                    width: 100%;
+                    max-width: 100%;
+                    border-radius: 8px;
+                }
+            }
+
+            .exercise-name-cont {
+                margin-top: 6px;
+                padding-top: 6px;
+
+                h1 {
+                    font-size: 11px;
+                    line-height: 1.2;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 420px) {
+    .exercise-card-cont {
+        .exercise-card-content {
+            .exercise-img-cont {
+                .exercise-muscle-cont {
+                    .exercise-badge {
+                        max-width: 60px;
+                        font-size: 8px;
+                    }
+                }
+            }
+
+            .exercise-name-cont {
+                h1 {
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+}

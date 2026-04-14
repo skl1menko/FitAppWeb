@@ -13,11 +13,22 @@ const getMuscleGroupClass = (muscleGroup) => {
     return "badge-general";
 };
 
-const ExerciseCard = ({ exercises = [] }) => {
+const ExerciseCard = ({ exercises = [], showDelete = false, onDelete }) => {
     return (
         <div className="exercise-card-cont">
             {exercises.map((exercise) => (
-                <div className="exercise-card-content" key={exercise?._id || exercise?.id || exercise?.exerciseName}>
+                <div className="exercise-card-content" key={exercise?.exerciseId || exercise?._id || exercise?.id || exercise?.exerciseName}>
+                    {showDelete ? (
+                        <button
+                            type="button"
+                            className="exercise-delete-btn"
+                            onClick={() => onDelete?.(exercise)}
+                            aria-label={`Delete ${exercise?.exerciseName || "exercise"}`}
+                            title="Delete custom exercise"
+                        >
+                            x
+                        </button>
+                    ) : null}
                     <div className="exercise-img-cont">
                         <div className="exercise-muscle-cont">
                             <span className={`exercise-badge ${getMuscleGroupClass(exercise?.muscleGroup)}`}>

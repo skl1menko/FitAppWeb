@@ -16,6 +16,19 @@ const MuscleSort = ({ groups = [], selectedGroup = "all", onChange }) => {
                 </button>
                 <span className="muscle-sort-group">All</span>
             </div>
+            <div className="muscle-sort-item">
+                <button
+                    type="button"
+                    className={`muscle-sort-button ${selectedGroup === "custom" ? "active" : ""}`}
+                    onClick={() => onChange?.("custom")}
+                    aria-label="Custom"
+                >
+                    <div className="muscle-sort-icon-wrap">
+                        <span className="muscle-sort-fallback">CUSTOM</span>
+                    </div>
+                </button>
+                <span className="muscle-sort-group">Custom</span>
+            </div>
 
             {groups.map((group) => (
                 <div className="muscle-sort-item" key={group.value}>

@@ -16,6 +16,32 @@
         padding: 10px;
         padding-top: 44px;
 
+        .exercise-delete-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 3;
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 999px;
+            background: #fce7e7;
+            color: #9f1f1f;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s ease, background-color 0.15s ease;
+
+            &:hover {
+                background: #f9d0d0;
+                transform: scale(1.05);
+            }
+        }
+
         .exercise-img-cont {
             display: flex;
             flex-direction: column;
@@ -152,6 +178,14 @@
             padding: 6px;
             padding-top: 30px;
             border-radius: 10px;
+
+            .exercise-delete-btn {
+                top: 6px;
+                left: 6px;
+                width: 18px;
+                height: 18px;
+                font-size: 11px;
+            }
 
             .exercise-img-cont {
                 gap: 6px;

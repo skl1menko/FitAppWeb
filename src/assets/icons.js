@@ -23,7 +23,7 @@ export { PiBarbellLight } from "react-icons/pi";
 export { GiProgression, GiWeight } from "react-icons/gi";
 
 // calendar icon, repeat icon
-export { FiCalendar, FiRepeat, FiArrowLeft, FiClock, FiFileText, FiZap } from "react-icons/fi";
+export { FiCalendar, FiRepeat, FiArrowLeft, FiClock, FiFileText, FiZap, FiCamera } from "react-icons/fi";
 
 // chevron down icon, chevron right icon
 export { BsChevronDown, BsChevronRight } from "react-icons/bs";

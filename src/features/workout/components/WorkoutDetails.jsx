@@ -10,7 +10,8 @@ import {
 import { FaDumbbell } from "react-icons/fa";
 import workoutService from "../../../services/WorkoutServices/workoutService";
 import "./WorkoutDetails.scss";
-
+import CustomBtn from "../../../components/CustomBtn";
+import useBodyClass from "../../../hooks/useBodyClass";
 
 const fmtDuration = (startValue, endValue) => {
     if (!startValue || !endValue) return "-";
@@ -35,6 +36,8 @@ const WorkoutDetails = () => {
 
     const [workout, setWorkout] = useState(null);
 
+    useBodyClass("workout-page-body");
+
     useEffect(() => {
         let active = true;
 
@@ -56,17 +59,12 @@ const WorkoutDetails = () => {
         };
     }, [workoutId]);
 
-    useEffect(() => {
-        document.body.classList.add('workout-page-body');
-        return () => document.body.classList.remove('workout-page-body');
-    }, [])
-
     return (
         <div className="workout-details-page">
-            <button className="back-btn" onClick={() => navigate("/workouts")}>
-                <FiArrowLeft size={20} aria-hidden="true" />
-                Back to workouts
-            </button>
+            <div className="back-workout-cont">
+
+                <CustomBtn icon={<FiArrowLeft />} text="Back to workouts" onClick={() => navigate("/workouts")} />
+            </div>
 
             {workout ? (
                 <>

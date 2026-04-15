@@ -1,21 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaPlus } from "../../assets/icons";
 import "./WorkoutPage.scss";
 import WorkoutsListCard from "./components/WorkoutsListCard.jsx";
-
+import CustomBtn from "../../components/CustomBtn.jsx";
+import useBodyClass from "../../hooks/useBodyClass";
 const WorkoutPage = () => {
 
-
-    useEffect(() =>{
-        document.body.classList.add('workout-page-body');
-        return () => document.body.classList.remove('workout-page-body');
-    }, [])
+    useBodyClass("workout-page-body");
 
     return(
         <div className="workout-page-cont">
             <div className="workout-page-content">
                 <div className="create-workout-cont">
-                    <button className="create-workout-btn"> <FaPlus/>Create New Workout</button>
+                    <CustomBtn icon={<FaPlus />} text="Create New Workout" />
                 </div>
                 <div className="workout-list-cont">
                     <div className="workouts-card-header">

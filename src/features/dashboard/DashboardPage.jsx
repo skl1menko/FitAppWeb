@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import "./DashboardPage.scss"
 import DashboardStat from "./components/DashboardStat"
-import DatePickerCustom from "../../components/DatePickerCustom"
+import DatePickerCustom from "../../components/DatePickerCustom";
 import { IoFootstepsOutline, RiFireLine, FaRegClock, CiHeart } from "../../assets/icons";
 import healthMetricsService from "../../services/healthMetricsService";
 import ActivityOverview from "./components/ActivityOverview/ActivityOverview";
 import GoalCard from "./components/GoalCard/GoalCard";
+import WorkoutCalendarCard from "./components/WorkoutCalendarCard/WorkoutCalendarCard";
 import RecentWorkoutsCard from "./components/RecentWorkoutsCard";
 import useBodyClass from "../../hooks/useBodyClass";
 
@@ -71,16 +72,16 @@ const DashboardPage = () => {
                         <RecentWorkoutsCard />
                     </div>
                     <div className="dashboard-goals-cont">
-                    <GoalCard
-                        steps={t?.totalStepCount || 0}
-                        calories={t?.totalEnergyBurned || 0}
-                        activeMin={12}
-                    />
+                        <GoalCard
+                            steps={t?.totalStepCount || 0}
+                            calories={t?.totalEnergyBurned || 0}
+                            activeMin={12}
+                        />
+                        <WorkoutCalendarCard
+                        />
                     </div>
                 </div>
-                
             </div>
-
         </div>
     )
 }

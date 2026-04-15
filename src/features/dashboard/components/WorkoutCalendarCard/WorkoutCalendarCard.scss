@@ -1,0 +1,186 @@
+.workout-calendar-card {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    border-radius: 16px;
+    width: 100%;
+
+    .MuiDateCalendar-root {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .MuiPickersCalendarHeader-root,
+    .MuiPickersFadeTransitionGroup-root,
+    .MuiDayCalendar-monthContainer,
+    .MuiDayCalendar-header,
+    .MuiDayCalendar-weekContainer {
+        width: 100%;
+    }
+
+    .MuiDayCalendar-header,
+    .MuiDayCalendar-weekContainer {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        place-items: center;
+        margin: 0;
+        padding: 0 !important;
+    }
+
+    .MuiDayCalendar-weekDayLabel {
+        width: 100%;
+        min-width: 0 !important;
+        max-width: none;
+        margin: 0 !important;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .MuiDayCalendar-weekContainer .MuiPickersDay-root {
+        margin: 0 !important;
+        justify-self: center;
+    }
+
+    .MuiMonthCalendar-root {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .MuiMonthCalendar-button {
+        width: 100%;
+        min-width: 0;
+        margin: 0 !important;
+        min-height: 32px;
+    }
+
+    .has-workout-day {
+        position: relative;
+    }
+
+    .has-workout-day::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: calc(100% - 6px);
+        transform: translateX(-50%);
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background-color: #10b981;
+        pointer-events: none;
+    }
+
+    @media (max-width: 640px) {
+        .MuiDateCalendar-root {
+            padding: 6px;
+        }
+
+        .has-workout-day::after {
+            top: calc(100% - 4px);
+            width: 6px;
+            height: 6px;
+        }
+
+        .MuiPickersDay-root {
+            width: min(100%, 42px);
+            height: auto;
+            aspect-ratio: 1 / 1;
+        }
+
+        .MuiMonthCalendar-root {
+            gap: 10px;
+            margin-top: 12px;
+        }
+    }
+
+
+}
+
+.workout-day-popover-paper {
+    border-radius: 14px !important;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.16), 0 2px 8px rgba(15, 23, 42, 0.06) !important;
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+    overflow: hidden;
+}
+
+.workout-day-popover {
+    min-width: 230px;
+    max-width: 300px;
+    padding: 10px;
+}
+
+.workout-day-popover__title {
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid #dbeafe;
+    background: #eff6ff;
+    font-size: 0.84rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #1d4ed8;
+}
+
+.workout-day-popover__item {
+    margin-top: 8px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.workout-day-popover__item:hover {
+    border-color: #c7d2fe;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+.workout-day-popover__item:last-child {
+    margin-bottom: 0;
+}
+
+.workout-day-popover__name {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.25;
+}
+
+.workout-day-popover__meta {
+    margin: 5px 0 0;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #64748b;
+}
+
+@media (max-width: 640px) {
+    .workout-day-popover {
+        min-width: 200px;
+        max-width: 240px;
+    }
+
+    .workout-day-popover__title {
+        font-size: 0.78rem;
+    }
+
+    .workout-day-popover__name {
+        font-size: 0.86rem;
+    }
+
+    .workout-day-popover__meta {
+        font-size: 0.75rem;
+    }
+}

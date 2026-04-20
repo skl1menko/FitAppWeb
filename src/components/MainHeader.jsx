@@ -6,6 +6,8 @@ import { NavLink, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import authService from '../services/authService';
 
+const TIMER_START_AT_KEY = 'workoutSessionStartAt';
+const WORKOUT_STATUS_CHANGED_EVENT = 'workoutSessionStatusChanged';
 
 
 
@@ -16,6 +18,12 @@ const MainHeader = () => {
     const [userName, setUserName] = useState('');
     const [userRole, setUserRole] = useState('');
     const [isBurgerOpen, setIsBurgerOpen] = useState(false);
+    const [isWorkoutsDropdownOpen, setIsWorkoutsDropdownOpen] = useState(false);
+    const [isWorkoutsDropdownLocked, setIsWorkoutsDropdownLocked] = useState(false);
+    const [isWorkoutActive, setIsWorkoutActive] = useState(() => {
+        const startAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
+        return Number.isFinite(startAt) && startAt > 0;
+    });
     const navigate = useNavigate();
 
     useEffect(() =>{
@@ -27,6 +35,32 @@ const MainHeader = () => {
             setUserRole(user.role);
         }
     },[]);
+
+    useEffect(() => {
+        const syncWorkoutStatus = () => {
+            const startAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
+            setIsWorkoutActive(Number.isFinite(startAt) && startAt > 0);
+        };
+
+        const onStorage = (event) => {
+            if (!event.key || event.key === TIMER_START_AT_KEY) {
+                syncWorkoutStatus();
+            }
+        };
+
+        syncWorkoutStatus();
+        window.addEventListener('storage', onStorage);
+        window.addEventListener('focus', syncWorkoutStatus);
+        document.addEventListener('visibilitychange', syncWorkoutStatus);
+        window.addEventListener(WORKOUT_STATUS_CHANGED_EVENT, syncWorkoutStatus);
+
+        return () => {
+            window.removeEventListener('storage', onStorage);
+            window.removeEventListener('focus', syncWorkoutStatus);
+            document.removeEventListener('visibilitychange', syncWorkoutStatus);
+            window.removeEventListener(WORKOUT_STATUS_CHANGED_EVENT, syncWorkoutStatus);
+        };
+    }, []);
     
     const toggleMenu = () => {
         if (isMenuOpen) {
@@ -43,6 +77,22 @@ const MainHeader = () => {
     const toggleBurger = () => {
         setIsBurgerOpen(prev => !prev);
     }
+
+    const openWorkoutsDropdown = () => {
+        if (!isWorkoutsDropdownLocked) {
+            setIsWorkoutsDropdownOpen(true);
+        }
+    };
+
+    const closeWorkoutsDropdown = () => {
+        setIsWorkoutsDropdownOpen(false);
+        setIsWorkoutsDropdownLocked(false);
+    };
+
+    const handleActiveWorkoutClick = () => {
+        setIsWorkoutsDropdownOpen(false);
+        setIsWorkoutsDropdownLocked(true);
+    };
 
     const handleLogout = (e) => {
         e.preventDefault();
@@ -66,9 +116,26 @@ const MainHeader = () => {
                 <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'active' : ''}>
                     <LuLayoutDashboard className="main-header-icon"/> Dashboard
                 </NavLink>
-                <NavLink to="/workouts" className={({ isActive }) => isActive ? 'active' : ''}>
-                    <PiBarbellLight className="main-header-icon"/> Workouts
-                </NavLink>
+                <div
+                    className={`workouts-dropdown ${isWorkoutsDropdownOpen ? 'open' : ''}`}
+                    onMouseEnter={openWorkoutsDropdown}
+                    onMouseLeave={closeWorkoutsDropdown}
+                    onFocus={openWorkoutsDropdown}
+                    onBlur={closeWorkoutsDropdown}
+                >
+                    <NavLink to="/workouts" className={({ isActive }) => isActive ? 'active workouts-nav-link' : 'workouts-nav-link'}>
+                        <PiBarbellLight className="main-header-icon"/>
+                        Workouts
+                        {isWorkoutActive && <span className="workout-live-dot" aria-label="Workout in progress" />}
+                    </NavLink>
+                    {isWorkoutActive && (
+                        <div className="workouts-dropdown-menu">
+                            <NavLink to="/workout/session" className="workouts-dropdown-link" onClick={handleActiveWorkoutClick}>
+                                Аctive workout
+                            </NavLink>
+                        </div>
+                    )}
+                </div>
                 <NavLink to="/exercises" className={({ isActive }) => isActive ? 'active' : ''}>
                     <MdSportsGymnastics className="main-header-icon"/> Exercises
                 </NavLink>
@@ -101,8 +168,15 @@ const MainHeader = () => {
                         <LuLayoutDashboard className="main-header-icon"/> Dashboard
                     </NavLink>
                     <NavLink to="/workouts" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
-                        <PiBarbellLight className="main-header-icon"/> Workouts
+                        <PiBarbellLight className="main-header-icon"/>
+                        Workouts
+                        {isWorkoutActive && <span className="workout-live-dot" aria-label="Workout in progress" />}
                     </NavLink>
+                    {isWorkoutActive && (
+                        <NavLink to="/workout/session" onClick={() => setIsBurgerOpen(false)} className="workouts-active-link">
+                            Аctive workout
+                        </NavLink>
+                    )}
                     <NavLink to="/exercises" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
                         <MdSportsGymnastics className="main-header-icon"/> Exercises
                     </NavLink>

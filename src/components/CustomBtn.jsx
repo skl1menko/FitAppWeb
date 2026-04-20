@@ -1,7 +1,9 @@
 import "./CustomBtn.scss"
-const CustomBtn = ({icon, text, onClick}) => {
+const CustomBtn = ({icon, text, onClick, className = ""}) => {
+    const buttonClassName = ["custom-btn", className].filter(Boolean).join(" ");
+
     return(
-        <button className="custom-btn" onClick={onClick}>
+        <button className={buttonClassName} onClick={onClick}>
             {icon}
             {text}
         </button>

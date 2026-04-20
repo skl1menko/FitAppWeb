@@ -6,8 +6,16 @@ import "./WorkoutsListCard.scss"
 
 const getDuration = (start, end) => {
     if (!start || !end) return null;
-    const mins = Math.round((new Date(end) - new Date(start)) / 60000);
-    return mins > 0 ? mins : null;
+    const time = Math.round((new Date(end) - new Date(start)) / 60000);
+    if (time <= 0) return null;
+
+
+    const hours = Math.floor(time / 60);
+    const minutes = time % 60;
+
+    if (hours === 0) return `${minutes} min`;
+    if (minutes === 0) return `${hours} h`;
+    return `${hours} h ${minutes} min`;
 };
 
 
@@ -44,7 +52,7 @@ const WorkoutsListCard = () => {
                                 </span>
                                 <span className="workout-stat">
                                     <FaRegClock size={14} className="clock-icon" />
-                                    {getDuration(workout.startTime, workout.endTime) ? `${getDuration(workout.startTime, workout.endTime)} min` : '0 min'}
+                                    {getDuration(workout.startTime, workout.endTime) || '0 min'}
                                 </span>
                                 <span className="workout-stat">
                                     {workout.exerciseCount} exercises

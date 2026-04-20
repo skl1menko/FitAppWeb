@@ -1,0 +1,103 @@
+.cancel-workout-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+
+    .cancel-workout-backdrop {
+        position: absolute;
+        inset: 0;
+        border: none;
+        background: rgba(17, 24, 39, 0.56);
+        backdrop-filter: blur(2px);
+        cursor: pointer;
+    }
+
+    .cancel-workout-modal-card {
+        position: relative;
+        width: min(440px, 100%);
+        border: 1px solid #fecaca;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 18px 44px rgba(15, 23, 42, 0.25);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        z-index: 1;
+
+        h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #991b1b;
+        }
+
+        p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #475569;
+        }
+
+        .cancel-workout-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 4px;
+
+            button {
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 600;
+                padding: 10px 14px;
+                cursor: pointer;
+            }
+
+            .cancel-workout-no-btn {
+                border: 1px solid #cbd5e1;
+                background: #ffffff;
+                color: #334155;
+            }
+
+            .cancel-workout-yes-btn {
+                border: 1px solid #dc2626;
+                background: #dc2626;
+                color: #ffffff;
+            }
+
+            .cancel-workout-yes-btn:hover {
+                background: #b91c1c;
+                border-color: #b91c1c;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .cancel-workout-modal {
+        padding: 12px;
+
+        .cancel-workout-modal-card {
+            border-radius: 14px;
+            padding: 16px;
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .cancel-workout-actions {
+                width: 100%;
+                flex-direction: column;
+
+                button {
+                    width: 100%;
+                    padding: 10px 8px;
+                }
+            }
+        }
+    }
+}

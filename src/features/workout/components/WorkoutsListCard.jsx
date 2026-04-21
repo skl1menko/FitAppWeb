@@ -1,5 +1,5 @@
 import workoutService from "../../../services/WorkoutServices/workoutService"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 import { PiBarbellLight, CiCircleCheck, FiCalendar, FaRegClock, GiWeight, RiFireLine } from "../../../assets/icons"
 import "./WorkoutsListCard.scss"
@@ -32,10 +32,43 @@ const WorkoutsListCard = () => {
         })
     }, [])
 
+    const orderedWorkouts = useMemo(() => {
+        const active = [];
+        const completed = [];
+
+        workouts.forEach((workout) => {
+            const isActiveWorkout = !workout?.endTime && !workout?.end_time;
+            if (isActiveWorkout) {
+                active.push(workout);
+                return;
+            }
+
+            completed.push(workout);
+        });
+
+        return [...active, ...completed];
+    }, [workouts]);
+
     return (
         <>
-            {workouts.map((workout) => (
-                <div key={workout.workoutId} className="workout-cont" onClick={() => navigate(`/workout/${workout.workoutId}`)}>
+            {orderedWorkouts.map((workout) => {
+                const isActiveWorkout = !workout?.endTime && !workout?.end_time;
+                const onWorkoutClick = () => {
+                    if (isActiveWorkout) {
+                        localStorage.setItem("activeWorkoutId", String(workout.workoutId));
+                        navigate("/workout/session");
+                        return;
+                    }
+
+                    navigate(`/workout/${workout.workoutId}`);
+                };
+
+                return (
+                <div
+                    key={workout.workoutId}
+                    className={`workout-cont ${isActiveWorkout ? "active-workout" : ""}`}
+                    onClick={onWorkoutClick}
+                >
                     <div className="workout-left-cont">
                         <div className="workout-icon-cont">
                             <PiBarbellLight size={24} color="#3B82F6" />
@@ -43,7 +76,9 @@ const WorkoutsListCard = () => {
                         <div className="workout-info-cont">
                             <div className="workout-label">
                                 <span>{workout.workoutName}</span>
-                                <CiCircleCheck size={18} color="#10B981" className="completed-icon" />
+                                {!isActiveWorkout ? (
+                                    <CiCircleCheck size={18} color="#10B981" className="completed-icon" />
+                                ) : null}
                             </div>
                             <div className="workout-stat-cont">
                                 <span className="workout-stat">
@@ -71,7 +106,7 @@ const WorkoutsListCard = () => {
                         </span>
                     </div>
                 </div>
-            ))}
+            )})}
         </>
     )
 }

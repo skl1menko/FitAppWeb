@@ -21,7 +21,7 @@ const WorkoutPage = () => {
                 try {
                     const existing = await workoutService.getById(savedId);
                     const workout = existing?.data?.data;
-                    if (workout && !workout.endTime) {
+                    if (workout && !workout.endTime && !workout.end_time) {
                         alert("You have an active workout session. Please finish or cancel it before starting a new one.");
                         navigate("/workout/session");
                         return;
@@ -33,7 +33,7 @@ const WorkoutPage = () => {
             }
 
             const allResponse = await workoutService.getAll();
-            const activeWorkout = (allResponse?.data?.data || []).find((w)=> !w.endTime);
+            const activeWorkout = (allResponse?.data?.data || []).find((w)=> !w.endTime && !w.end_time);
             if (activeWorkout?.workoutId) {
                 localStorage.setItem(ACTIVE_WORKOUT_ID_KEY, String(activeWorkout.workoutId));
                 alert("You have an active workout session. Please finish or cancel it before starting a new one.");

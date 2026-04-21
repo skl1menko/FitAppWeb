@@ -15,6 +15,20 @@
         background-color: #E5E7EB;
     }
 
+    &.active-workout {
+        border-color: #34d399;
+        background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%);
+        box-shadow: 0 6px 14px rgba(16, 185, 129, 0.18);
+
+        &:hover {
+            background: linear-gradient(180deg, #dcfce7 0%, #d1fae5 100%);
+        }
+
+        .workout-icon-cont {
+            background-color: rgba($color: #10B981, $alpha: 0.16);
+        }
+    }
+
     .workout-left-cont {
         display: flex;
         flex: 1;

@@ -5,9 +5,11 @@ import { LuLayoutDashboard, LuMenu, LuX, PiBarbellLight, MdSportsGymnastics, GiP
 import { NavLink, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import authService from '../services/authService';
+import workoutService from '../services/WorkoutServices/workoutService';
 
 const TIMER_START_AT_KEY = 'workoutSessionStartAt';
 const WORKOUT_STATUS_CHANGED_EVENT = 'workoutSessionStatusChanged';
+const ACTIVE_WORKOUT_ID_KEY = 'activeWorkoutId';
 
 
 
@@ -37,13 +39,36 @@ const MainHeader = () => {
     },[]);
 
     useEffect(() => {
-        const syncWorkoutStatus = () => {
+        let isMounted = true;
+
+        const syncWorkoutStatus = async () => {
             const startAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
-            setIsWorkoutActive(Number.isFinite(startAt) && startAt > 0);
+            const localActive = Number.isFinite(startAt) && startAt > 0;
+
+            try {
+                const response = await workoutService.getAll();
+                const workouts = response?.data?.data || [];
+                const activeWorkout = workouts.find((workout) => !workout.endTime && !workout.end_time);
+                const hasServerActiveWorkout = Boolean(activeWorkout?.workoutId);
+
+                if (hasServerActiveWorkout) {
+                    localStorage.setItem(ACTIVE_WORKOUT_ID_KEY, String(activeWorkout.workoutId));
+                } else if (!localActive) {
+                    localStorage.removeItem(ACTIVE_WORKOUT_ID_KEY);
+                }
+
+                if (isMounted) {
+                    setIsWorkoutActive(localActive || hasServerActiveWorkout);
+                }
+            } catch {
+                if (isMounted) {
+                    setIsWorkoutActive(localActive);
+                }
+            }
         };
 
         const onStorage = (event) => {
-            if (!event.key || event.key === TIMER_START_AT_KEY) {
+            if (!event.key || event.key === TIMER_START_AT_KEY || event.key === ACTIVE_WORKOUT_ID_KEY) {
                 syncWorkoutStatus();
             }
         };
@@ -55,6 +80,7 @@ const MainHeader = () => {
         window.addEventListener(WORKOUT_STATUS_CHANGED_EVENT, syncWorkoutStatus);
 
         return () => {
+            isMounted = false;
             window.removeEventListener('storage', onStorage);
             window.removeEventListener('focus', syncWorkoutStatus);
             document.removeEventListener('visibilitychange', syncWorkoutStatus);

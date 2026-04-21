@@ -2,17 +2,22 @@ import "./WorkoutSessionPage.scss";
 import useBodyClass from "../../hooks/useBodyClass";
 import { FaRegClock, GiWeight, FaPlus } from "../../assets/icons";
 import Timer from "./components/Timer";
-import FinishWorkoutModal from "./components/FinishWorkoutModal";
-import CancelWorkoutConfirmModal from "./components/CancelWorkoutConfirmModal";
+import FinishWorkoutModal from "./components/modals/FinishWorkoutModal";
+import CancelWorkoutConfirmModal from "./components/modals/CancelWorkoutConfirmModal";
 import CustomBtn from "../../components/CustomBtn";
 import useWorkoutSession from "./hooks/useWorkoutSession";
 import { formatDuration } from "./utils/sessionTime";
-
+import AddExerciseModal from "./components/modals/AddExerciseModal";
+import { MUSCLE_GROUPS } from "../exercises/constants/muscleGroups";
+import ExerciseCard from "./components/ExerciseCard";
 const WorkoutSessionPage = () => {
     const {
         isSessionReady,
         isFinishModalOpen,
         isCancelConfirmOpen,
+        isAddExerciseModalOpen,
+        timerStartAt,
+        workoutExercises,
         workoutName,
         workoutNameError,
         summaryStats,
@@ -20,9 +25,12 @@ const WorkoutSessionPage = () => {
         closeFinishModal,
         openCancelConfirmModal,
         closeCancelConfirmModal,
+        openAddExerciseModal,
+        closeAddExerciseModal,
         handleWorkoutNameChange,
         confirmFinishWorkout,
-        cancelWorkout
+        cancelWorkout,
+        confirmAddExercise
     } = useWorkoutSession();
 
     useBodyClass("workout-session-page-body");
@@ -41,7 +49,7 @@ const WorkoutSessionPage = () => {
                         </div>
                         <div className="info-cont timer">
                             <span className="info-label timer">TIME</span>
-                            {isSessionReady && <Timer  />}
+                            {isSessionReady && <Timer startAt={timerStartAt} />}
                         </div>
                     </div>
                     <div className="info-block">
@@ -55,14 +63,20 @@ const WorkoutSessionPage = () => {
                     </div>
                 </div>
                 <div className="exercise-cont">
-                    <div className="add-exercise">
-                        <CustomBtn icon={<FaPlus />} text="Add exercise" onClick={() => { }} className="add-exercise-btn"/>
-                    </div>
                     <div className="exercise-list">
-
+                        <ExerciseCard />
+                    </div>
+                    <div className="add-exercise">
+                        <CustomBtn icon={<FaPlus />} text="Add exercise" onClick={openAddExerciseModal} className="add-exercise-btn"/>
                     </div>
                 </div>
             </div>
+            <AddExerciseModal
+                isOpen={isAddExerciseModalOpen}
+                onClose={closeAddExerciseModal}
+                onConfirm={confirmAddExercise}
+                muscleGroups={MUSCLE_GROUPS}
+            />
             <FinishWorkoutModal
                 isOpen={isFinishModalOpen}
                 workoutName={workoutName}

@@ -3,8 +3,14 @@ import { useEffect, useMemo, useState } from "react";
 const TIMER_START_AT_KEY = "workoutSessionStartAt";
 const WORKOUT_STATUS_CHANGED_EVENT = "workoutSessionStatusChanged";
 
-function Timer() {
-    const [startAt] = useState(() => {
+function Timer({ startAt: externalStartAt = null }) {
+    const [startAt, setStartAt] = useState(() => {
+        const fromProp = Number(externalStartAt);
+        if (Number.isFinite(fromProp) && fromProp > 0) {
+            localStorage.setItem(TIMER_START_AT_KEY, String(fromProp));
+            return fromProp;
+        }
+
         const savedStartAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
 
         if (Number.isFinite(savedStartAt) && savedStartAt > 0) {
@@ -17,6 +23,16 @@ function Timer() {
         return startedNow;
     });
     const [now, setNow] = useState(() => Date.now());
+
+    useEffect(() => {
+        const fromProp = Number(externalStartAt);
+        if (!Number.isFinite(fromProp) || fromProp <= 0) {
+            return;
+        }
+
+        setStartAt(fromProp);
+        localStorage.setItem(TIMER_START_AT_KEY, String(fromProp));
+    }, [externalStartAt]);
 
     useEffect(() => {
         const tick = () => setNow(Date.now());

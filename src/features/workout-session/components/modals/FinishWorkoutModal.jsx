@@ -1,4 +1,4 @@
-import CustomBtn from "../../../components/CustomBtn";
+import CustomBtn from "../../../../components/CustomBtn";
 import "./FinishWorkoutModal.scss";
 
 const FinishWorkoutModal = ({
@@ -50,7 +50,7 @@ const FinishWorkoutModal = ({
                 </div>
                 <div className="finish-workout-actions">
                     <button className="cancel-finish-btn" onClick={onClose}>Cancel</button>
-                    <CustomBtn text="Save" onClick={onSave} />
+                    <CustomBtn text="Save" onClick={onSave} className="save-finish-btn" />
                 </div>
             </div>
         </div>

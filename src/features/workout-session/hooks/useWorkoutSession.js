@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import workoutService from "../../../services/WorkoutServices/workoutService";
+import workoutExerciseService from "../../../services/WorkoutServices/workoutExerciseService";
 import {
     ACTIVE_WORKOUT_ID_KEY,
     TIMER_START_AT_KEY,
@@ -23,6 +24,11 @@ const useWorkoutSession = () => {
     });
     const [workoutName, setWorkoutName] = useState("");
     const [workoutNameError, setWorkoutNameError] = useState("");
+    const [workoutExercises, setWorkoutExercises] = useState([]);
+    const [timerStartAt, setTimerStartAt] = useState(() => {
+        const savedStartAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
+        return Number.isFinite(savedStartAt) && savedStartAt > 0 ? savedStartAt : null;
+    });
     const [summaryStats, setSummaryStats] = useState({
         timeSeconds: 0,
         tonnage: 0,
@@ -32,17 +38,30 @@ const useWorkoutSession = () => {
     // Loads workout aggregates (sets/tonnage) and prefills workout name.
     const loadWorkoutSummary = async (workoutId) => {
         if (!workoutId) {
-            return;
+            return null;
         }
 
         try {
             const detailResponse = await workoutService.getById(workoutId);
             const workout = detailResponse?.data?.data;
             if (!workout) {
-                return;
+                return null;
             }
 
-            const setsCount = (workout.exercisesWithSets || []).reduce((acc, exercise) => {
+            const serverStartAt = Date.parse(workout.startTime || workout.start_time || "");
+            if (Number.isFinite(serverStartAt) && serverStartAt > 0) {
+                setTimerStartAt(serverStartAt);
+                localStorage.setItem(TIMER_START_AT_KEY, String(serverStartAt));
+                window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
+            }
+
+            const exercisesWithSets = Array.isArray(workout.exercisesWithSets)
+                ? workout.exercisesWithSets
+                : [];
+
+            setWorkoutExercises(exercisesWithSets);
+
+            const setsCount = exercisesWithSets.reduce((acc, exercise) => {
                 return acc + (exercise?.sets?.length || 0);
             }, 0);
 
@@ -54,24 +73,36 @@ const useWorkoutSession = () => {
                 setsCount
             }));
             setWorkoutName((prev) => prev || workout.workoutName || "");
+            return workout;
         } catch (error) {
             console.error("Failed to load workout summary:", error?.response?.data || error);
+            return null;
         }
     };
 
     // Resolves the currently active workout from state or API and syncs localStorage.
     const syncActiveWorkout = async () => {
         if (activeWorkoutId) {
-            await loadWorkoutSummary(activeWorkoutId);
-            return;
+            const workout = await loadWorkoutSummary(activeWorkoutId);
+            if (workout) {
+                return;
+            }
+
+            // Stale local id (e.g. from another device/session): clear and resolve from API list.
+            setActiveWorkoutId(null);
+            localStorage.removeItem(ACTIVE_WORKOUT_ID_KEY);
         }
 
         try {
             const workoutsResponse = await workoutService.getAll();
             const workouts = workoutsResponse?.data?.data || [];
-            const activeWorkout = workouts.find((workout) => !workout.endTime);
+            const activeWorkout = workouts.find((workout) => !workout.endTime && !workout.end_time);
 
             if (!activeWorkout?.workoutId) {
+                setWorkoutExercises([]);
+                setTimerStartAt(null);
+                localStorage.removeItem(TIMER_START_AT_KEY);
+                window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
                 return;
             }
 
@@ -90,6 +121,8 @@ const useWorkoutSession = () => {
             ...prev,
             timeSeconds: getElapsedSeconds()
         }));
+        setIsCancelConfirmOpen(false);
+        setIsAddExerciseModalOpen(false);
         setIsFinishModalOpen(true);
     };
 
@@ -102,6 +135,7 @@ const useWorkoutSession = () => {
     // Switches from finish modal to cancel confirmation modal.
     const openCancelConfirmModal = () => {
         setIsFinishModalOpen(false);
+        setIsAddExerciseModalOpen(false);
         setIsCancelConfirmOpen(true);
     };
 
@@ -110,11 +144,17 @@ const useWorkoutSession = () => {
         setIsCancelConfirmOpen(false);
     };
 
+    // Opens add exercise modal and ensures other modals are closed.
     const openAddExerciseModal = () => {
         setIsFinishModalOpen(false);
         setIsCancelConfirmOpen(false);
         setIsAddExerciseModalOpen(true);
     }
+
+    // Closes add exercise modal.
+    const closeAddExerciseModal = () => {
+        setIsAddExerciseModalOpen(false);
+    };
 
     // Updates workout name field and resets its validation error.
     const handleWorkoutNameChange = (value) => {
@@ -133,6 +173,8 @@ const useWorkoutSession = () => {
         setActiveWorkoutId(null);
         setWorkoutName("");
         setWorkoutNameError("");
+        setWorkoutExercises([]);
+        setTimerStartAt(null);
         setIsFinishModalOpen(false);
         setIsCancelConfirmOpen(false);
         setIsAddExerciseModalOpen(false);
@@ -181,6 +223,37 @@ const useWorkoutSession = () => {
         navigate("/workouts");
     };
 
+    const confirmAddExercise = async (selectedExercises = []) => {
+        if (!activeWorkoutId) {
+            return false;
+        }
+
+        const normalizedExercises = Array.isArray(selectedExercises) ? selectedExercises : [selectedExercises];
+        const exerciseIds = normalizedExercises
+            .map((exercise) => Number(exercise?.exerciseId || exercise?.id || exercise?.exercise_id))
+            .filter((exerciseId) => Number.isFinite(exerciseId) && exerciseId > 0);
+
+        if (exerciseIds.length === 0) {
+            return false;
+        }
+
+        try {
+            for (const exerciseId of exerciseIds) {
+                await workoutExerciseService.addExercise(activeWorkoutId, {
+                    exercise_id: exerciseId
+                });
+            }
+
+            await loadWorkoutSummary(activeWorkoutId);
+            return true;
+        } catch (error) {
+            const message = error?.response?.data?.message || "Failed to add exercise";
+            console.error("Add exercise failed:", error?.response?.data || error);
+            alert(message);
+            return false;
+        }
+    };
+
     // Handles "new=1" query param to start a fresh session and clean timer state.
     useEffect(() => {
         if (!shouldStartNew) {
@@ -202,11 +275,33 @@ const useWorkoutSession = () => {
         syncActiveWorkout();
     }, [activeWorkoutId]);
 
+    useEffect(() => {
+        const handleVisibilitySync = () => {
+            if (!document.hidden) {
+                syncActiveWorkout();
+            }
+        };
+
+        const handleFocusSync = () => {
+            syncActiveWorkout();
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilitySync);
+        window.addEventListener("focus", handleFocusSync);
+
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilitySync);
+            window.removeEventListener("focus", handleFocusSync);
+        };
+    }, [activeWorkoutId]);
+
     return {
         isSessionReady,
         isFinishModalOpen,
         isCancelConfirmOpen,
         isAddExerciseModalOpen,
+        timerStartAt,
+        workoutExercises,
         workoutName,
         workoutNameError,
         summaryStats,
@@ -215,9 +310,11 @@ const useWorkoutSession = () => {
         openCancelConfirmModal,
         closeCancelConfirmModal,
         openAddExerciseModal,
+        closeAddExerciseModal,
         handleWorkoutNameChange,
         confirmFinishWorkout,
         cancelWorkout,
+        confirmAddExercise
     };
 };
 

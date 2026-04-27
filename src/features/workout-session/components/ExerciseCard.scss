@@ -10,47 +10,93 @@
     .exercise-card-header {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 10px;
         flex-direction: row;
 
-        .exercise-icon-cont {
-            width: 54px;
-            height: 54px;
-            border-radius: 10px;
-            overflow: hidden;
-            flex: 0 0 auto;
+        .exercise-card-info-cont {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-direction: row;
 
-            img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                display: block;
+            .exercise-icon-cont {
+                width: 54px;
+                height: 54px;
+                border-radius: 10px;
+                overflow: hidden;
+                flex: 0 0 auto;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                    display: block;
+                }
+            }
+
+            .exercise-info-cont {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                .exercise-list-name {
+                    margin: 0;
+                    font-size: 14px;
+                    font-weight: 700;
+                    color: #000000;
+                }
+
+                .exercise-info {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 8px;
+                    .exercise-list-group {
+                        color: #636364;
+
+
+                        font-size: 12px;
+                        font-weight: 600;
+                        white-space: nowrap;
+                    }
+
+                    .divider {
+                        width: 1px;
+                        height: 12px;
+                        background-color: #e5e7eb;
+                    }
+
+                    .exercise-list-tonnage {
+                        display: flex;
+                        align-items: center;
+                        color: #636364;
+                        font-size: 12px;
+                        font-weight: 600;
+                        gap: 4px;
+                    }
+                }
+
+
             }
         }
 
-        .exercise-info-cont {
+        .delete-exercise-btn-cont {
             display: flex;
-            flex-direction: column;
-            gap: 4px;
+            margin-right: 5px;
 
-            .exercise-list-name {
-                margin: 0;
-                font-size: 14px;
-                font-weight: 700;
-                color: #000000;
+            .delete-exercise-btn {
+                border-radius: 999px;
+                background-color: #ef4444;
+                padding: 4px;
+
+                &:hover {
+                    background-color: #d12222;
+                }
             }
-
-            .exercise-list-group {
-                color: #636364;
-
-
-                font-size: 12px;
-                font-weight: 600;
-                white-space: nowrap;
-            }
-
         }
     }
+
 
 
     .divider {
@@ -199,13 +245,31 @@
                     &:checked {
                         border-color: #22c55e;
                         background: #22c55e;
-                        
+
                     }
 
                     &:checked::after {
                         transform: rotate(45deg) scale(1);
                         margin-bottom: 2px;
                     }
+                }
+            }
+        }
+
+        .add-set-cont {
+            display: flex;
+
+            .add-set-btn {
+                background-color: #bbbbbb6b;
+                padding: 5px;
+                color: #000000;
+                font-size: 14px;
+                font-weight: 600;
+                border-radius: 8px;
+                gap: 2px;
+
+                &:hover {
+                    background-color: #bbbbbb9c;
                 }
             }
         }

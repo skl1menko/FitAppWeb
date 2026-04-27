@@ -16,6 +16,7 @@ const WorkoutSessionPage = () => {
         isFinishModalOpen,
         isCancelConfirmOpen,
         isAddExerciseModalOpen,
+        activeWorkoutId,
         timerStartAt,
         workoutExercises,
         workoutName,
@@ -30,10 +31,16 @@ const WorkoutSessionPage = () => {
         handleWorkoutNameChange,
         confirmFinishWorkout,
         cancelWorkout,
-        confirmAddExercise
+        confirmAddExercise,
+        removeExerciseFromWorkout,
+        refreshSummaryStats
     } = useWorkoutSession();
 
     useBodyClass("workout-session-page-body");
+
+    
+
+    
 
     return (
         <div className="workout-session-cont">
@@ -58,13 +65,19 @@ const WorkoutSessionPage = () => {
                         </div>
                         <div className="info-cont tonnage">
                             <span className="info-label tonnage">TONNAGE</span>
+                            <span className="tonnage-value">{summaryStats.tonnage} KG</span>
 
                         </div>
                     </div>
                 </div>
                 <div className="exercise-cont">
                     <div className="exercise-list">
-                        <ExerciseCard />
+                        <ExerciseCard
+                            workoutExercises={workoutExercises}
+                            activeWorkoutId={activeWorkoutId}
+                            onDeleteExercise={removeExerciseFromWorkout}
+                            onSetUpdated={refreshSummaryStats}
+                        />
                     </div>
                     <div className="add-exercise">
                         <CustomBtn icon={<FaPlus />} text="Add exercise" onClick={openAddExerciseModal} className="add-exercise-btn"/>

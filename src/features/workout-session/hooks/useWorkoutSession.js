@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import workoutService from "../../../services/WorkoutServices/workoutService";
-import workoutExerciseService from "../../../services/WorkoutServices/workoutExerciseService";
+import useWorkoutExercises from "./useWorkoutExercises";
 import {
     ACTIVE_WORKOUT_ID_KEY,
     TIMER_START_AT_KEY,
@@ -9,6 +9,8 @@ import {
 } from "../constants";
 import { getElapsedSeconds } from "../utils/sessionTime";
 
+// Orchestrates workout session lifecycle: active workout resolution, timer state,
+// modal visibility, finish/cancel actions, and summary refresh.
 const useWorkoutSession = () => {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -24,7 +26,6 @@ const useWorkoutSession = () => {
     });
     const [workoutName, setWorkoutName] = useState("");
     const [workoutNameError, setWorkoutNameError] = useState("");
-    const [workoutExercises, setWorkoutExercises] = useState([]);
     const [timerStartAt, setTimerStartAt] = useState(() => {
         const savedStartAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
         return Number.isFinite(savedStartAt) && savedStartAt > 0 ? savedStartAt : null;
@@ -35,6 +36,14 @@ const useWorkoutSession = () => {
         setsCount: 0
     });
 
+    const {
+        workoutExercises,
+        loadWorkoutExercises,
+        clearWorkoutExercises,
+        confirmAddExercise,
+        removeExerciseFromWorkout
+    } = useWorkoutExercises(activeWorkoutId);
+
     // Loads workout aggregates (sets/tonnage) and prefills workout name.
     const loadWorkoutSummary = async (workoutId) => {
         if (!workoutId) {
@@ -42,9 +51,9 @@ const useWorkoutSession = () => {
         }
 
         try {
-            const detailResponse = await workoutService.getById(workoutId);
-            const workout = detailResponse?.data?.data;
-            if (!workout) {
+            const workoutData = await loadWorkoutExercises(workoutId);
+            const workout = workoutData?.workout;
+            if (!workoutData || !workout) {
                 return null;
             }
 
@@ -55,22 +64,10 @@ const useWorkoutSession = () => {
                 window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
             }
 
-            const exercisesWithSets = Array.isArray(workout.exercisesWithSets)
-                ? workout.exercisesWithSets
-                : [];
-
-            setWorkoutExercises(exercisesWithSets);
-
-            const setsCount = exercisesWithSets.reduce((acc, exercise) => {
-                return acc + (exercise?.sets?.length || 0);
-            }, 0);
-
-            const tonnageValue = Number(workout.totalTonnage) || 0;
-
             setSummaryStats((prev) => ({
                 ...prev,
-                tonnage: tonnageValue,
-                setsCount
+                tonnage: workoutData.tonnage,
+                setsCount: workoutData.setsCount
             }));
             setWorkoutName((prev) => prev || workout.workoutName || "");
             return workout;
@@ -99,7 +96,12 @@ const useWorkoutSession = () => {
             const activeWorkout = workouts.find((workout) => !workout.endTime && !workout.end_time);
 
             if (!activeWorkout?.workoutId) {
-                setWorkoutExercises([]);
+                clearWorkoutExercises();
+                setSummaryStats((prev) => ({
+                    ...prev,
+                    tonnage: 0,
+                    setsCount: 0
+                }));
                 setTimerStartAt(null);
                 localStorage.removeItem(TIMER_START_AT_KEY);
                 window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
@@ -173,7 +175,7 @@ const useWorkoutSession = () => {
         setActiveWorkoutId(null);
         setWorkoutName("");
         setWorkoutNameError("");
-        setWorkoutExercises([]);
+        clearWorkoutExercises();
         setTimerStartAt(null);
         setIsFinishModalOpen(false);
         setIsCancelConfirmOpen(false);
@@ -223,35 +225,29 @@ const useWorkoutSession = () => {
         navigate("/workouts");
     };
 
-    const confirmAddExercise = async (selectedExercises = []) => {
-        if (!activeWorkoutId) {
-            return false;
-        }
-
-        const normalizedExercises = Array.isArray(selectedExercises) ? selectedExercises : [selectedExercises];
-        const exerciseIds = normalizedExercises
-            .map((exercise) => Number(exercise?.exerciseId || exercise?.id || exercise?.exercise_id))
-            .filter((exerciseId) => Number.isFinite(exerciseId) && exerciseId > 0);
-
-        if (exerciseIds.length === 0) {
-            return false;
-        }
-
-        try {
-            for (const exerciseId of exerciseIds) {
-                await workoutExerciseService.addExercise(activeWorkoutId, {
-                    exercise_id: exerciseId
-                });
-            }
-
+    // Wraps exercise actions to keep session summary in sync.
+    const handleConfirmAddExercise = async (selectedExercises = []) => {
+        const success = await confirmAddExercise(selectedExercises);
+        if (success && activeWorkoutId) {
             await loadWorkoutSummary(activeWorkoutId);
-            return true;
-        } catch (error) {
-            const message = error?.response?.data?.message || "Failed to add exercise";
-            console.error("Add exercise failed:", error?.response?.data || error);
-            alert(message);
-            return false;
         }
+        return success;
+    };
+
+    const handleRemoveExerciseFromWorkout = async (exerciseId) => {
+        const success = await removeExerciseFromWorkout(exerciseId);
+        if (success && activeWorkoutId) {
+            await loadWorkoutSummary(activeWorkoutId);
+        }
+        return success;
+    };
+
+    const refreshSummaryStats = async () => {
+        if (!activeWorkoutId) {
+            return;
+        }
+
+        await loadWorkoutSummary(activeWorkoutId);
     };
 
     // Handles "new=1" query param to start a fresh session and clean timer state.
@@ -300,6 +296,7 @@ const useWorkoutSession = () => {
         isFinishModalOpen,
         isCancelConfirmOpen,
         isAddExerciseModalOpen,
+        activeWorkoutId,
         timerStartAt,
         workoutExercises,
         workoutName,
@@ -314,7 +311,9 @@ const useWorkoutSession = () => {
         handleWorkoutNameChange,
         confirmFinishWorkout,
         cancelWorkout,
-        confirmAddExercise
+        confirmAddExercise: handleConfirmAddExercise,
+        removeExerciseFromWorkout: handleRemoveExerciseFromWorkout,
+        refreshSummaryStats
     };
 };
 

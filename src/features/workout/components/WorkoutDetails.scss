@@ -125,7 +125,12 @@ body.workout-page-body {
                 }
 
                 .wk-hd-cont-stats.two {
-                    align-items: center;
+                    .label{
+                        align-self: start;
+                    }
+                    span{
+                        align-self: center;
+                    }
                 }
 
             }

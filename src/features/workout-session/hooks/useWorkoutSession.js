@@ -8,6 +8,7 @@ import {
     WORKOUT_STATUS_CHANGED_EVENT
 } from "../constants";
 import { getElapsedSeconds } from "../utils/sessionTime";
+import { isWorkoutActive } from "../../workout/utils/workoutStatus";
 
 // Orchestrates workout session lifecycle: active workout resolution, timer state,
 // modal visibility, finish/cancel actions, and summary refresh.
@@ -15,17 +16,24 @@ const useWorkoutSession = () => {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const shouldStartNew = searchParams.get("new") === "1";
+    const requestedWorkoutId = Number(searchParams.get("workoutId"));
+    const isPlannedMode = searchParams.get("mode") === "planned" && Number.isFinite(requestedWorkoutId) && requestedWorkoutId > 0;
 
     const [isSessionReady, setIsSessionReady] = useState(!shouldStartNew);
     const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
     const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
     const [isAddExerciseModalOpen, setIsAddExerciseModalOpen] = useState(false);
     const [activeWorkoutId, setActiveWorkoutId] = useState(() => {
+        if (isPlannedMode) {
+            return requestedWorkoutId;
+        }
+
         const savedWorkoutId = Number(localStorage.getItem(ACTIVE_WORKOUT_ID_KEY));
         return Number.isFinite(savedWorkoutId) && savedWorkoutId > 0 ? savedWorkoutId : null;
     });
     const [workoutName, setWorkoutName] = useState("");
     const [workoutNameError, setWorkoutNameError] = useState("");
+    const [scheduledStartAt, setScheduledStartAt] = useState(null);
     const [timerStartAt, setTimerStartAt] = useState(() => {
         const savedStartAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
         return Number.isFinite(savedStartAt) && savedStartAt > 0 ? savedStartAt : null;
@@ -58,10 +66,13 @@ const useWorkoutSession = () => {
             }
 
             const serverStartAt = Date.parse(workout.startTime || workout.start_time || "");
-            if (Number.isFinite(serverStartAt) && serverStartAt > 0) {
+            setScheduledStartAt(workout.startTime || workout.start_time || null);
+            if (!isPlannedMode && Number.isFinite(serverStartAt) && serverStartAt > 0) {
                 setTimerStartAt(serverStartAt);
                 localStorage.setItem(TIMER_START_AT_KEY, String(serverStartAt));
                 window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
+            } else if (isPlannedMode) {
+                setTimerStartAt(null);
             }
 
             setSummaryStats((prev) => ({
@@ -79,6 +90,19 @@ const useWorkoutSession = () => {
 
     // Resolves the currently active workout from state or API and syncs localStorage.
     const syncActiveWorkout = async () => {
+        if (isPlannedMode) {
+            if (!requestedWorkoutId) {
+                navigate("/workouts");
+                return;
+            }
+
+            const workout = await loadWorkoutSummary(requestedWorkoutId);
+            if (!workout) {
+                navigate("/workouts");
+            }
+            return;
+        }
+
         if (activeWorkoutId) {
             const workout = await loadWorkoutSummary(activeWorkoutId);
             if (workout) {
@@ -93,7 +117,7 @@ const useWorkoutSession = () => {
         try {
             const workoutsResponse = await workoutService.getAll();
             const workouts = workoutsResponse?.data?.data || [];
-            const activeWorkout = workouts.find((workout) => !workout.endTime && !workout.end_time);
+            const activeWorkout = workouts.find((workout) => isWorkoutActive(workout));
 
             if (!activeWorkout?.workoutId) {
                 clearWorkoutExercises();
@@ -175,6 +199,7 @@ const useWorkoutSession = () => {
         setActiveWorkoutId(null);
         setWorkoutName("");
         setWorkoutNameError("");
+        setScheduledStartAt(null);
         clearWorkoutExercises();
         setTimerStartAt(null);
         setIsFinishModalOpen(false);
@@ -185,26 +210,34 @@ const useWorkoutSession = () => {
     // Validates and finalizes workout by saving end time and redirecting.
     const confirmFinishWorkout = async () => {
         const trimmedName = workoutName.trim();
-        if (!trimmedName) {
+        if (!isPlannedMode && !trimmedName) {
             setWorkoutNameError("Please enter workout name");
             return;
         }
 
         if (activeWorkoutId) {
             try {
-                await workoutService.update(activeWorkoutId, {
-                    name: trimmedName,
-                    end_time: new Date().toISOString()
-                });
+                if (isPlannedMode) {
+                    if (trimmedName) {
+                        await workoutService.update(activeWorkoutId, { name: trimmedName });
+                    }
+                } else {
+                    await workoutService.update(activeWorkoutId, {
+                        name: trimmedName,
+                        end_time: new Date().toISOString()
+                    });
+                }
             } catch (error) {
-                const message = error?.response?.data?.message || "Failed to finish workout";
-                console.error("Finish workout failed:", error?.response?.data || error);
+                const message = error?.response?.data?.message || (isPlannedMode ? "Failed to save workout" : "Failed to finish workout");
+                console.error(isPlannedMode ? "Save planned workout failed:" : "Finish workout failed:", error?.response?.data || error);
                 alert(message);
                 return;
             }
         }
 
-        resetSessionState();
+        if (!isPlannedMode) {
+            resetSessionState();
+        }
         navigate("/workouts");
     };
 
@@ -223,6 +256,30 @@ const useWorkoutSession = () => {
 
         resetSessionState();
         navigate("/workouts");
+    };
+
+    const startPlannedWorkoutNow = async () => {
+        if (!isPlannedMode || !activeWorkoutId) {
+            return;
+        }
+
+        try {
+            const nowIso = new Date().toISOString();
+            await workoutService.update(activeWorkoutId, {
+                start_time: nowIso,
+                is_started: true
+            });
+
+            const startedAt = Date.parse(nowIso);
+            localStorage.setItem(ACTIVE_WORKOUT_ID_KEY, String(activeWorkoutId));
+            localStorage.setItem(TIMER_START_AT_KEY, String(startedAt));
+            window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
+            navigate("/workout/session");
+        } catch (error) {
+            const message = error?.response?.data?.message || "Failed to start planned workout";
+            console.error("Start planned workout failed:", error?.response?.data || error);
+            alert(message);
+        }
     };
 
     // Wraps exercise actions to keep session summary in sync.
@@ -252,6 +309,11 @@ const useWorkoutSession = () => {
 
     // Handles "new=1" query param to start a fresh session and clean timer state.
     useEffect(() => {
+        if (isPlannedMode) {
+            setIsSessionReady(true);
+            return;
+        }
+
         if (!shouldStartNew) {
             setIsSessionReady(true);
             return;
@@ -264,12 +326,12 @@ const useWorkoutSession = () => {
         nextParams.delete("new");
         setSearchParams(nextParams, { replace: true });
         setIsSessionReady(true);
-    }, [searchParams, setSearchParams, shouldStartNew]);
+    }, [isPlannedMode, searchParams, setSearchParams, shouldStartNew]);
 
     // Keeps active workout data synchronized when workout id changes.
     useEffect(() => {
         syncActiveWorkout();
-    }, [activeWorkoutId]);
+    }, [activeWorkoutId, isPlannedMode, requestedWorkoutId]);
 
     useEffect(() => {
         const handleVisibilitySync = () => {
@@ -301,7 +363,9 @@ const useWorkoutSession = () => {
         workoutExercises,
         workoutName,
         workoutNameError,
+        scheduledStartAt,
         summaryStats,
+        isPlannedMode,
         openFinishModal,
         closeFinishModal,
         openCancelConfirmModal,
@@ -311,6 +375,7 @@ const useWorkoutSession = () => {
         handleWorkoutNameChange,
         confirmFinishWorkout,
         cancelWorkout,
+        startPlannedWorkoutNow,
         confirmAddExercise: handleConfirmAddExercise,
         removeExerciseFromWorkout: handleRemoveExerciseFromWorkout,
         refreshSummaryStats

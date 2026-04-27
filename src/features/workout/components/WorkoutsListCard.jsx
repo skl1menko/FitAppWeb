@@ -1,8 +1,10 @@
 import workoutService from "../../../services/WorkoutServices/workoutService"
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
-import { PiBarbellLight, CiCircleCheck, FiCalendar, FaRegClock, GiWeight, RiFireLine } from "../../../assets/icons"
+import { PiBarbellLight, CiCircleCheck, FiCalendar, FaRegClock, GiWeight, RiFireLine, MdOutlineEditCalendar } from "../../../assets/icons"
 import "./WorkoutsListCard.scss"
+import { isWorkoutActive, isWorkoutScheduled } from "../utils/workoutStatus";
+import { formatGroupedNumber } from "../../../utils/formatNumber";
 
 const getDuration = (start, end) => {
     if (!start || !end) return null;
@@ -18,8 +20,19 @@ const getDuration = (start, end) => {
     return `${hours} h ${minutes} min`;
 };
 
+const formatScheduledTime = (dateValue) => {
+    if (!dateValue) return "Starts when launched";
 
-const WorkoutsListCard = () => {
+    return new Date(dateValue).toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+};
+
+const WorkoutsListCard = ({ refreshKey = 0, variant = "recent" }) => {
 
     const [workouts, setWorkouts] = useState([])
     const navigate = useNavigate();
@@ -30,33 +43,85 @@ const WorkoutsListCard = () => {
         }).catch((error) => {
             console.log(error);
         })
-    }, [])
+    }, [refreshKey])
 
-    const orderedWorkouts = useMemo(() => {
+    const filteredWorkouts = useMemo(() => {
         const active = [];
+        const scheduled = [];
         const completed = [];
 
         workouts.forEach((workout) => {
-            const isActiveWorkout = !workout?.endTime && !workout?.end_time;
-            if (isActiveWorkout) {
+            if (isWorkoutActive(workout)) {
                 active.push(workout);
+                return;
+            }
+
+            if (isWorkoutScheduled(workout)) {
+                scheduled.push(workout);
                 return;
             }
 
             completed.push(workout);
         });
 
+        if (variant === "planned") {
+            return scheduled;
+        }
+
         return [...active, ...completed];
-    }, [workouts]);
+    }, [variant, workouts]);
 
     return (
         <>
-            {orderedWorkouts.map((workout) => {
-                const isActiveWorkout = !workout?.endTime && !workout?.end_time;
+            {filteredWorkouts.length === 0 ? (
+                <div className="workouts-empty-state">
+                    {variant === "planned"
+                        ? "No planned workouts yet."
+                        : "No recent workouts yet."}
+                </div>
+            ) : null}
+            {filteredWorkouts.map((workout) => {
+                const isActiveWorkout = isWorkoutActive(workout);
+                const isScheduledWorkout = isWorkoutScheduled(workout);
+
+                const handleStartScheduledWorkout = async () => {
+                    const currentActiveWorkout = workouts.find((item) => isWorkoutActive(item));
+                    if (currentActiveWorkout?.workoutId && currentActiveWorkout.workoutId !== workout.workoutId) {
+                        localStorage.setItem("activeWorkoutId", String(currentActiveWorkout.workoutId));
+                        alert("You already have an active workout session. Please finish or cancel it before starting another one.");
+                        navigate("/workout/session");
+                        return;
+                    }
+
+                    const shouldStart = window.confirm("Start this scheduled workout now?");
+                    if (!shouldStart) {
+                        return;
+                    }
+
+                    try {
+                        await workoutService.update(workout.workoutId, {
+                            start_time: new Date().toISOString(),
+                            is_started: true
+                        });
+
+                        localStorage.setItem("activeWorkoutId", String(workout.workoutId));
+                        navigate("/workout/session");
+                    } catch (error) {
+                        const message = error?.response?.data?.message || "Failed to start scheduled workout";
+                        console.error("Start scheduled workout failed:", error?.response?.data || error);
+                        alert(message);
+                    }
+                };
+
                 const onWorkoutClick = () => {
                     if (isActiveWorkout) {
                         localStorage.setItem("activeWorkoutId", String(workout.workoutId));
                         navigate("/workout/session");
+                        return;
+                    }
+
+                    if (isScheduledWorkout) {
+                        navigate(`/workout/session?workoutId=${workout.workoutId}&mode=planned`);
                         return;
                     }
 
@@ -66,7 +131,7 @@ const WorkoutsListCard = () => {
                 return (
                 <div
                     key={workout.workoutId}
-                    className={`workout-cont ${isActiveWorkout ? "active-workout" : ""}`}
+                    className={`workout-cont ${isActiveWorkout ? "active-workout" : ""} ${isScheduledWorkout ? "scheduled-workout" : ""}`}
                     onClick={onWorkoutClick}
                 >
                     <div className="workout-left-cont">
@@ -75,19 +140,29 @@ const WorkoutsListCard = () => {
                         </div>
                         <div className="workout-info-cont">
                             <div className="workout-label">
-                                <span>{workout.workoutName}</span>
-                                {!isActiveWorkout ? (
+                                <span>{workout.workoutName || "Workout"}</span>
+                                {isScheduledWorkout ? (
+                                    <MdOutlineEditCalendar size={18} color="#1696e5" className="scheduled-icon" />
+                                ) : !isActiveWorkout ? (
                                     <CiCircleCheck size={18} color="#10B981" className="completed-icon" />
                                 ) : null}
                             </div>
                             <div className="workout-stat-cont">
                                 <span className="workout-stat">
-                                    <FiCalendar size={14} className="calendar-icon" />
-                                    {new Date(workout.startTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                    {!isScheduledWorkout ? (
+                                        <>
+                                                <FiCalendar size={14} className="calendar-icon" />
+                                                {new Date(workout.startTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                        </>
+                                    ) : null}
                                 </span>
                                 <span className="workout-stat">
-                                    <FaRegClock size={14} className="clock-icon" />
-                                    {getDuration(workout.startTime, workout.endTime) || '0 min'}
+                                    {!isScheduledWorkout ? (
+                                        <>
+                                                <FaRegClock size={14} className="clock-icon" />
+                                                { getDuration(workout.startTime, workout.endTime) || '0 min' }
+                                        </>
+                                    ) : null}
                                 </span>
                                 <span className="workout-stat">
                                     {workout.exerciseCount} exercises
@@ -96,14 +171,19 @@ const WorkoutsListCard = () => {
                         </div>
                     </div>
                     <div className="workout-right-cont">
-                        <span className="workout-stat">
-                            <GiWeight size={18} className="weight-icon" />
-                            {workout.totalTonnage} kg
-                        </span>
-                        <span className="workout-stat">
-                            <RiFireLine size={18} className="calories-icon" color="#FF8904"/>
-                            {workout.caloriesBurned} kcal
-                        </span>
+                            {!isScheduledWorkout ? (
+                            <>
+                                <span className="workout-stat">
+                                    <GiWeight size={18} className="weight-icon" />
+                                    {formatGroupedNumber(workout.totalTonnage || 0)} kg
+                                </span>
+                                <span className="workout-stat">
+                                    <RiFireLine size={18} className="calories-icon" color="#FF8904"/>
+                                    {workout.caloriesBurned || 0} kcal
+                                </span>
+                            </>
+                        ) : null}
+
                     </div>
                 </div>
             )})}

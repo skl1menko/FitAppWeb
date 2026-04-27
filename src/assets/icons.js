@@ -5,7 +5,7 @@ export { FaGoogle, FaHeart, FaBalanceScale, FaPlus } from "react-icons/fa";
 export { FaArrowTrendUp, FaArrowTrendDown, FaRegClock } from "react-icons/fa6";
 
 // email icon, lock icon, gym icon
-export { MdEmail, MdOutlineLock, MdSportsGymnastics, MdOutlineCancel } from "react-icons/md";
+export { MdEmail, MdOutlineLock, MdSportsGymnastics, MdOutlineCancel, MdOutlineEditCalendar } from "react-icons/md";
 
 // dashboard icon, menu icon, x icon, dumbbell icon
 export { LuLayoutDashboard, LuMenu, LuX, LuDumbbell } from "react-icons/lu";
@@ -28,6 +28,7 @@ export { FiCalendar, FiRepeat, FiArrowLeft, FiClock, FiFileText, FiZap, FiCamera
 // chevron down icon, chevron right icon
 export { BsChevronDown, BsChevronRight } from "react-icons/bs";
 
+export { RxLapTimer } from "react-icons/rx";
 
 
 // heart icon outline

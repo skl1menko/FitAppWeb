@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ExerciseSetRow from "./ExerciseSetRow";
 import CustomBtn from "../../../components/CustomBtn";
 import { GoPlus, GiWeight, LuX } from "../../../assets/icons";
+import { formatGroupedNumber } from "../../../utils/formatNumber";
 
 const EMPTY_SET_VALUES = {
     weight_kg: 0,
@@ -11,7 +12,7 @@ const EMPTY_SET_VALUES = {
     rpe: null
 };
 
-const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, onDeleteExercise = null, onSetUpdated = null }) => {
+const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, isPlannedMode = false, onDeleteExercise = null, onSetUpdated = null }) => {
     const { getExerciseSets, addDefaultSet, updateSet, deleteSet } = useWorkoutExercisesSet(activeWorkoutId, workoutExercises);
     const [draftBySetKey, setDraftBySetKey] = useState({});
     const [checkedBySetKey, setCheckedBySetKey] = useState({});
@@ -284,7 +285,7 @@ const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, onDeleteE
                                     <div className="exercise-info">
                                         <span className="exercise-list-group">{exercise?.muscleGroup || "General"}</span>
                                         <div className="divider"></div>
-                                        <span className="exercise-list-tonnage"><GiWeight size={18} /> {exercise?.exerciseTonnage} kg</span>
+                                        <span className="exercise-list-tonnage"><GiWeight size={18} /> {formatGroupedNumber(exercise?.exerciseTonnage || 0)} kg</span>
                                     </div>
                                 </div>
                             </div>
@@ -303,11 +304,12 @@ const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, onDeleteE
                             {sets.map((set, index) => (
                                 <ExerciseSetRow
                                     key={set?.setId || `${exerciseId}-set-${index + 1}`}
-                                    index={index}
-                                    set={set}
-                                    values={getSetValues(workoutExerciseId, set)}
-                                    checked={Boolean(checkedBySetKey[getSetKey(workoutExerciseId, set?.setId)])}
-                                    onValueChange={(field, value) => handleInputChange(workoutExerciseId, set, field, value)}
+                                index={index}
+                                set={set}
+                                isPlannedMode={isPlannedMode}
+                                values={getSetValues(workoutExerciseId, set)}
+                                checked={Boolean(checkedBySetKey[getSetKey(workoutExerciseId, set?.setId)])}
+                                onValueChange={(field, value) => handleInputChange(workoutExerciseId, set, field, value)}
                                     onCheckedChange={(nextChecked) => handleCheckboxChange(workoutExerciseId, set, nextChecked)}
                                     onDelete={() => handleDeleteSet(workoutExerciseId, set)}
                                 />

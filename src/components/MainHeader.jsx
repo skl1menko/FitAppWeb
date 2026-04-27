@@ -6,6 +6,7 @@ import { NavLink, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import authService from '../services/authService';
 import workoutService from '../services/WorkoutServices/workoutService';
+import { isWorkoutActive } from '../features/workout/utils/workoutStatus';
 
 const TIMER_START_AT_KEY = 'workoutSessionStartAt';
 const WORKOUT_STATUS_CHANGED_EVENT = 'workoutSessionStatusChanged';
@@ -48,7 +49,7 @@ const MainHeader = () => {
             try {
                 const response = await workoutService.getAll();
                 const workouts = response?.data?.data || [];
-                const activeWorkout = workouts.find((workout) => !workout.endTime && !workout.end_time);
+                const activeWorkout = workouts.find((workout) => isWorkoutActive(workout));
                 const hasServerActiveWorkout = Boolean(activeWorkout?.workoutId);
 
                 if (hasServerActiveWorkout) {
@@ -162,15 +163,13 @@ const MainHeader = () => {
                         </div>
                     )}
                 </div>
+                <NavLink to="/schedule" className={({ isActive }) => isActive ? 'active' : ''}>
+                    <FiCalendar className="main-header-icon" /> Schedule
+                </NavLink>
                 <NavLink to="/exercises" className={({ isActive }) => isActive ? 'active' : ''}>
                     <MdSportsGymnastics className="main-header-icon"/> Exercises
                 </NavLink>
-                <NavLink to="/progress" className={({ isActive }) => isActive ? 'active' : ''}>
-                    <GiProgression className="main-header-icon"/> Progress
-                </NavLink>
-                <NavLink to="/schedule" className={({ isActive }) => isActive ? 'active' : ''}>
-                    <FiCalendar className="main-header-icon"/> Schedule
-                </NavLink>
+                
             </div>
             <div className="main-header user-cont" onClick={toggleMenu}>
                 <img src={Avatar} alt="" className="user-avatar" />

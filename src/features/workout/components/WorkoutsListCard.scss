@@ -29,6 +29,27 @@
         }
     }
 
+    &.scheduled-workout {
+        border-color: #93c5fd;
+        background-color: #eef6ff;
+        box-shadow: 0 6px 14px rgba(59, 130, 246, 0.12);
+
+        &:hover {
+            background-color: #dbeafe;
+        }
+
+        .workout-icon-cont {
+            background-color: rgba($color: #3B82F6, $alpha: 0.14);
+        }
+
+
+        .workout-stat{
+            margin-right:-12px !important;
+        }
+
+
+    }
+
     .workout-left-cont {
         display: flex;
         flex: 1;
@@ -62,6 +83,8 @@
                     font-size: 16px;
                     font-weight: bold;
                 }
+
+                
             }
 
             .workout-stat-cont {
@@ -104,7 +127,32 @@
             white-space: nowrap;
             font-variant-numeric: tabular-nums;
         }
+
+        .start-scheduled-btn {
+            border: none;
+            border-radius: 999px;
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
     }
+}
+
+.workouts-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    border: 1px dashed #d1d5db;
+    border-radius: 14px;
+    background-color: #f3f4f6;
+    color: #6b7280;
+    font-size: 15px;
+    text-align: center;
+    padding: 20px;
 }
 
 @media (max-width: 1024px) {

@@ -4,14 +4,15 @@ import CustomBtn from "../../../components/CustomBtn";
 import { LuX } from "../../../assets/icons";
 
 const FIELD_CONFIG = [
-    { key: "weight_kg", label: "WEIGHT KG", placeholder: "KG" },
-    { key: "reps", label: "REPS", placeholder: "REPS" },
-    { key: "rpe", label: "RPE", placeholder: "RPE" }
+    { key: "weight_kg", label: "WEIGHT KG", placeholder: "KG", inputMode: "numeric", pattern: "[0-9]*" },
+    { key: "reps", label: "REPS", placeholder: "REPS", inputMode: "numeric", pattern: "[0-9]*" },
+    { key: "rpe", label: "RPE", placeholder: "RPE", inputMode: "numeric", pattern: "[0-9]*" }
 ];
 
 const ExerciseSetRow = ({
     index,
     set,
+    isPlannedMode,
     values,
     checked,
     onValueChange,
@@ -29,6 +30,8 @@ const ExerciseSetRow = ({
                     <input
                         className="set-value"
                         type="text"
+                        inputMode={field.inputMode}
+                        pattern={field.pattern}
                         placeholder={field.placeholder}
                         disabled={isPendingCreate}
                         value={values[field.key]}
@@ -36,14 +39,16 @@ const ExerciseSetRow = ({
                     />
                 </div>
             ))}
-            <div className="check-box-cont">
-                <input
-                    type="checkbox"
-                    disabled={isPendingCreate}
-                    checked={checked}
-                    onChange={(event) => onCheckedChange(event.target.checked)}
-                />
-            </div>
+            {!isPlannedMode ? (
+                <div className="check-box-cont">
+                    <input
+                        type="checkbox"
+                        disabled={isPendingCreate}
+                        checked={checked}
+                        onChange={(event) => onCheckedChange(event.target.checked)}
+                    />
+                </div>
+            ) : null}
             <div className="delete-set-btn-cont">
                 <CustomBtn
                     icon={<LuX size={14} />}
@@ -61,6 +66,7 @@ const areEqual = (prevProps, nextProps) => {
         prevProps.index === nextProps.index &&
         prevProps.set?.setId === nextProps.set?.setId &&
         prevProps.set?.isPendingCreate === nextProps.set?.isPendingCreate &&
+        prevProps.isPlannedMode === nextProps.isPlannedMode &&
         prevProps.values?.weight_kg === nextProps.values?.weight_kg &&
         prevProps.values?.reps === nextProps.values?.reps &&
         prevProps.values?.rpe === nextProps.values?.rpe &&

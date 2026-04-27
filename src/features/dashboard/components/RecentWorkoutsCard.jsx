@@ -8,6 +8,7 @@ import {
     RiFireLine,
     BsChevronRight,
 } from '../../../assets/icons';
+import { formatGroupedNumber } from '../../../utils/formatNumber';
 
 const ICON_STYLES = [
     { bg: '#d1fae5', color: '#10b981', Icon: GoPulse },
@@ -56,7 +57,7 @@ const RecentWorkoutsCard = () => {
                 {workouts.slice(0, 5).map((w, i) => {
                     const { bg, color, Icon } = ICON_STYLES[i % ICON_STYLES.length];
                     const duration = getDuration(w.startTime, w.endTime);
-                    const metric = w.programName || (w.totalTonnage ? `${w.totalTonnage} kg` : null);
+                    const metric = w.programName || (w.totalTonnage ? `${formatGroupedNumber(w.totalTonnage)} kg` : null);
                     const subStats = [
                         duration ? `${duration} min` : null,
                         w.caloriesBurned != null ? `${Math.round(w.caloriesBurned)} kcal` : null,

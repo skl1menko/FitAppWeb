@@ -12,6 +12,7 @@ import workoutService from "../../../services/WorkoutServices/workoutService";
 import "./WorkoutDetails.scss";
 import CustomBtn from "../../../components/CustomBtn";
 import useBodyClass from "../../../hooks/useBodyClass";
+import { formatGroupedNumber } from "../../../utils/formatNumber";
 
 const fmtDuration = (startValue, endValue) => {
     if (!startValue || !endValue) return "-";
@@ -81,7 +82,7 @@ const WorkoutDetails = () => {
                                     <span className="label">
                                         <GiWeight aria-hidden="true" /> Total tonnage
                                     </span>
-                                    <span>{workout.totalTonnage || 0} kg</span>
+                                    <span>{formatGroupedNumber(workout.totalTonnage || 0)} kg</span>
                                 </div>
                                 <div className="wk-hd-cont-stats two">
                                     <span className="label">
@@ -89,7 +90,7 @@ const WorkoutDetails = () => {
                                     </span>
                                     <span>{workout.caloriesBurned || 0} kcal</span>
                                 </div>
-                                <div className="wk-hd-cont-stats">
+                                <div className="wk-hd-cont-stats two">
                                     <span className="label">
                                         <FiClock aria-hidden="true" /> Duration
                                     </span>
@@ -125,7 +126,7 @@ const WorkoutDetails = () => {
                                 </div>
 
                                 <p className="exercise-tonnage">
-                                    Exercise tonnage: {exercise.exerciseTonnage || 0} kg
+                                    Exercise tonnage: {formatGroupedNumber(exercise.exerciseTonnage || 0)} kg
                                 </p>
 
                                 <div className="sets-table-wrap">

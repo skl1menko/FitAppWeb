@@ -1,5 +1,6 @@
 import CustomBtn from "../../../../components/CustomBtn";
 import "./FinishWorkoutModal.scss";
+import { formatGroupedNumber } from "../../../../utils/formatNumber";
 
 const FinishWorkoutModal = ({
     isOpen,
@@ -41,7 +42,7 @@ const FinishWorkoutModal = ({
                     </div>
                     <div className="finish-workout-stat-row">
                         <span>Tonnage</span>
-                        <strong>{tonnage} kg</strong>
+                        <strong>{formatGroupedNumber(tonnage)} kg</strong>
                     </div>
                     <div className="finish-workout-stat-row">
                         <span>Sets</span>

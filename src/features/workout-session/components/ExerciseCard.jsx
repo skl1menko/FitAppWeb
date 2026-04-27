@@ -1,11 +1,18 @@
 import "./ExerciseCard.scss";
 import useWorkoutExercisesSet from "../hooks/useWorkoutExercisesSet";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import ExerciseSetRow from "./ExerciseSetRow";
 import CustomBtn from "../../../components/CustomBtn";
-import { GoPlus, MdOutlineCancel, GiWeight } from "../../../assets/icons";
+import { GoPlus, GiWeight, LuX } from "../../../assets/icons";
+
+const EMPTY_SET_VALUES = {
+    weight_kg: 0,
+    reps: 0,
+    rpe: null
+};
 
 const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, onDeleteExercise = null, onSetUpdated = null }) => {
-    const { getExerciseSets, addDefaultSet, updateSet } = useWorkoutExercisesSet(activeWorkoutId, workoutExercises);
+    const { getExerciseSets, addDefaultSet, updateSet, deleteSet } = useWorkoutExercisesSet(activeWorkoutId, workoutExercises);
     const [draftBySetKey, setDraftBySetKey] = useState({});
     const [checkedBySetKey, setCheckedBySetKey] = useState({});
     const [isLocalStateHydrated, setIsLocalStateHydrated] = useState(false);
@@ -60,6 +67,26 @@ const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, onDeleteE
         }
     }, [activeWorkoutId, isLocalStateHydrated, draftBySetKey, checkedBySetKey]);
 
+    const removeStateBySetKey = (key) => {
+        setDraftBySetKey((prev) => {
+            const next = { ...prev };
+            delete next[key];
+            return next;
+        });
+        setCheckedBySetKey((prev) => {
+            const next = { ...prev };
+            delete next[key];
+            return next;
+        });
+    };
+
+    const setCheckedState = (key, value) => {
+        setCheckedBySetKey((prev) => ({
+            ...prev,
+            [key]: value
+        }));
+    };
+
     const handleDeleteExercise = async (exerciseId) => {
         if (!activeWorkoutId || !exerciseId) {
             return;
@@ -75,44 +102,90 @@ const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, onDeleteE
         }
     };
 
-    
-
     const handleAddSet = async (exerciseId) => {
         if (!activeWorkoutId || !exerciseId) {
             return;
         }
 
-        
-        
         await addDefaultSet(activeWorkoutId, exerciseId);
+    };
+
+    const handleDeleteSet = async (workoutExerciseId, setObj) => {
+        if (!activeWorkoutId || !workoutExerciseId || !setObj?.setId) {
+            return;
+        }
+
+        await deleteSet(activeWorkoutId, workoutExerciseId, setObj.setId);
+
+        const key = getSetKey(workoutExerciseId, setObj.setId);
+        removeStateBySetKey(key);
+
+        if (typeof onSetUpdated === "function") {
+            await onSetUpdated();
+        }
     };
 
     const getInputValue = (exerciseId, setObj, field) => {
         const key = getSetKey(exerciseId, setObj?.setId);
         const draftValue = draftBySetKey[key]?.[field];
-        if (draftValue !== undefined) return draftValue;
+        if (draftValue !== undefined) {
+            return draftValue;
+        }
 
-
-        if (field === "weight_kg") return (setObj?.weight_kg === 0 || setObj?.weight_kg == null) ? "" : setObj?.weight_kg;
-        if (field === "reps") return (setObj?.reps === 0 || setObj?.reps == null) ? "" : setObj?.reps;
-        if (field === "rpe") return (setObj?.rpe === 0 || setObj?.rpe == null) ? "" : setObj?.rpe ?? "";
+        if (field === "weight_kg") {
+            return setObj?.weight_kg === 0 || setObj?.weight_kg == null ? "" : setObj?.weight_kg;
+        }
+        if (field === "reps") {
+            return setObj?.reps === 0 || setObj?.reps == null ? "" : setObj?.reps;
+        }
+        if (field === "rpe") {
+            return setObj?.rpe === 0 || setObj?.rpe == null ? "" : setObj?.rpe ?? "";
+        }
 
         return "";
     };
 
+    const getSetValues = (exerciseId, setObj) => ({
+        weight_kg: getInputValue(exerciseId, setObj, "weight_kg"),
+        reps: getInputValue(exerciseId, setObj, "reps"),
+        rpe: getInputValue(exerciseId, setObj, "rpe")
+    });
+
     const handleInputChange = (exerciseId, setObj, field, nextValue) => {
         const key = getSetKey(exerciseId, setObj?.setId);
-        setDraftBySetKey((prev) => ({
-            ...prev,
-            [key]: {
-                ...(prev[key] || {}),
-                [field]: nextValue
+
+        if (field === "weight_kg" || field === "reps") {
+            setDraftBySetKey((prev) => ({
+                ...prev,
+                [key]: {
+                    ...(prev[key] || {}),
+                    [field]: nextValue.replace(/[^0-9]/g, "")
+                }
+            }));
+        } else if (field === "rpe") {
+            const result = nextValue.replace(/[^0-9]/g, "");
+            if (result === "") {
+                setDraftBySetKey((prev) => ({
+                    ...prev,
+                    [key]: {
+                        ...(prev[key] || {}),
+                        [field]: ""
+                    }
+                }));
+                return;
             }
-        }));
-        setCheckedBySetKey((prev) => ({
-            ...prev,
-            [key]: false
-        }));
+
+            const normalizedValue = Math.min(Number(result), 10);
+            setDraftBySetKey((prev) => ({
+                ...prev,
+                [key]: {
+                    ...(prev[key] || {}),
+                    [field]: normalizedValue
+                }
+            }));
+        }
+
+        setCheckedState(key, false);
     };
 
     const toNonNegativeNumberOrFallback = (value, fallback) => {
@@ -128,35 +201,10 @@ const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, onDeleteE
         return fallback;
     };
 
-    const handleCheckboxChange = async (workoutExerciseId, setObj, checked) => {
-        if (!activeWorkoutId || !workoutExerciseId || !setObj?.setId) {
-            return;
+    const getSetUpdatePayload = (workoutExerciseId, setObj, checked) => {
+        if (!checked) {
+            return EMPTY_SET_VALUES;
         }
-
-        const key = getSetKey(workoutExerciseId, setObj.setId);
-
-        if (checked === false) {
-            const emptiedSet = await updateSet(activeWorkoutId, workoutExerciseId, setObj.setId, {
-                weight_kg: 0,
-                reps:0,
-                rpe: null
-            });
-
-            if (!emptiedSet) {
-                return;
-            }
-
-            if (typeof onSetUpdated === "function") {
-                await onSetUpdated();
-            }
-
-            setCheckedBySetKey((prev) => ({
-                ...prev,
-                [key]: false
-            }));
-            return;
-        }
-
 
         const nextWeight = toNonNegativeNumberOrFallback(
             getInputValue(workoutExerciseId, setObj, "weight_kg"),
@@ -176,114 +224,108 @@ const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, onDeleteE
             }
         }
 
-        const updatedSet = await updateSet(activeWorkoutId, workoutExerciseId, setObj.setId, {
+        return {
             weight_kg: nextWeight,
             reps: nextReps,
             rpe: nextRpe
-        });
+        };
+    };
 
-        if (!updatedSet) {
+    const handleCheckboxChange = async (workoutExerciseId, setObj, checked) => {
+        if (!activeWorkoutId || !workoutExerciseId || !setObj?.setId) {
             return;
         }
 
-        if (typeof onSetUpdated === "function") {
-            await onSetUpdated();
-        }
+        const key = getSetKey(workoutExerciseId, setObj.setId);
+        const previousChecked = Boolean(checkedBySetKey[key]);
+        const nextPayload = getSetUpdatePayload(workoutExerciseId, setObj, checked);
 
-        setCheckedBySetKey((prev) => ({
-            ...prev,
-            [key]: true
-        }));
+        setCheckedState(key, checked);
+
+        try {
+            const updatedSet = await updateSet(
+                activeWorkoutId,
+                workoutExerciseId,
+                setObj.setId,
+                nextPayload
+            );
+
+            if (!updatedSet) {
+                throw new Error("Failed to update set");
+            }
+
+            if (typeof onSetUpdated === "function") {
+                await onSetUpdated();
+            }
+        } catch (error) {
+            console.error("Failed to toggle set completion:", error);
+            setCheckedState(key, previousChecked);
+        }
     };
 
-
     return (
-        <>{(workoutExercises || []).map((exercise) => {
-            const workoutExerciseId = Number(exercise?.id);
-            const exerciseId = Number(exercise?.exerciseId || exercise?.exercise_id);
-            const sets = Number.isFinite(workoutExerciseId) && workoutExerciseId > 0
-                ? getExerciseSets(workoutExerciseId)
-                : [];
+        <>
+            {(workoutExercises || []).map((exercise) => {
+                const workoutExerciseId = Number(exercise?.id);
+                const exerciseId = Number(exercise?.exerciseId || exercise?.exercise_id);
+                const sets = Number.isFinite(workoutExerciseId) && workoutExerciseId > 0
+                    ? getExerciseSets(workoutExerciseId)
+                    : [];
 
-            return (
-                <div className="exercise-list-item" key={exercise?.id || exercise?.exerciseId}>
-                    <div className="exercise-card-header">
-                        <div className="exercise-card-info-cont">
-                            <div className="exercise-icon-cont">
-                                <img src={exercise?.imageUrl} alt="" />
-                            </div>
-                            <div className="exercise-info-cont">
-                                <p className="exercise-list-name">{exercise?.exerciseName || "Unnamed exercise"}</p>
-                                <div className="exercise-info">
-                                    <span className="exercise-list-group">{exercise?.muscleGroup || "General"}</span>
-                                    <div className="divider"></div>
-                                    <span className="exercise-list-tonnage"><GiWeight size={18} /> {exercise?.exerciseTonnage} kg</span>
+                return (
+                    <div className="exercise-list-item" key={exercise?.id || exercise?.exerciseId}>
+                        <div className="exercise-card-header">
+                            <div className="exercise-card-info-cont">
+                                <div className="exercise-icon-cont">
+                                    <img src={exercise?.imageUrl} alt="" />
                                 </div>
+                                <div className="exercise-info-cont">
+                                    <p className="exercise-list-name">{exercise?.exerciseName || "Unnamed exercise"}</p>
+                                    <div className="exercise-info">
+                                        <span className="exercise-list-group">{exercise?.muscleGroup || "General"}</span>
+                                        <div className="divider"></div>
+                                        <span className="exercise-list-tonnage"><GiWeight size={18} /> {exercise?.exerciseTonnage} kg</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="delete-exercise-btn-cont">
+                                <CustomBtn
+                                    icon={<LuX size={22} />}
+                                    onClick={() => handleDeleteExercise(workoutExerciseId)}
+                                    className="delete-exercise-btn"
+                                />
                             </div>
                         </div>
-                        <div className="delete-exercise-btn-cont">
-                            <CustomBtn icon={<MdOutlineCancel size={22} />} onClick={() => handleDeleteExercise(workoutExerciseId)} className="delete-exercise-btn" />
-                        </div>
-                    </div>
 
-                    <div className="divider"></div>
+                        <div className="divider"></div>
 
-                    <div className="exercise-card-body">
-                        {sets.map((set, index) => (
-                            <div className="set-cont" key={set?.setId || `${exerciseId}-set-${index + 1}`}>
-                                <span className="id-set-cont">{index + 1}</span>
-                                <div className="set-value-cont">
-                                    <span className="set-label">WEIGHT KG</span>
-                                    <input
-                                        className="set-value"
-                                        type="text"
-                                        placeholder="KG"
-                                        value={getInputValue(workoutExerciseId, set, "weight_kg")}
-                                        onChange={(event) => handleInputChange(workoutExerciseId, set, "weight_kg", event.target.value)}
-                                    />
-                                </div>
-                                <div className="set-value-cont">
-                                    <span className="set-label">REPS</span>
-                                    <input
-                                        className="set-value"
-                                        type="text"
-                                        placeholder="REPS"
-                                        value={getInputValue(workoutExerciseId, set, "reps")}
-                                        onChange={(event) => handleInputChange(workoutExerciseId, set, "reps", event.target.value)}
-                                    />
-                                </div>
-                                <div className="set-value-cont">
-                                    <span className="set-label">RPE</span>
-                                    <input
-                                        className="set-value"
-                                        type="text"
-                                        placeholder="RPE"
-                                        value={getInputValue(workoutExerciseId, set, "rpe")}
-                                        onChange={(event) => handleInputChange(workoutExerciseId, set, "rpe", event.target.value)}
-                                    />
-                                </div>
-                                <div className="check-box-cont">
-                                    <input
-                                        type="checkbox"
-                                        checked={Boolean(checkedBySetKey[getSetKey(workoutExerciseId, set?.setId)])}
-                                        onChange={(event) => handleCheckboxChange(workoutExerciseId, set , event.target.checked)}
-                                    />
-                                </div>
+                        <div className="exercise-card-body">
+                            {sets.map((set, index) => (
+                                <ExerciseSetRow
+                                    key={set?.setId || `${exerciseId}-set-${index + 1}`}
+                                    index={index}
+                                    set={set}
+                                    values={getSetValues(workoutExerciseId, set)}
+                                    checked={Boolean(checkedBySetKey[getSetKey(workoutExerciseId, set?.setId)])}
+                                    onValueChange={(field, value) => handleInputChange(workoutExerciseId, set, field, value)}
+                                    onCheckedChange={(nextChecked) => handleCheckboxChange(workoutExerciseId, set, nextChecked)}
+                                    onDelete={() => handleDeleteSet(workoutExerciseId, set)}
+                                />
+                            ))}
+                            <div className="add-set-cont">
+                                <CustomBtn
+                                    icon={<GoPlus size={22} />}
+                                    text="Add Set"
+                                    onClick={() => handleAddSet(workoutExerciseId)}
+                                    className="add-set-btn"
+                                />
                             </div>
-                        ))}
-                        <div className="add-set-cont">
-                            <CustomBtn icon={<GoPlus size={22} />} text="Add Set" onClick={() => handleAddSet(workoutExerciseId)} className="add-set-btn" />
                         </div>
                     </div>
-                </div>
-            );
-        })}
-
-
-
+                );
+            })}
         </>
-    )
-    
-}
+    );
+};
 
 export default ExerciseCard;

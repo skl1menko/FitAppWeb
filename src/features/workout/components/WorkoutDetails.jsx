@@ -110,12 +110,18 @@ const WorkoutDetails = () => {
                     <div className="exercises-list">
                         {(workout.exercisesWithSets || []).map((exercise) => (
                             <div key={exercise.id} className="exercise-card">
-                                <div className="exercise-head">
-                                    <h1>{exercise.exerciseName}</h1>
-                                    <span className="muscle-group-tag">
-                                        <FaDumbbell aria-hidden="true" />
-                                        {exercise.muscleGroup || "General"}
-                                    </span>
+                                <div className="exercise-head-cont">
+                                    <div className="exercise-img-cont">
+                                        <img src={exercise.imageUrl} alt={exercise.exerciseName} />
+                                    </div>
+                                    <div className="exercise-head">
+                                        <h1>{exercise.exerciseName}</h1>
+                                        <span className="muscle-group-tag">
+                                            <FaDumbbell aria-hidden="true" />
+                                            {exercise.muscleGroup || "General"}
+                                        </span>
+                                    </div>
+
                                 </div>
 
                                 <p className="exercise-tonnage">

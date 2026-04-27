@@ -32,6 +32,22 @@ const useWorkoutExercisesSet = (activeWorkoutId = null, workoutExercises = []) =
             return;
         }
 
+        const tempSetId = `temp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const optimisticSet = {
+            setId: tempSetId,
+            workoutExerciseId: exerciseId,
+            weight_kg: setData?.weight_kg ?? 0,
+            reps: setData?.reps ?? 0,
+            rpe: setData?.rpe ?? null,
+            isJustAdded: true,
+            isPendingCreate: true
+        };
+
+        setSetsByExerciseId((prev) => ({
+            ...prev,
+            [exerciseId]: [...(prev[exerciseId] || []), optimisticSet]
+        }));
+
         try {
             const response = await workoutSetService.addSet(workoutId, exerciseId, setData);
             const newSet = response?.data?.data;
@@ -42,12 +58,23 @@ const useWorkoutExercisesSet = (activeWorkoutId = null, workoutExercises = []) =
                 };
                 setSetsByExerciseId((prev) => ({
                     ...prev,
-                    [exerciseId]: [...(prev[exerciseId] || []), preparedNewSet]
+                    [exerciseId]: (prev[exerciseId] || []).map((set) =>
+                        set.setId === tempSetId ? preparedNewSet : set
+                    )
                 }));
                 return preparedNewSet;
             }
+
+            setSetsByExerciseId((prev) => ({
+                ...prev,
+                [exerciseId]: (prev[exerciseId] || []).filter((set) => set.setId !== tempSetId)
+            }));
         } catch (error) {
             console.error("Failed to add set:", error);
+            setSetsByExerciseId((prev) => ({
+                ...prev,
+                [exerciseId]: (prev[exerciseId] || []).filter((set) => set.setId !== tempSetId)
+            }));
         }
     }, []);
 

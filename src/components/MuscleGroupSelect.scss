@@ -1,0 +1,102 @@
+.muscle-group-select {
+    position: relative;
+
+    .muscle-group-select-trigger {
+        width: 100%;
+        border: 1px solid #d4deef;
+        border-radius: 10px;
+        background: #fff;
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+
+        &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        img {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            object-fit: cover;
+            background: #eef3ff;
+            flex: 0 0 auto;
+        }
+
+        span {
+            color: #2f4267;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .placeholder {
+            color: #7a8dab;
+            font-weight: 500;
+        }
+
+        .chevron {
+            margin-left: auto;
+            color: #627aa5;
+            font-size: 11px;
+        }
+    }
+
+    .muscle-group-select-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        max-height: 260px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid #d6e0f0;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 14px 30px rgba(24, 41, 73, 0.18);
+        padding: 6px;
+        z-index: 10;
+    }
+
+    .muscle-group-select-option {
+        width: 100%;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        background: #fff;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+
+        img {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            object-fit: cover;
+            background: #eef3ff;
+            flex: 0 0 auto;
+        }
+
+        span {
+            font-size: 13px;
+            color: #2f4267;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        &:hover {
+            border-color: #d8e1f2;
+            background: #f8fbff;
+        }
+
+        &.active {
+            border-color: #3f68b5;
+            background: #edf3ff;
+        }
+    }
+}

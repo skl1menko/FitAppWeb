@@ -1,0 +1,136 @@
+.exercise-list-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .exercise-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-direction: row;
+
+        .exercise-card-info-cont {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-direction: row;
+
+            .exercise-icon-cont {
+                width: 54px;
+                height: 54px;
+                border-radius: 10px;
+                overflow: hidden;
+                flex: 0 0 auto;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                    display: block;
+                }
+            }
+
+            .exercise-info-cont {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                .exercise-list-name {
+                    margin: 0;
+                    font-size: 14px;
+                    font-weight: 700;
+                    color: #000000;
+                }
+
+                .exercise-info {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 8px;
+
+                    .exercise-list-group {
+                        color: #636364;
+
+
+                        font-size: 12px;
+                        font-weight: 600;
+                        white-space: nowrap;
+                    }
+
+                    .divider {
+                        width: 1px;
+                        height: 12px;
+                        background-color: #e5e7eb;
+                    }
+
+                    .exercise-list-tonnage {
+                        display: flex;
+                        align-items: center;
+                        color: #636364;
+                        font-size: 12px;
+                        font-weight: 600;
+                        gap: 4px;
+                    }
+                }
+
+
+            }
+        }
+
+        .delete-exercise-btn-cont {
+            display: flex;
+            margin-right: 5px;
+
+            .delete-exercise-btn {
+                border-radius: 999px;
+                background-color: #fee2e2;
+                margin-right: 3px;
+                padding: 4px;
+                color: #b91c1c;
+                box-shadow: none;
+
+                &:hover {
+                    background-color: #fecaca;
+                    color: #991b1b;
+                }
+            }
+        }
+    }
+
+
+
+    .divider {
+        width: 100%;
+        height: 1px;
+        background-color: #e5e7eb;
+    }
+
+    .exercise-card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .add-set-cont {
+            display: flex;
+
+            .add-set-btn {
+                background-color: #bbbbbb6b;
+                padding: 5px;
+                color: #000000;
+                font-size: 14px;
+                font-weight: 600;
+                border-radius: 8px;
+                gap: 2px;
+
+                &:hover {
+                    background-color: #bbbbbb9c;
+                }
+            }
+        }
+    }
+}

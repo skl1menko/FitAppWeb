@@ -1,0 +1,332 @@
+.add-exercise-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+
+    .add-exercise-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(12, 19, 34, 0.45);
+        backdrop-filter: blur(2px);
+    }
+
+    .add-exercise-card {
+        position: relative;
+        z-index: 1;
+        width: min(640px, 100%);
+        max-height: min(86vh, 760px);
+        overflow: visible;
+        background: #ffffff;
+        border: 1px solid #dce5f3;
+        border-radius: 16px;
+        box-shadow: 0 18px 40px rgba(15, 27, 49, 0.22);
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .add-exercise-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            h2 {
+                margin: 0;
+                color: #1f304d;
+                font-size: 22px;
+            }
+
+            .close-btn {
+                border: none;
+                width: 32px;
+                height: 32px;
+                border-radius: 999px;
+                background: #eff3fb;
+                color: #30476f;
+                font-size: 16px;
+                font-weight: 700;
+                cursor: pointer;
+            }
+        }
+
+        .find-exercise-cont {
+            --filter-control-height: 100%;
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+
+            input {
+                width: 100%;
+                min-height: var(--filter-control-height);
+                box-sizing: border-box;
+                border: 1px solid #d4deef;
+                border-radius: 10px;
+                padding: 10px 12px;
+                font-size: 16px;
+                font-weight: 500;
+                color: #1f2d46;
+                outline: none;
+                background: #fff;
+
+                &:focus {
+                    border-color: #7a9ce0;
+                    box-shadow: 0 0 0 3px rgba(80, 121, 204, 0.15);
+                }
+            }
+
+            .muscle-filter {
+                width: 40%;
+                min-height: var(--filter-control-height);
+                box-sizing: border-box;
+
+                .muscle-group-select-trigger {
+                    min-height: var(--filter-control-height);
+                    box-sizing: border-box;
+                }
+            }
+
+
+        }
+
+        .add-exercise-error {
+            margin: 0;
+            color: #a52525;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .exercise-options-list {
+            flex: 1;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 4px 4px 4px 0px;
+
+            .hint-text {
+                margin: 0;
+                color: #60769e;
+                font-size: 13px;
+                font-weight: 600;
+                text-align: center;
+                padding: 14px 0;
+            }
+
+            .exercise-option-item {
+                position: relative;
+                border: 1px solid #dce5f3;
+                border-radius: 12px;
+                padding: 10px 12px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                background: #fbfdff;
+                width: 100%;
+                text-align: left;
+                cursor: pointer;
+                transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, transform 0.18s ease;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    left: 10px;
+                    right: 10px;
+                    bottom: 4px;
+                    height: 3px;
+                    border-radius: 999px;
+                    background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+                    transform: scaleX(0);
+                    transform-origin: left center;
+                    opacity: 0;
+                    transition: transform 0.25s ease, opacity 0.25s ease;
+                }
+
+                &:hover {
+                    transform: translateY(-1px);
+                }
+
+                &.selected {
+                    background: linear-gradient(90deg, #f2f7ff 0%, #e6efff 100%);
+                    
+
+                    &::after {
+                        transform: scaleX(1);
+                        opacity: 1;
+                    }
+
+                }
+
+                .exercise-main {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    min-width: 0;
+                    flex: 1;
+
+                    .exercise-icon {
+                        width: 55px;
+                        height: 55px;
+                        overflow: hidden;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: contain;
+                            display: block;
+                        }
+
+                        .exercise-icon-fallback {
+                            font-size: 10px;
+                            font-weight: 700;
+                            color: #6b7ea1;
+                        }
+                    }
+
+                    .exercise-info {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 3px;
+                        min-width: 0;
+
+                        .exercise-name {
+                            margin: 0;
+                            color: #1f304d;
+                            font-size: 14px;
+                            font-weight: 700;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+
+                        .exercise-group {
+                            margin: 0;
+                            color: #627aa5;
+                            font-size: 12px;
+                            font-weight: 600;
+                        }
+                    }
+
+                }
+
+                .exercise-select-checkbox {
+                    display: none;
+                }
+
+                &:disabled {
+                    opacity: 0.7;
+                    cursor: not-allowed;
+                }
+            }
+
+        }
+
+        .add-exercise-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+
+            .cancel-btn,
+            .submit-btn {
+                border: none;
+                border-radius: 10px;
+                font-size: 13px;
+                font-weight: 700;
+                padding: 10px 14px;
+                cursor: pointer;
+            }
+
+            .cancel-btn {
+                border: 1px solid #c9d4ea;
+                background: #fff;
+                color: #2f466f;
+            }
+
+            .submit-btn {
+                background: #3b82f6;
+                color: #fff;
+            }
+
+            .submit-btn:disabled,
+            .cancel-btn:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+        }
+
+    }
+    
+}
+
+@media (max-width: 768px) {
+    .add-exercise-modal {
+        padding: 12px;
+
+        .add-exercise-card {
+            max-height: 92vh;
+            padding: 12px;
+        }
+
+        .add-exercise-head {
+            h2 {
+                font-size: 18px;
+            }
+        }
+
+        .exercise-option-item {
+            padding: 10px;
+
+            .exercise-thumb {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        .add-exercise-actions {
+            .cancel-btn,
+            .submit-btn {
+                flex: 1;
+            }
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .add-exercise-modal {
+        .add-exercise-card {
+            padding: 10px;
+
+            .add-exercise-head {
+                h2 {
+                    font-size: 16px;
+                }
+
+                .close-btn {
+                    width: 30px;
+                    height: 30px;
+                }
+            }
+
+            .find-exercise-cont {
+
+                input {
+                    width: 100%;
+                }
+
+                .muscle-filter {
+                    width: 100%;
+                }
+            }
+
+        }
+    }
+}

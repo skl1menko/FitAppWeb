@@ -14,23 +14,38 @@ body.workout-page-body {
         flex-direction: column;
         gap: 24px;
 
-        .create-workout-cont {
+        .start-workout-cont {
             display: flex;
+            gap: 8px;
+
+            .start-workout-btn {
+                background-color: #34d399;
+
+                &:hover {
+                    background-color: #34d399c9;
+                }
+            }
         }
 
-        .workout-list-cont{
-            display: flex;
-            flex-direction: column;
+        .workout-lists-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             gap: 20px;
-            background-color: #fff;
-            border-radius: 14px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-            .workout-list{
+            .workout-list-cont {
                 display: flex;
                 flex-direction: column;
                 gap: 20px;
+                background-color: #fff;
+                border-radius: 14px;
+                padding: 20px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+                .workout-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                }
             }
         }
     }
@@ -43,9 +58,13 @@ body.workout-page-body {
         .workout-page-content {
             gap: 20px;
 
-            .workout-list-cont {
-                padding: 18px;
-                gap: 16px;
+            .workout-lists-grid {
+                grid-template-columns: 1fr;
+
+                .workout-list-cont {
+                    padding: 18px;
+                    gap: 16px;
+                }
             }
         }
     }
@@ -58,6 +77,10 @@ body.workout-page-body {
         .workout-page-content {
             gap: 16px;
 
+            .start-workout-cont {
+                flex-direction: column;
+            }
+
             .create-workout-cont {
 
                 .create-workout-btn {
@@ -67,12 +90,14 @@ body.workout-page-body {
                 }
             }
 
-            .workout-list-cont {
-                padding: 14px;
-                border-radius: 12px;
+            .workout-lists-grid {
+                .workout-list-cont {
+                    padding: 14px;
+                    border-radius: 12px;
 
-                .workouts-card-header h2 {
-                    font-size: 22px;
+                    .workouts-card-header h2 {
+                        font-size: 22px;
+                    }
                 }
             }
         }
@@ -83,18 +108,31 @@ body.workout-page-body {
     .workout-page-cont {
 
         .workout-page-content {
-            .create-workout-cont {
+            .start-workout-cont {
+                flex-direction: row;
+                justify-content: space-around;
+                gap: 2px;
+
+                .start-workout-btn {
+                    border-radius: 12px;
+                    font-size: 15px;
+                    padding: 10px;
+                }
+
                 .create-workout-btn {
                     border-radius: 12px;
-                    font-size: 14px;
+                    font-size: 15px;
+                    padding: 10px;
                 }
             }
 
-            .workout-list-cont {
-                padding: 12px;
+            .workout-lists-grid {
+                .workout-list-cont {
+                    padding: 12px;
 
-                .workouts-card-header h2 {
-                    font-size: 20px;
+                    .workouts-card-header h2 {
+                        font-size: 20px;
+                    }
                 }
             }
         }

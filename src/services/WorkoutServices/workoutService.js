@@ -4,7 +4,7 @@ const workoutService = {
 
     // ── Workouts ───────────────────────────────────────────────
 
-    create: (data) => {
+    create: (data = {}) => {
         return api.post('/workouts', data);
     },
 

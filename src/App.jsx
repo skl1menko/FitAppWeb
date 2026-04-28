@@ -6,6 +6,7 @@ import ProtectedRoute from './routes/ProtectedRoute.jsx'
 import GoogleCallback from './features/auth/components/GoogleCallback.jsx'
 import DashboardPage from './features/dashboard/DashboardPage.jsx'
 import WorkoutPage from './features/workout/WorkoutPage.jsx'
+import WorkoutSessionPage from './features/workout-session/WorkoutSessionPage.jsx'
 import MainLayout from './layout/MainLayout.jsx'
 import WorkoutDetails from "./features/workout/components/WorkoutDetails.jsx"
 import ExercisesPage from './features/exercises/ExercisesPage.jsx'
@@ -29,6 +30,7 @@ function App() {
          }>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/workouts" element={<WorkoutPage />} />
+          <Route path="/workout/session" element={<WorkoutSessionPage />} />
           <Route path="/workout/:workoutId" element={<WorkoutDetails />} />
           <Route path="/exercises" element={<ExercisesPage />} />
           <Route path="/progress" element={<div>Progress Page</div>} />

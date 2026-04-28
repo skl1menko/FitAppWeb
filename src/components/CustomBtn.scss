@@ -16,4 +16,14 @@
         &:hover {
             background-color: #2563EB;
         }
+
+        &:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        &:disabled:hover {
+            background-color: #9CA3AF;
+        }
 }

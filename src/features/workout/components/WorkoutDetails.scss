@@ -1,7 +1,7 @@
-
 body.workout-page-body {
     background-color: #F9FAFB;
 }
+
 .workout-details-page {
     --wd-bg: #eff6ff;
     --wd-surface: #ffffff;
@@ -125,7 +125,12 @@ body.workout-page-body {
                 }
 
                 .wk-hd-cont-stats.two {
-                    align-items: center;
+                    .label{
+                        align-self: start;
+                    }
+                    span{
+                        align-self: center;
+                    }
                 }
 
             }
@@ -163,34 +168,58 @@ body.workout-page-body {
             box-shadow: 0 16px 26px rgba(15, 23, 42, 0.1);
         }
 
-        .exercise-head {
+        .exercise-head-cont {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: row;
             gap: 10px;
-            flex-wrap: wrap;
 
-            h3 {
-                margin: 0;
-                color: var(--wd-text);
-                font-size: 31px;
-                letter-spacing: -0.02em;
+
+
+            .exercise-img-cont {
+                width: 54px;
+                height: 54px;
+            
+
+                img {
+                    width: 54px;
+                    height: 54px;
+                    border-radius: 10px;
+                    object-fit: contain;
+                }
             }
 
-            .muscle-group-tag {
-                display: inline-flex;
+            .exercise-head {
+                display: flex;
+                justify-content: space-between;
                 align-items: center;
-                gap: 6px;
-                background: rgba(14, 165, 233, 0.15);
-                border: 1px solid rgba(14, 165, 233, 0.35);
-                color: #0369a1;
-                border-radius: 999px;
-                padding: 6px 10px;
-                font-size: 12px;
-                font-weight: 600;
-                text-transform: capitalize;
-                white-space: nowrap;
+                gap: 10px;
+                width: 100%;
+                flex-wrap: wrap;
+
+                h3 {
+                    margin: 0;
+                    color: var(--wd-text);
+                    font-size: 31px;
+                    letter-spacing: -0.02em;
+                }
+
+                .muscle-group-tag {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: rgba(14, 165, 233, 0.15);
+                    border: 1px solid rgba(14, 165, 233, 0.35);
+                    color: #0369a1;
+                    border-radius: 999px;
+                    padding: 6px 10px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    text-transform: capitalize;
+                    white-space: nowrap;
+                }
             }
+
+
         }
 
         .exercise-tonnage {
@@ -229,8 +258,8 @@ body.workout-page-body {
             border-bottom: 1px solid #dbeafe;
         }
 
-        th + th,
-        td + td {
+        th+th,
+        td+td {
             border-left: 1px solid #e2e8f0;
         }
 

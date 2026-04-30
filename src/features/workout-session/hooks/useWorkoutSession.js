@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
 import workoutService from "../../../services/WorkoutServices/workoutService";
 import useWorkoutExercises from "./useWorkoutExercises";
 import {
@@ -14,10 +14,14 @@ import { isWorkoutActive } from "../../workout/utils/workoutStatus";
 // modal visibility, finish/cancel actions, and summary refresh.
 const useWorkoutSession = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
     const shouldStartNew = searchParams.get("new") === "1";
     const requestedWorkoutId = Number(searchParams.get("workoutId"));
     const isPlannedMode = searchParams.get("mode") === "planned" && Number.isFinite(requestedWorkoutId) && requestedWorkoutId > 0;
+    const plannedReturnPath = isPlannedMode && typeof location.state?.returnTo === "string"
+        ? location.state.returnTo
+        : "/workouts";
 
     const [isSessionReady, setIsSessionReady] = useState(!shouldStartNew);
     const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
@@ -238,7 +242,7 @@ const useWorkoutSession = () => {
         if (!isPlannedMode) {
             resetSessionState();
         }
-        navigate("/workouts");
+        navigate(isPlannedMode ? plannedReturnPath : "/workouts");
     };
 
     // Cancels active workout by deleting it and resetting session state.
@@ -255,7 +259,7 @@ const useWorkoutSession = () => {
         }
 
         resetSessionState();
-        navigate("/workouts");
+        navigate(isPlannedMode ? plannedReturnPath : "/workouts");
     };
 
     const startPlannedWorkoutNow = async () => {

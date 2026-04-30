@@ -477,7 +477,36 @@ body.schedule-page-body {
                                     }
                                 }
                             }
+
+                            .add-workout-btn {
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                align-self: end;
+                                gap: 4px;
+                                border: none;
+                                background-color: #0fa5e9;
+                                color: #fff;
+                                font-size: 14px;
+                                font-weight: 600;
+                                cursor: pointer;
+                                border-radius: 9999px;
+                                padding: 8px;
+                                width: fit-content;
+
+                                &:disabled {
+                                    cursor: not-allowed;
+                                    opacity: 0.7;
+                                }
+
+                                &:hover {
+                                    background-color: #0c87b8;
+                                }
+
+                            }
                         }
+
+
 
                         .plan-toggle-btn {
                             display: flex;

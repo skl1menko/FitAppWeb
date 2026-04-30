@@ -31,6 +31,7 @@ body.workout-page-body {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             gap: 20px;
+            align-items: start;
 
             .workout-list-cont {
                 display: flex;
@@ -45,6 +46,16 @@ body.workout-page-body {
                     display: flex;
                     flex-direction: column;
                     gap: 20px;
+                }
+
+                .workouts-card-header {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+
+                    h2 {
+                        margin: 0;
+                    }
                 }
             }
         }

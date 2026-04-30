@@ -31,6 +31,17 @@ const createWorkoutRow = () => ({
     showDate: false
 });
 
+const normalizePlannedDate = (value) => {
+    if (!(value instanceof Date) || Number.isNaN(value.getTime())) {
+        return null;
+    }
+
+    const normalized = new Date(value);
+    // Keep planned workouts anchored to the selected calendar day.
+    normalized.setHours(12, 0, 0, 0);
+    return normalized;
+};
+
 const SchedulePage = () => {
     const navigate = useNavigate();
     const [openPlans, setOpenPlans] = useState(new Set());
@@ -45,6 +56,7 @@ const SchedulePage = () => {
     const [programs, setPrograms] = useState([]);
     const [isLoadingPrograms, setIsLoadingPrograms] = useState(false);
     const [programsError, setProgramsError] = useState("");
+    const [creatingWorkoutPlanId, setCreatingWorkoutPlanId] = useState(null);
     const planWorkoutsRefs = useRef({});
 
     const formatPlanDate = (value) => {
@@ -58,12 +70,10 @@ const SchedulePage = () => {
 
     const formatWorkoutDateTime = (value) => {
         if (!value) return "Starts when launched";
-        return new Date(value).toLocaleString("en-US", {
+        return new Date(value).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
+            year: "numeric"
         });
     };
 
@@ -127,7 +137,7 @@ const SchedulePage = () => {
         const payloadWorkouts = workouts
             .map((workout) => ({
                 name: workout.name.trim(),
-                startTime: workout.startTime ? workout.startTime.toISOString() : null,
+                startTime: workout.startTime ? normalizePlannedDate(workout.startTime)?.toISOString() : null,
             }))
             .filter((workout) => workout.name.length > 0);
 
@@ -164,7 +174,46 @@ const SchedulePage = () => {
     };
 
     const handleEditWorkout = (workoutId) => {
-        navigate(`/workout/session?workoutId=${workoutId}&mode=planned`);
+        navigate(`/workout/session?workoutId=${workoutId}&mode=planned`, {
+            state: { returnTo: "/schedule" }
+        });
+    };
+
+    const handleAddWorkoutToPlan = async (program) => {
+        const programId = program?.programId;
+        if (!programId || creatingWorkoutPlanId) return;
+
+        const nextWorkoutNumber = (program.workouts?.length || 0) + 1;
+
+        setCreatingWorkoutPlanId(programId);
+
+        try {
+            const response = await workoutService.create({
+                program_id: programId,
+                name: `Workout ${nextWorkoutNumber}`,
+                is_started: false
+            });
+
+            const createdWorkout = response?.data?.data;
+            if (createdWorkout) {
+                setPrograms((prev) => prev.map((item) => {
+                    if (item.programId !== programId) {
+                        return item;
+                    }
+
+                    return {
+                        ...item,
+                        workouts: [...(item.workouts || []), createdWorkout]
+                    };
+                }));
+            }
+
+        } catch (error) {
+            const message = error?.response?.data?.message || "Failed to add workout to plan";
+            alert(message);
+        } finally {
+            setCreatingWorkoutPlanId(null);
+        }
     };
 
     const handleStartWorkout = async (workoutId) => {
@@ -208,8 +257,6 @@ const SchedulePage = () => {
 
     const handleDeletePlan = async (programId) => {
         if (!programId) return;
-        const shouldDelete = window.confirm("Delete this plan? This action cannot be undone.");
-        if (!shouldDelete) return;
 
         try {
             await trainingProgramService.delete(programId);
@@ -309,7 +356,7 @@ const SchedulePage = () => {
                                     <div className="workout-date-row">
                                         <DatePickerCustom
                                             value={workout.startTime}
-                                            onChange={(date) => handleWorkoutChange(workout.id, "startTime", date)}
+                                            onChange={(date) => handleWorkoutChange(workout.id, "startTime", normalizePlannedDate(date))}
                                         />
                                     </div>
                                 )}
@@ -368,6 +415,7 @@ const SchedulePage = () => {
                                 <div className="plans-list">
                                     {programs.map((program) => {
                                         const isOpen = openPlans.has(program.programId);
+                                        const isCreatingWorkout = creatingWorkoutPlanId === program.programId;
                                         return (
                                             <div className="plan-card" key={program.programId}>
                                                 <div className="plan-card-header">
@@ -434,8 +482,19 @@ const SchedulePage = () => {
                                                                 </div>
                                                             );
                                                         })}
+                                                        <button
+                                                            type="button"
+                                                            className="add-workout-btn"
+                                                            onClick={() => handleAddWorkoutToPlan(program)}
+                                                            disabled={isCreatingWorkout}
+                                                        >
+                                                            <FaPlus size={10} />
+                                                            {isCreatingWorkout ? "Adding..." : ""}
+                                                        </button>
                                                     </div>
+                                                    
                                                 )}
+                                               
                                                 <button
                                                     type="button"
                                                     className="plan-toggle-btn"

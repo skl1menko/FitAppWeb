@@ -139,6 +139,10 @@ const WorkoutPage = () => {
         }
     };
 
+    const handleWorkoutDeleted = () => {
+        setWorkoutsRefreshKey((prev) => prev + 1);
+    };
+
     return (
         <div className="workout-page-cont">
             <div className="workout-page-content">
@@ -158,7 +162,11 @@ const WorkoutPage = () => {
                             <h2>Recent Workouts</h2>
                         </div>
                         <div className="workout-list">
-                            <WorkoutsListCard refreshKey={workoutsRefreshKey} variant="recent" />
+                            <WorkoutsListCard
+                                refreshKey={workoutsRefreshKey}
+                                variant="recent"
+                                onWorkoutDeleted={handleWorkoutDeleted}
+                            />
                         </div>
                     </div>
                     <div className="workout-list-cont">

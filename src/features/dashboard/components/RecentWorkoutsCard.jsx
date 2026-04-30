@@ -9,6 +9,7 @@ import {
     BsChevronRight,
 } from '../../../assets/icons';
 import { formatGroupedNumber } from '../../../utils/formatNumber';
+import { isWorkoutCompleted } from '../../workout/utils/workoutStatus';
 
 const ICON_STYLES = [
     { bg: '#d1fae5', color: '#10b981', Icon: GoPulse },
@@ -44,6 +45,8 @@ const RecentWorkoutsCard = () => {
         });
     }, []);
 
+    const completedWorkouts = workouts.filter((workout) => isWorkoutCompleted(workout));
+
     return (
         <div className="recent-workout-cont">
             <div className="recent-workout-header">
@@ -54,7 +57,7 @@ const RecentWorkoutsCard = () => {
             </div>
 
             <div className="recent-workout-list">
-                {workouts.slice(0, 5).map((w, i) => {
+                {completedWorkouts.slice(0, 5).map((w, i) => {
                     const { bg, color, Icon } = ICON_STYLES[i % ICON_STYLES.length];
                     const duration = getDuration(w.startTime, w.endTime);
                     const metric = w.programName || (w.totalTonnage ? `${formatGroupedNumber(w.totalTonnage)} kg` : null);
@@ -66,7 +69,7 @@ const RecentWorkoutsCard = () => {
                         .join(' · ');
 
                     return (
-                        <div className="rw-item" key={w.workoutId}>
+                        <div className="rw-item" key={w.workoutId} onClick={() => window.location.href = `/workout/${w.workoutId}`}>
                             <div className="rw-icon-badge" style={{ background: bg }}>
                                 <Icon style={{ color }} />
                             </div>

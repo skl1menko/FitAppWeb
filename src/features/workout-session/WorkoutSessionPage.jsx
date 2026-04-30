@@ -17,12 +17,10 @@ const formatPlannedStart = (dateValue) => {
         return "Starts when launched";
     }
 
-    return new Date(dateValue).toLocaleString("en-US", {
+    return new Date(dateValue).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
+        year: "numeric"
     });
 };
 

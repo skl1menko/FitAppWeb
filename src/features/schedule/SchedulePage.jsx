@@ -142,12 +142,12 @@ const SchedulePage = () => {
             .filter((workout) => workout.name.length > 0);
 
         if (!programName.trim()) {
-            setFormError("Введите название программы");
+            setFormError("Plan name is required");
             return;
         }
 
         if (payloadWorkouts.length === 0) {
-            setFormError("Добавьте хотя бы одну тренировку");
+            setFormError("At least one workout with a name is required");
             return;
         }
 
@@ -164,10 +164,10 @@ const SchedulePage = () => {
             setProgramDescription("");
             setShowDescription(false);
             setWorkouts([createWorkoutRow()]);
-            setFormSuccess("Программа и тренировки созданы");
+            setFormSuccess("Plan created successfully");
             loadPrograms();
         } catch (error) {
-            setFormError(error?.response?.data?.message || "Не удалось создать программу");
+            setFormError(error?.response?.data?.message || "Failed to create plan");
         } finally {
             setIsSubmitting(false);
         }

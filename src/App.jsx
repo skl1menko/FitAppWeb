@@ -10,6 +10,7 @@ import WorkoutSessionPage from './features/workout-session/WorkoutSessionPage.js
 import MainLayout from './layout/MainLayout.jsx'
 import WorkoutDetails from "./features/workout/components/WorkoutDetails.jsx"
 import ExercisesPage from './features/exercises/ExercisesPage.jsx'
+import SchedulePage from './features/schedule/SchedulePage.jsx'
 function App() {
  
 
@@ -34,7 +35,7 @@ function App() {
           <Route path="/workout/:workoutId" element={<WorkoutDetails />} />
           <Route path="/exercises" element={<ExercisesPage />} />
           <Route path="/progress" element={<div>Progress Page</div>} />
-          <Route path="/schedule" element={<div>Schedule Page</div>} />
+          <Route path="/schedule" element={<SchedulePage />} />
         </Route>
         
       </Routes>

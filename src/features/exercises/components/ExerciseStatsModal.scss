@@ -60,7 +60,7 @@
             img {
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
+                object-fit: contain;
             }
         }
 
@@ -157,6 +157,7 @@
         }
 
         .exercise-stat-value {
+            margin-top: auto;
             display: inline-flex;
             align-items: baseline;
             gap: 4px;
@@ -276,7 +277,7 @@
                 color: #fff;
             }
 
-            & + .tooltip-row {
+            &+.tooltip-row {
                 margin-top: 6px;
             }
         }
@@ -353,7 +354,15 @@
         padding: 14px;
 
         .exercise-stats-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+
+            .exercise-stat-label {
+                font-size: 11px;
+            }
+
+            .exercise-stat-value {
+                font-size: 22px;
+            }
         }
 
         .exercise-stats-main {
@@ -362,38 +371,38 @@
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 620px) {
     .exercise-stats-modal {
         .exercise-stats-card {
             padding: 14px;
             border-radius: 18px;
         }
 
-        .exercise-stats-head {
-            flex-direction: column;
-
-            .exercise-stats-hero {
-                width: 100%;
-            }
-        }
-
         .exercise-stats-grid {
-            grid-template-columns: 1fr;
-        }
+            grid-template-columns: repeat(4, minmax(0, 1fr));
 
-        .exercise-stat-card {
-            .exercise-stat-value {
-                font-size: 24px;
+            .exercise-stat-card {
+                padding: 8px;
+
+                .exercise-stat-label {
+                    font-size: 8px;
+                }
+
+                .exercise-stat-value {
+                    font-size: 14px;
+
+                    .exercise-stat-suffix {
+                        font-size: 10px;
+                    }
+                }
             }
+
         }
 
         .exercise-stats-section-head {
             align-items: flex-start;
         }
 
-        .exercise-session-row {
-            flex-direction: column;
-        }
 
         .exercise-session-values {
             align-items: flex-start;
@@ -402,5 +411,29 @@
                 text-align: left;
             }
         }
+    }
+}
+
+@media (max-width: 420px) {
+    .exercise-stats-modal {
+
+            .exercise-stats-grid {
+                .exercise-stat-card {
+                    padding: 10px;
+
+                    .exercise-stat-label {
+                        font-size: 6px;
+                    }
+
+                    .exercise-stat-value {
+                        font-size: 10px;
+
+                        .exercise-stat-suffix {
+                            font-size: 8px;
+                        }
+                    }
+                }
+
+            }
     }
 }

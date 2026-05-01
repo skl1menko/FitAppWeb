@@ -127,9 +127,7 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
                             <h2 id="exercise-stats-title">{exerciseName}</h2>
                             <div className="exercise-stats-meta">
                                 <span>{muscleGroup}</span>
-                                {stats?.trackedWorkouts ? (
-                                    <span>{formatGroupedNumber(stats.trackedWorkouts)} tracked workouts</span>
-                                ) : null}
+                               
                             </div>
                         </div>
                     </div>
@@ -145,7 +143,7 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
                     <>
                         <div className="exercise-stats-grid">
                             <StatCard
-                                label="Max reps in a set"
+                                label="Max reps"
                                 value={formatGroupedNumber(stats?.maxReps || 0)}
                                 suffix=" reps"
                             />
@@ -155,12 +153,12 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
                                 suffix=" kg"
                             />
                             <StatCard
-                                label="Max workout volume"
+                                label="Max volume"
                                 value={formatGroupedNumber(stats?.maxVolume || 0)}
                                 suffix=" kg"
                             />
                             <StatCard
-                                label="Tracked workouts"
+                                label="Workouts"
                                 value={formatGroupedNumber(stats?.trackedWorkouts || 0)}
                             />
                         </div>
@@ -239,8 +237,8 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
                                                 <span>{point.label}</span>
                                             </div>
                                             <div className="exercise-session-values">
-                                                <span>{formatGroupedNumber(point.weightKg)} kg</span>
-                                                <span>{formatGroupedNumber(point.volumeKg)} kg volume</span>
+                                                <span>Max weight: {formatGroupedNumber(point.weightKg)} kg</span>
+                                                <span>Volume: {formatGroupedNumber(point.volumeKg)} kg</span>
                                             </div>
                                         </div>
                                     ))}

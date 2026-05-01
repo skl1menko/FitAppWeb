@@ -1,4 +1,5 @@
 .workout-cont {
+    position: relative;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -13,6 +14,28 @@
 
     &:hover {
         background-color: #E5E7EB;
+    }
+
+    .workout-delete-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 18px;
+        height:18px;
+        border: none;
+        border-radius: 999px;
+        background: #ef4444;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.15s ease, background-color 0.15s ease;
+        z-index: 2;
+
+        &:hover {
+            background: #dc2626;
+            transform: scale(1.06);
+        }
     }
 
     &.active-workout {
@@ -77,6 +100,7 @@
             .workout-label {
                 display: flex;
                 align-items: center;
+                flex-wrap: wrap;
                 gap: 8px;
 
                 span {
@@ -84,7 +108,6 @@
                     font-weight: bold;
                 }
 
-                
             }
 
             .workout-stat-cont {
@@ -208,6 +231,14 @@
 @media (max-width: 480px) {
     .workout-cont {
         padding: 12px;
+
+        .workout-delete-btn {
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+        }
 
         .workout-left-cont {
             gap: 10px;

@@ -32,7 +32,7 @@ const formatScheduledTime = (dateValue) => {
     });
 };
 
-const WorkoutsListCard = ({ refreshKey = 0, variant = "recent" }) => {
+const WorkoutsListCard = ({ refreshKey = 0, variant = "recent", onWorkoutDeleted }) => {
 
     const [workouts, setWorkouts] = useState([])
     const navigate = useNavigate();
@@ -65,11 +65,30 @@ const WorkoutsListCard = ({ refreshKey = 0, variant = "recent" }) => {
         });
 
         if (variant === "planned") {
-            return scheduled;
+            return scheduled.filter((workout) => !workout.programId);
         }
 
         return [...active, ...completed];
     }, [variant, workouts]);
+
+    const handleDeleteWorkout = async (event, workoutId) => {
+        event.stopPropagation();
+
+        if (!workoutId) {
+            return;
+        }
+
+      
+
+        try {
+            await workoutService.delete(workoutId);
+            setWorkouts((prev) => prev.filter((workout) => workout.workoutId !== workoutId));
+            onWorkoutDeleted?.(workoutId);
+        } catch (error) {
+            const message = error?.response?.data?.message || "Failed to delete workout";
+            alert(message);
+        }
+    };
 
     return (
         <>
@@ -134,6 +153,16 @@ const WorkoutsListCard = ({ refreshKey = 0, variant = "recent" }) => {
                     className={`workout-cont ${isActiveWorkout ? "active-workout" : ""} ${isScheduledWorkout ? "scheduled-workout" : ""}`}
                     onClick={onWorkoutClick}
                 >
+                    {variant === "recent" && !isActiveWorkout ? (
+                        <button
+                            type="button"
+                            className="workout-delete-btn"
+                            aria-label="Delete workout"
+                            onClick={(event) => handleDeleteWorkout(event, workout.workoutId)}
+                        >
+                            X
+                        </button>
+                    ) : null}
                     <div className="workout-left-cont">
                         <div className="workout-icon-cont">
                             <PiBarbellLight size={24} color="#3B82F6" />
@@ -146,6 +175,7 @@ const WorkoutsListCard = ({ refreshKey = 0, variant = "recent" }) => {
                                 ) : !isActiveWorkout ? (
                                     <CiCircleCheck size={18} color="#10B981" className="completed-icon" />
                                 ) : null}
+                               
                             </div>
                             <div className="workout-stat-cont">
                                 <span className="workout-stat">

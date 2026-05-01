@@ -181,7 +181,6 @@ const MainHeader = () => {
                 {isMenuOpen && (
                     <div className={`user-dropdown ${isAnimating ? 'closing' : ''}`}>
                         <NavLink to="/profile">Profile</NavLink>
-                        <NavLink to="/settings">Settings</NavLink>
                         <button className="logout" onClick={handleLogout}>Logout</button>
                     </div>
                 )}
@@ -204,9 +203,6 @@ const MainHeader = () => {
                     )}
                     <NavLink to="/exercises" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
                         <MdSportsGymnastics className="main-header-icon"/> Exercises
-                    </NavLink>
-                    <NavLink to="/progress" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
-                        <GiProgression className="main-header-icon"/> Progress
                     </NavLink>
                     <NavLink to="/schedule" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
                         <FiCalendar className="main-header-icon"/> Schedule

@@ -201,12 +201,13 @@ const MainHeader = () => {
                             Аctive workout
                         </NavLink>
                     )}
+                    <NavLink to="/schedule" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
+                        <FiCalendar className="main-header-icon" /> Schedule
+                    </NavLink>
                     <NavLink to="/exercises" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
                         <MdSportsGymnastics className="main-header-icon"/> Exercises
                     </NavLink>
-                    <NavLink to="/schedule" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
-                        <FiCalendar className="main-header-icon"/> Schedule
-                    </NavLink>
+                   
                 </div>
             )}
         </header>

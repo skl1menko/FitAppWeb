@@ -226,6 +226,7 @@ const ExercisesPage = () => {
             <div className="exercise-page-content">
                 <div className="create-exercise-cont">
                     <CustomBtn
+                    className="create-exercise-btn"
                         icon={<FaPlus />}
                         text="Create New Exercise"
                         onClick={() => {

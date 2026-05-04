@@ -19,6 +19,8 @@ body.exercise-page-body {
             display: flex;
             justify-content: flex-start;
             width: 100%;
+
+           
         }
 
         .exercise-list-cont {
@@ -38,6 +40,10 @@ body.exercise-page-body {
 @media (max-width: 768px) {
     .exercise-page-cont {
         padding: 16px;
+        .create-exercise-btn {
+            padding: 12px;
+            font-size: 14px;
+        }
 
         .exercise-page-content {
             gap: 16px;
@@ -52,5 +58,9 @@ body.exercise-page-body {
 @media (max-width: 420px) {
     .exercise-page-cont {
         padding: 12px;
+            .create-exercise-btn {
+                padding: 10px;
+                font-size: 12px;
+            }
     }
 }

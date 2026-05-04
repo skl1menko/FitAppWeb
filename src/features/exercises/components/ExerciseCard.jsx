@@ -13,16 +13,32 @@ const getMuscleGroupClass = (muscleGroup) => {
     return "badge-general";
 };
 
-const ExerciseCard = ({ exercises = [], showDelete = false, onDelete }) => {
+const ExerciseCard = ({ exercises = [], showDelete = false, onDelete, onSelect }) => {
     return (
         <div className="exercise-card-cont">
             {exercises.map((exercise) => (
-                <div className="exercise-card-content" key={exercise?.exerciseId || exercise?._id || exercise?.id || exercise?.exerciseName}>
+                <div
+                    className="exercise-card-content"
+                    key={exercise?.exerciseId || exercise?._id || exercise?.id || exercise?.exerciseName}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => onSelect?.(exercise)}
+                    onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            onSelect?.(exercise);
+                        }
+                    }}
+                    aria-label={`Open stats for ${exercise?.exerciseName || "exercise"}`}
+                >
                     {showDelete ? (
                         <button
                             type="button"
                             className="exercise-delete-btn"
-                            onClick={() => onDelete?.(exercise)}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                onDelete?.(exercise);
+                            }}
                             aria-label={`Delete ${exercise?.exerciseName || "exercise"}`}
                             title="Delete custom exercise"
                         >

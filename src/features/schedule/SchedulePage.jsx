@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useBodyClass from "../../hooks/useBodyClass";
 import "./SchedulePage.scss";
 import { MdSportsGymnastics, MdOutlineEditCalendar, BsChevronDown, FaPlus } from "../../assets/icons";
@@ -7,6 +7,7 @@ import trainingProgramService from "../../services/trainingProgramService";
 import DatePickerCustom from "../../components/DatePickerCustom";
 import workoutService from "../../services/WorkoutServices/workoutService";
 import { useNavigate } from "react-router";
+import authService from "../../services/authService";
 
 const createWorkoutId = () => {
     if (typeof crypto !== "undefined") {
@@ -44,7 +45,9 @@ const normalizePlannedDate = (value) => {
 
 const SchedulePage = () => {
     const navigate = useNavigate();
+    const role = authService.getUser()?.role;
     const [openPlans, setOpenPlans] = useState(new Set());
+    const [activePlansView, setActivePlansView] = useState("personal");
     const [isBuilderOpen, setIsBuilderOpen] = useState(true);
     const [programName, setProgramName] = useState("");
     const [programDescription, setProgramDescription] = useState("");
@@ -87,14 +90,16 @@ const SchedulePage = () => {
         setProgramsError("");
 
         try {
-            const response = await trainingProgramService.getMy();
+            const response = role === "trainer"
+                ? await trainingProgramService.getMyCreated()
+                : await trainingProgramService.getMy();
             const list = response?.data?.data || [];
             const detailed = await Promise.all(
                 list.map((program) =>
                     trainingProgramService
                         .getById(program.programId)
-                        .then((res) => res?.data?.data || program)
-                        .catch(() => ({ ...program, workouts: [] }))
+                        .then((res) => ({...program, ...(res?.data?.data || {})}))
+                        .catch(() => ({...program, workouts: []}))
                 )
             );
             setPrograms(detailed);
@@ -107,7 +112,19 @@ const SchedulePage = () => {
 
     useEffect(() => {
         loadPrograms();
-    }, []);
+    }, [role]);
+
+    const visiblePrograms = useMemo(() => {
+        if (role !== "trainer") {
+            return programs;
+        }
+
+        if (activePlansView === "clients") {
+            return programs.filter((program) => (Number(program.assignedAthletesCount) || 0) > 0);
+        }
+
+        return programs.filter((program) => (Number(program.assignedAthletesCount) || 0) === 0);
+    }, [activePlansView, programs, role]);
 
     const handleAddWorkout = () => {
         setWorkouts((prev) => [...prev, createWorkoutRow()]);
@@ -405,15 +422,37 @@ const SchedulePage = () => {
                 <div className="block-content right">
                     <div className="workout-list">
                         <div className="workout-list-body">
+                            {role === "trainer" ? (
+                                <div className="plans-view-switch">
+                                    <button
+                                        type="button"
+                                        className={`plans-view-switch-btn ${activePlansView === "personal" ? "active" : ""}`}
+                                        onClick={() => setActivePlansView("personal")}
+                                    >
+                                        My plans
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`plans-view-switch-btn ${activePlansView === "clients" ? "active" : ""}`}
+                                        onClick={() => setActivePlansView("clients")}
+                                    >
+                                        Client plans
+                                    </button>
+                                </div>
+                            ) : null}
                             {isLoadingPrograms ? (
                                 <div className="plans-feedback">Loading plans...</div>
                             ) : programsError ? (
                                 <div className="plans-feedback error">{programsError}</div>
-                            ) : programs.length === 0 ? (
-                                <div className="plans-feedback">No plans yet.</div>
+                            ) : visiblePrograms.length === 0 ? (
+                                <div className="plans-feedback">
+                                    {role === "trainer" && activePlansView === "clients"
+                                        ? "No client plans yet. Assign any of your plans to a client first."
+                                        : "No plans yet."}
+                                </div>
                             ) : (
                                 <div className="plans-list">
-                                    {programs.map((program) => {
+                                    {visiblePrograms.map((program) => {
                                         const isOpen = openPlans.has(program.programId);
                                         const isCreatingWorkout = creatingWorkoutPlanId === program.programId;
                                         return (
@@ -424,18 +463,25 @@ const SchedulePage = () => {
                                                         {program.description ? (
                                                             <p>{program.description}</p>
                                                         ) : null}
+                                                        {program.isAssigned ? (
+                                                            <span className="plan-assigned-by">
+                                                                Assigned by trainer: {program.assignedByName || "trainer"}
+                                                            </span>
+                                                        ) : null}
                                                         <span>{(program.workouts || []).length} workouts</span>
                                                     </div>
                                                     <div className="plan-meta">
                                                         <span>{formatPlanDate(program.createdAt)}</span>
 
-                                                        <button
-                                                            type="button"
-                                                            className="plan-delete-btn"
-                                                            onClick={() => handleDeletePlan(program.programId)}
-                                                        >
-                                                            Delete plan
-                                                        </button>
+                                                        {!program.isAssigned ? (
+                                                            <button
+                                                                type="button"
+                                                                className="plan-delete-btn"
+                                                                onClick={() => handleDeletePlan(program.programId)}
+                                                            >
+                                                                Delete plan
+                                                            </button>
+                                                        ) : null}
                                                     </div>
                                                 </div>
                                                 {isOpen && (
@@ -486,7 +532,7 @@ const SchedulePage = () => {
                                                             type="button"
                                                             className="add-workout-btn"
                                                             onClick={() => handleAddWorkoutToPlan(program)}
-                                                            disabled={isCreatingWorkout}
+                                                            disabled={isCreatingWorkout || program.isAssigned}
                                                         >
                                                             <FaPlus size={10} />
                                                             {isCreatingWorkout ? "Adding..." : ""}

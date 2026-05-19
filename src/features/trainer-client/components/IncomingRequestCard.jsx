@@ -1,5 +1,6 @@
 import {FaCheck, IoMdPerson, MdOutlineCancel} from "../../../assets/icons";
 import CustomBtn from "../../../components/CustomBtn";
+import "./IncomingRequestCard.scss";
 
 const IncomingRequestCard = ({
     athleteId,
@@ -21,28 +22,35 @@ const IncomingRequestCard = ({
     const rejectKey = `reject-${athleteId}-${trainerId}`;
     const isApproving = activeActionKey === approveKey;
     const isRejecting = activeActionKey === rejectKey;
+    const cardClasses = cardClassName || "trainer-result-card trainer-request-card";
+    const headClasses = headClassName || "trainer-card-head";
+    const avatarClasses = avatarClassName || "trainer-card-avatar";
+    const infoClasses = infoClassName || "trainer-result-info";
+    const actionsClasses = actionsClassName || "trainer-request-actions trainer-request-actions-compact";
+    const rejectButtonClasses = rejectButtonClassName || "trainer-request-icon-btn trainer-request-reject-btn";
+    const approveButtonClasses = approveButtonClassName || "trainer-request-icon-btn trainer-request-approve-btn";
 
     return (
-        <div className={cardClassName}>
-            <div className={headClassName}>
-                <div className={avatarClassName}>
+        <div className={cardClasses}>
+            <div className={headClasses}>
+                <div className={avatarClasses}>
                     <IoMdPerson />
                 </div>
-                <div className={infoClassName}>
+                <div className={infoClasses}>
                     <strong>{name}</strong>
                     <p>{email}</p>
                 </div>
             </div>
-            <div className={actionsClassName}>
+            <div className={actionsClasses}>
                 <CustomBtn
                     icon={<MdOutlineCancel size={20} />}
-                    className={rejectButtonClassName}
+                    className={rejectButtonClasses}
                     onClick={() => onReject(athleteId, trainerId)}
                     disabled={isApproving || isRejecting}
                 />
                 <CustomBtn
                     icon={<FaCheck />}
-                    className={approveButtonClassName}
+                    className={approveButtonClasses}
                     onClick={() => onApprove(athleteId, trainerId)}
                     disabled={isApproving || isRejecting}
                 />

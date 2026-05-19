@@ -321,7 +321,7 @@ const ClientsPage = () => {
                                     activeActionKey={activeActionKey}
                                     onApprove={handleApprove}
                                     onReject={handleReject}
-                                    cardClassName="clients-result-card clients-result-card-stacked"
+                                    cardClassName="clients-result-card"
                                     headClassName="clients-card-head"
                                     avatarClassName="clients-card-avatar"
                                     infoClassName="clients-result-info"
@@ -353,7 +353,7 @@ const ClientsPage = () => {
                                     </div>
                                 </div>
                                 <div className="clients-program-actions">
-                                    <span className="clients-program-label">Training program</span>
+                                    <span>Training program</span>
                                     <div className="clients-program-dropdown">
                                         <FormControl fullWidth size="small">
                                             <Select

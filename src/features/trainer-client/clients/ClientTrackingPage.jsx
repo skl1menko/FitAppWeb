@@ -60,18 +60,6 @@ const formatWorkoutDuration = (startValue, endValue) => {
     return `${hours} h ${minutes} min`;
 };
 
-const buildFallbackDailyMetricsFromWorkouts = (workouts, dateValue) => {
-    const totalEnergyBurned = workouts
-        .filter((workout) => getWorkoutDateKey(workout) === dateValue)
-        .reduce((sum, workout) => sum + getWorkoutCalories(workout), 0);
-
-    return {
-        totalEnergyBurned: Math.round(totalEnergyBurned),
-        totalStepCount: 0,
-        avgHeartRate: 0
-    };
-};
-
 const normalizeMetricPoint = (metric) => {
     const dateKey = String(metric.endDate || metric.startDate || metric.date || "").slice(0, 10);
     if (!dateKey) {
@@ -172,7 +160,6 @@ const ClientTrackingPage = () => {
     const [chartData, setChartData] = useState([]);
     const [measurementProgressData, setMeasurementProgressData] = useState([]);
     const [activeMeasurementField, setActiveMeasurementField] = useState("body_weight");
-    const [isStatsLoading, setIsStatsLoading] = useState(false);
     const [isChartLoading, setIsChartLoading] = useState(false);
     const [isMeasurementsLoading, setIsMeasurementsLoading] = useState(false);
     const [error, setError] = useState("");

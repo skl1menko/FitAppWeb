@@ -1,4 +1,5 @@
 import {GoCheckCircleFill} from "../../../assets/icons";
+import "./SearchPanel.scss";
 
 const SearchPanel = ({
     title,
@@ -18,10 +19,17 @@ const SearchPanel = ({
     resultsClassName,
     children
 }) => {
+    const panelClasses = panelClassName || "trainer-panel-cont";
+    const searchRowClasses = searchRowClassName || "trainer-search-row";
+    const hintClasses = hintClassName || "trainer-hint-text";
+    const messageClasses = messageClassName || "trainer-message-text";
+    const errorClasses = errorClassName || "trainer-error-text";
+    const resultsClasses = resultsClassName || "trainer-results-list";
+
     return (
-        <div className={panelClassName}>
+        <div className={panelClasses}>
             <h2>{title}</h2>
-            <div className={searchRowClassName}>
+            <div className={searchRowClasses}>
                 <input
                     type="text"
                     value={query}
@@ -29,18 +37,18 @@ const SearchPanel = ({
                     placeholder={placeholder}
                 />
             </div>
-            {showSearching && isSearching && <p className={hintClassName}>Searching...</p>}
+            {showSearching && isSearching && <p className={hintClasses}>Searching...</p>}
 
             {message && (
-                <p className={messageClassName}>
+                <p className={messageClasses}>
                     <GoCheckCircleFill />
                     {message}
                 </p>
             )}
-            {error && <p className={errorClassName}>{error}</p>}
+            {error && <p className={errorClasses}>{error}</p>}
 
             {showResults && (
-                <div className={resultsClassName}>
+                <div className={resultsClasses}>
                     {children}
                 </div>
             )}

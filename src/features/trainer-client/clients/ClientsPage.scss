@@ -29,6 +29,28 @@ body.clients-page-body {
                 color: #111827;
             }
 
+            .clients-hint-text,
+            .clients-message-text,
+            .clients-error-text {
+                margin: 0;
+                font-size: 14px;
+            }
+
+            .clients-hint-text {
+                color: #6b7280;
+            }
+
+            .clients-message-text {
+                color: #059669;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .clients-error-text {
+                color: #dc2626;
+            }
+
             .clients-results-list {
                 display: flex;
                 flex-direction: column;
@@ -47,7 +69,6 @@ body.clients-page-body {
                     border-radius: 12px;
                     background-color: #ffffff;
                     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
-
 
                     .clients-card-head {
                         display: flex;
@@ -78,6 +99,10 @@ body.clients-page-body {
                                 margin: 4px 0 0;
                                 color: #4b5563;
                                 font-size: 14px;
+                            }
+
+                            .clients-meta-text {
+                                color: #6b7280;
                             }
                         }
                     }
@@ -232,35 +257,7 @@ body.clients-page-body {
             }
         }
 
-
     }
-}
-
-.clients-meta-text {
-    color: #6b7280;
-}
-
-.clients-hint-text {
-    margin: 0;
-    color: #6b7280;
-    font-size: 14px;
-}
-
-.clients-message-text,
-.clients-error-text {
-    margin: 0;
-    font-size: 14px;
-}
-
-.clients-message-text {
-    color: #059669;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.clients-error-text {
-    color: #dc2626;
 }
 
 .clients-program-menu-paper {
@@ -312,7 +309,6 @@ body.clients-page-body {
         padding: 20px 32px;
 
         .clients-page-content {
-
             .clients-panel-cont.clients {
                 .clients-results-list {
                     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -392,7 +388,6 @@ body.clients-page-body {
             }
 
             .clients-panel-cont.clients {
-
                 .clients-result-card.clients {
                     .clients-card-head {
                         align-items: center;
@@ -415,10 +410,10 @@ body.clients-page-body {
                     }
                 }
             }
-        }
 
-        .clients-search-row {
-            flex-direction: column;
+            .clients-search-row {
+                flex-direction: column;
+            }
         }
     }
 }

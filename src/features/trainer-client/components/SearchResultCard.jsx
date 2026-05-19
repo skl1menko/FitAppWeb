@@ -1,4 +1,5 @@
 import {IoMdPerson} from "../../../assets/icons";
+import "./SearchResultCard.scss";
 
 const SearchResultCard = ({
     name,
@@ -14,21 +15,28 @@ const SearchResultCard = ({
     metaClassName,
     actionButtonClassName
 }) => {
+    const cardClasses = cardClassName || "trainer-result-card";
+    const headClasses = headClassName || "trainer-card-head";
+    const avatarClasses = avatarClassName || "trainer-card-avatar";
+    const infoClasses = infoClassName || "trainer-result-info";
+    const metaClasses = metaClassName || "trainer-meta-text";
+    const actionButtonClasses = actionButtonClassName || "trainer-action-btn";
+
     return (
-        <div className={cardClassName}>
-            <div className={headClassName}>
-                <div className={avatarClassName}>
+        <div className={cardClasses}>
+            <div className={headClasses}>
+                <div className={avatarClasses}>
                     <IoMdPerson />
                 </div>
-                <div className={infoClassName}>
+                <div className={infoClasses}>
                     <strong>{name}</strong>
                     <p>{email}</p>
-                    {meta && <p className={metaClassName}>{meta}</p>}
+                    {meta && <p className={metaClasses}>{meta}</p>}
                 </div>
             </div>
             <button
                 type="button"
-                className={actionButtonClassName}
+                className={actionButtonClasses}
                 onClick={onAction}
                 disabled={disabled}
             >

@@ -1,0 +1,69 @@
+.trainer-panel-cont {
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    h2 {
+        margin: 0;
+        font-size: 20px;
+        color: #111827;
+    }
+
+    .trainer-search-row {
+        display: flex;
+        gap: 10px;
+
+        input {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 15px;
+            color: #111827;
+            outline: none;
+        }
+    }
+
+    .trainer-message-text,
+    .trainer-error-text,
+    .trainer-hint-text {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .trainer-hint-text {
+        color: #6b7280;
+    }
+
+    .trainer-message-text {
+        color: #059669;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .trainer-error-text {
+        color: #dc2626;
+    }
+
+    .trainer-results-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 520px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+}
+
+@media (max-width: 768px) {
+    .trainer-panel-cont {
+        .trainer-search-row {
+            flex-direction: column;
+        }
+    }
+}

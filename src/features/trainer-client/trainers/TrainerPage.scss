@@ -19,41 +19,6 @@ body.trainer-page-body {
             grid-template-columns: 1.8fr 1fr;
             gap: 16px;
 
-            .trainer-hero-title {
-                background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-                color: #fff;
-                border-radius: 16px;
-                padding: 22px;
-                display: flex;
-                align-items: flex-start;
-                gap: 14px;
-
-                h1 {
-                    margin: 0 0 8px;
-                    font-size: 28px;
-                    font-weight: 700;
-                }
-
-                p {
-                    margin: 0;
-                    color: #dbeafe;
-                    font-size: 15px;
-                    line-height: 1.5;
-                }
-
-                .trainer-hero-icon {
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 12px;
-                    background-color: rgba(255, 255, 255, 0.18);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 22px;
-                    flex-shrink: 0;
-                }
-            }
-
             .trainer-status-card {
                 background: #fff;
                 border: 1px solid #e5e7eb;
@@ -81,208 +46,38 @@ body.trainer-page-body {
                     color: #4b5563;
                     font-size: 14px;
                 }
-            }
 
-            .trainer-status-card-requests {
-                justify-content: flex-start;
+                .trainer-secondary-btn {
+                    border: 1px solid #d1d5db;
+                    background-color: #fff;
+                    color: #374151;
+                    border-radius: 10px;
+                    padding: 10px 14px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    cursor: pointer;
 
-                .trainer-results-list {
-                    max-height: 320px;
-                    padding-right: 2px;
+                    &:disabled {
+                        color: #9ca3af;
+                        cursor: not-allowed;
+                    }
+                }
+
+                &.trainer-status-card-requests {
+                    justify-content: flex-start;
+
+                    .trainer-results-list {
+                        max-height: 320px;
+                        padding-right: 2px;
+
+                        .trainer-hint-text {
+                            margin: 0;
+                            color: #6b7280;
+                            font-size: 14px;
+                        }
+                    }
                 }
             }
-        }
-    }
-}
-
-.trainer-panel-cont {
-    background-color: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-
-    h2 {
-        margin: 0;
-        font-size: 20px;
-        color: #111827;
-    }
-}
-
-.trainer-search-row {
-    display: flex;
-    gap: 10px;
-
-    input {
-        width: 100%;
-        border: 1px solid #d1d5db;
-        border-radius: 12px;
-        padding: 12px 14px;
-        font-size: 15px;
-        color: #111827;
-        outline: none;
-    }
-}
-
-.trainer-results-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 520px;
-    overflow-y: auto;
-    padding-right: 4px;
-}
-
-.trainer-result-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    padding: 12px;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
-}
-
-.trainer-result-card-stacked {
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.trainer-card-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-}
-
-.trainer-card-avatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background-color: #eff6ff;
-    color: #2563eb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-}
-
-.trainer-result-info {
-    strong {
-        color: #111827;
-        font-size: 16px;
-    }
-
-    p {
-        margin: 4px 0 0;
-        color: #4b5563;
-        font-size: 14px;
-    }
-}
-
-.trainer-message-text,
-.trainer-error-text {
-    margin: 0;
-    font-size: 14px;
-}
-
-.trainer-message-text {
-    color: #059669;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.trainer-error-text {
-    color: #dc2626;
-}
-
-.trainer-hint-text {
-    margin: 0;
-    color: #6b7280;
-    font-size: 14px;
-}
-
-.trainer-meta-text {
-    color: #6b7280;
-}
-
-.trainer-action-btn {
-    border: none;
-    background-color: #2563eb;
-    color: #fff;
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    white-space: nowrap;
-
-    &:hover {
-        background-color: #1d4ed8;
-    }
-
-    &:disabled {
-        background-color: #9ca3af;
-        cursor: not-allowed;
-    }
-}
-
-.trainer-secondary-btn {
-    border: 1px solid #d1d5db;
-    background-color: #fff;
-    color: #374151;
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-
-    &:disabled {
-        color: #9ca3af;
-        cursor: not-allowed;
-    }
-}
-
-.trainer-request-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.trainer-request-card {
-    align-items: center;
-}
-
-.trainer-request-actions-compact {
-    flex-direction: row;
-
-    .trainer-request-icon-btn {
-        justify-content: center;
-        align-items: center;
-        border-radius: 12px;
-        padding: 10px 12px;
-        min-width: 48px;
-    }
-
-    .trainer-request-approve-btn {
-        background-color: #17bf8a;
-
-        &:hover {
-            background-color: #059669;
-        }
-    }
-
-    .trainer-request-reject-btn {
-        background-color: #dc2626;
-
-        &:hover {
-            background-color: #b91c1c;
         }
     }
 }
@@ -300,36 +95,13 @@ body.trainer-page-body {
         .trainer-page-content {
             .trainer-hero-grid {
                 grid-template-columns: 1fr;
+            }
 
-                .trainer-hero-title {
-                    h1 {
-                        font-size: 22px;
-                    }
+            .trainer-status-card {
+                .trainer-secondary-btn {
+                    width: 100%;
                 }
             }
-        }
-    }
-
-    .trainer-search-row {
-        flex-direction: column;
-    }
-
-    .trainer-result-card {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .trainer-action-btn,
-    .trainer-secondary-btn,
-    .trainer-request-actions {
-        width: 100%;
-    }
-
-    .trainer-request-actions-compact {
-        width: 100%;
-
-        .trainer-request-icon-btn {
-            width: 100%;
         }
     }
 }

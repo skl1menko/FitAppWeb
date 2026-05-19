@@ -193,13 +193,6 @@ const TrainerPage = () => {
                                     activeActionKey={activeActionKey}
                                     onApprove={handleApprove}
                                     onReject={handleReject}
-                                    cardClassName="trainer-result-card trainer-request-card"
-                                    headClassName="trainer-card-head"
-                                    avatarClassName="trainer-card-avatar"
-                                    infoClassName="trainer-result-info"
-                                    actionsClassName="trainer-request-actions trainer-request-actions-compact"
-                                    approveButtonClassName="trainer-request-icon-btn trainer-request-approve-btn"
-                                    rejectButtonClassName="trainer-request-icon-btn trainer-request-reject-btn"
                                 />
                             ))}
                         </div>
@@ -216,12 +209,6 @@ const TrainerPage = () => {
                     message={message}
                     error={error}
                     showResults={Boolean(query.trim())}
-                    panelClassName="trainer-panel-cont"
-                    searchRowClassName="trainer-search-row"
-                    hintClassName="trainer-hint-text"
-                    messageClassName="trainer-message-text"
-                    errorClassName="trainer-error-text"
-                    resultsClassName="trainer-results-list"
                 >
                     {results.map((trainer) => {
                         const trainerId = Number(trainer.trainerId);
@@ -237,12 +224,6 @@ const TrainerPage = () => {
                                 buttonLabel={isCurrent ? "Current trainer" : isPending ? "Request sent" : isLoading ? "Sending..." : "Send request"}
                                 onAction={() => handleSendRequest(trainer.trainerId)}
                                 disabled={isCurrent || isPending || isLoading}
-                                cardClassName="trainer-result-card"
-                                headClassName="trainer-card-head"
-                                avatarClassName="trainer-card-avatar"
-                                infoClassName="trainer-result-info"
-                                metaClassName="trainer-meta-text"
-                                actionButtonClassName="trainer-action-btn"
                             />
                         );
                     })}

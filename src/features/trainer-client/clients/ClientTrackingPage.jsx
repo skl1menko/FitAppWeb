@@ -337,10 +337,9 @@ const ClientTrackingPage = () => {
 
                 {error && <p className="client-tracking-error-text">{error}</p>}
                 {warning && <p className="client-tracking-warning-text">{warning}</p>}
-                {(isStatsLoading || isChartLoading) && <p className="client-tracking-hint-text">Loading data...</p>}
 
 
-                <div className="client-tracking-panel-cont">
+                <div className="client-tracking-panel-cont metrics">
                     <div className="client-tracking-chart-header-cont">
                         <div className="client-tracking-chart-header">
                             <h2>Health metrics trend</h2>
@@ -350,7 +349,7 @@ const ClientTrackingPage = () => {
                                     className="client-tracking-period-picker-btn"
                                     onClick={() => (isWeek ? setWeekOffset((value) => value - 1) : setMonthOffset((value) => value - 1))}
                                 >
-                                    <BsChevronDown size={12} className="client-tracking-period-arrow client-tracking-period-arrow-left"/>
+                                    <BsChevronDown size={12} className="client-tracking-period-arrow left"/>
                                 </button>
                                 <span className="client-tracking-period-picker-label">{pickerLabel}</span>
                                 <button
@@ -358,7 +357,7 @@ const ClientTrackingPage = () => {
                                     className="client-tracking-period-picker-btn"
                                     onClick={() => (isWeek ? setWeekOffset((value) => value + 1) : setMonthOffset((value) => value + 1))}
                                 >
-                                    <BsChevronDown size={12} className="client-tracking-period-arrow client-tracking-period-arrow-right"/>
+                                    <BsChevronDown size={12} className="client-tracking-period-arrow right"/>
                                 </button>
                             </div>
                         </div>
@@ -372,7 +371,7 @@ const ClientTrackingPage = () => {
                                             statPill.refs.current[index] = element;
                                         }}
                                         type="button"
-                                        className={`client-tracking-selector-btn ${activeStat === index ? "client-tracking-selector-btn-active" : ""}`}
+                                        className={`client-tracking-selector-btn ${activeStat === index ? "client-tracking-selector-btn active" : ""}`}
                                         onClick={() => setActiveStat(index)}
                                     >
                                         {item.label}
@@ -388,7 +387,7 @@ const ClientTrackingPage = () => {
                                             periodPill.refs.current[index] = element;
                                         }}
                                         type="button"
-                                        className={`client-tracking-selector-btn ${activePeriod === index ? "client-tracking-selector-btn-active" : ""}`}
+                                        className={`client-tracking-selector-btn ${activePeriod === index ? "client-tracking-selector-btn active" : ""}`}
                                         onClick={() => setActivePeriod(index)}
                                     >
                                         {label}
@@ -405,12 +404,11 @@ const ClientTrackingPage = () => {
                             activePeriod={activePeriod}
                             chartData={chartData}
                             loading={isChartLoading}
-                            emptyText="Loading data..."
                         />
                     </div>
                 </div>
 
-                <div className="client-tracking-panel-cont">
+                <div className="client-tracking-panel-cont measurements">
                     <MeasurementProgressSection
                         title="Body measurements progress"
                         description="Track how the client's body measurements change across saved snapshots."
@@ -420,12 +418,11 @@ const ClientTrackingPage = () => {
                         data={measurementProgressData}
                         unit={activeMeasurementMeta.unit}
                         isLoading={isMeasurementsLoading}
-                        loadingText="Loading body measurements..."
                         emptyText="No body measurement history yet."
                     />
                 </div>
 
-                <div className="client-tracking-workouts-cont">
+                <div className="client-tracking-panel-cont workouts">
                     <div className="client-tracking-workouts-header">
                         <div>
                             <h2>Completed workouts</h2>

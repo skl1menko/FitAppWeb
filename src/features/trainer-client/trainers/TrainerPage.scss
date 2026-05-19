@@ -82,6 +82,15 @@ body.trainer-page-body {
                     font-size: 14px;
                 }
             }
+
+            .trainer-status-card-requests {
+                justify-content: flex-start;
+
+                .trainer-results-list {
+                    max-height: 320px;
+                    padding-right: 2px;
+                }
+            }
         }
     }
 }
@@ -246,6 +255,38 @@ body.trainer-page-body {
     gap: 8px;
 }
 
+.trainer-request-card {
+    align-items: center;
+}
+
+.trainer-request-actions-compact {
+    flex-direction: row;
+
+    .trainer-request-icon-btn {
+        justify-content: center;
+        align-items: center;
+        border-radius: 12px;
+        padding: 10px 12px;
+        min-width: 48px;
+    }
+
+    .trainer-request-approve-btn {
+        background-color: #17bf8a;
+
+        &:hover {
+            background-color: #059669;
+        }
+    }
+
+    .trainer-request-reject-btn {
+        background-color: #dc2626;
+
+        &:hover {
+            background-color: #b91c1c;
+        }
+    }
+}
+
 @media (max-width: 1024px) {
     .trainer-page-cont {
         padding: 20px 32px;
@@ -282,5 +323,13 @@ body.trainer-page-body {
     .trainer-secondary-btn,
     .trainer-request-actions {
         width: 100%;
+    }
+
+    .trainer-request-actions-compact {
+        width: 100%;
+
+        .trainer-request-icon-btn {
+            width: 100%;
+        }
     }
 }

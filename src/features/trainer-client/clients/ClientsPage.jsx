@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { useNavigate } from "react-router";
-import { GoCheckCircleFill, IoMdPerson, FaCheck, MdOutlineCancel } from "../../assets/icons";
-import authService from "../../services/authService";
-import trainerService from "../../services/trainerService";
-import trainingProgramService from "../../services/trainingProgramService";
-import useBodyClass from "../../hooks/useBodyClass";
-import CustomBtn from "../../components/CustomBtn";
+import { IoMdPerson } from "../../../assets/icons";
+import authService from "../../../services/authService";
+import trainerService from "../../../services/trainerService";
+import trainingProgramService from "../../../services/trainingProgramService";
+import useBodyClass from "../../../hooks/useBodyClass";
+import IncomingRequestCard from "../components/IncomingRequestCard";
+import SearchPanel from "../components/SearchPanel";
+import SearchResultCard from "../components/SearchResultCard";
 import "./ClientsPage.scss";
 
 const ClientsPage = () => {
@@ -252,108 +254,82 @@ const ClientsPage = () => {
         <div className="clients-page-cont">
             <div className="clients-page-content">
                 <div className="clients-list-cont">
-                    <div className="clients-panel-cont">
-                        <h2>Add new client</h2>
-                        <div className="clients-search-row">
-                            <input
-                                type="text"
-                                value={query}
-                                onChange={(event) => setQuery(event.target.value)}
-                                placeholder="Athlete name or email"
-                            />
-                        </div>
-                        {query.trim() && isSearching && <p className="clients-hint-text">Searching...</p>}
+                    <SearchPanel
+                        title="Add new client"
+                        query={query}
+                        onQueryChange={setQuery}
+                        placeholder="Athlete name or email"
+                        isSearching={isSearching}
+                        showSearching={Boolean(query.trim())}
+                        message={message}
+                        error={error}
+                        showResults={Boolean(query.trim())}
+                        panelClassName="clients-panel-cont"
+                        searchRowClassName="clients-search-row"
+                        hintClassName="clients-hint-text"
+                        messageClassName="clients-message-text"
+                        errorClassName="clients-error-text"
+                        resultsClassName="clients-results-list"
+                    >
+                        {athletes.map((athlete) => {
+                            const unavailable = athlete.assignedTrainer && !athlete.isAssignedToYou;
+                            const isMine = athlete.isAssignedToYou;
+                            const isPending = pendingOutgoingByAthleteId.get(Number(athlete.clientId));
+                            const isLoading = activeActionKey === `send-${athlete.clientId}`;
 
-                        {message && (
-                            <p className="clients-message-text">
-                                <GoCheckCircleFill />
-                                {message}
-                            </p>
-                        )}
-                        {error && <p className="clients-error-text">{error}</p>}
-
-                        {query.trim() && (
-                            <div className="clients-results-list">
-                                {athletes.map((athlete) => {
-                                    const unavailable = athlete.assignedTrainer && !athlete.isAssignedToYou;
-                                    const isMine = athlete.isAssignedToYou;
-                                    const isPending = pendingOutgoingByAthleteId.get(Number(athlete.clientId));
-                                    const isLoading = activeActionKey === `send-${athlete.clientId}`;
-
-                                    return (
-                                        <div key={athlete.clientId} className="clients-result-card">
-                                            <div className="clients-card-head">
-                                                <div className="clients-card-avatar">
-                                                    <IoMdPerson />
-                                                </div>
-                                                <div className="clients-result-info">
-                                                    <strong>{athlete.clientName}</strong>
-                                                    <p>{athlete.clientEmail}</p>
-                                                    {athlete.assignedTrainer && (
-                                                        <p className="clients-meta-text">
-                                                            Assigned to: {athlete.assignedTrainer.trainerName || "another trainer"}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <button
-                                                type="button"
-                                                className="clients-action-btn"
-                                                onClick={() => handleSendRequest(athlete.clientId)}
-                                                disabled={unavailable || isMine || isPending || isLoading}
-                                            >
-                                                {isMine
-                                                    ? "Already your client"
-                                                    : unavailable
-                                                        ? "Unavailable"
-                                                        : isPending
-                                                            ? "Request sent"
-                                                            : isLoading
-                                                                ? "Sending..."
-                                                                : "Send request"}
-                                            </button>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        )}
-                    </div>
+                            return (
+                                <SearchResultCard
+                                    key={athlete.clientId}
+                                    name={athlete.clientName}
+                                    email={athlete.clientEmail}
+                                    meta={athlete.assignedTrainer
+                                        ? `Assigned to: ${athlete.assignedTrainer.trainerName || "another trainer"}`
+                                        : ""}
+                                    buttonLabel={isMine
+                                        ? "Already your client"
+                                        : unavailable
+                                            ? "Unavailable"
+                                            : isPending
+                                                ? "Request sent"
+                                                : isLoading
+                                                    ? "Sending..."
+                                                    : "Send request"}
+                                    onAction={() => handleSendRequest(athlete.clientId)}
+                                    disabled={unavailable || isMine || isPending || isLoading}
+                                    cardClassName="clients-result-card"
+                                    headClassName="clients-card-head"
+                                    avatarClassName="clients-card-avatar"
+                                    infoClassName="clients-result-info"
+                                    metaClassName="clients-meta-text"
+                                    actionButtonClassName="clients-action-btn"
+                                />
+                            );
+                        })}
+                    </SearchPanel>
 
                     <div className="clients-panel-cont">
                         <h2>Incoming requests</h2>
                         <div className="clients-results-list">
                             {incomingRequests.length === 0 && <p className="clients-hint-text">No incoming requests.</p>}
-                            {incomingRequests.map((request) => {
-                                const athleteId = request.athlete?.athleteId;
-                                const trainerId = request.trainer?.trainerId;
-                                const approveKey = `approve-${athleteId}-${trainerId}`;
-                                const rejectKey = `reject-${athleteId}-${trainerId}`;
-                                const isApproving = activeActionKey === approveKey;
-                                const isRejecting = activeActionKey === rejectKey;
-
-                                return (
-                                    <div key={`${athleteId}-${trainerId}`} className="clients-result-card clients-result-card-stacked">
-                                        <div className="clients-card-head">
-                                            <div className="clients-card-avatar">
-                                                <IoMdPerson />
-                                            </div>
-                                            <div className="clients-result-info">
-                                                <strong>{request.athlete?.athleteName}</strong>
-                                                <p>{request.athlete?.athleteEmail}</p>
-
-                                            </div>
-                                        </div>
-                                        <div className="clients-request-actions">
-                                            <CustomBtn icon={<FaCheck />} className="apply-btn" onClick={() => handleApprove(athleteId, trainerId)} disabled={isApproving || isRejecting}
-                                            />
-                                            
-                                            <CustomBtn icon={<MdOutlineCancel size={20}/>} className="cancel-btn" onClick={() => handleReject(athleteId, trainerId)} disabled={isApproving || isRejecting}
-                                            />
-                                        </div>
-                                        
-                                    </div>
-                                );
-                            })}
+                            {incomingRequests.map((request) => (
+                                <IncomingRequestCard
+                                    key={`${request.athlete?.athleteId}-${request.trainer?.trainerId}`}
+                                    athleteId={request.athlete?.athleteId}
+                                    trainerId={request.trainer?.trainerId}
+                                    name={request.athlete?.athleteName}
+                                    email={request.athlete?.athleteEmail}
+                                    activeActionKey={activeActionKey}
+                                    onApprove={handleApprove}
+                                    onReject={handleReject}
+                                    cardClassName="clients-result-card clients-result-card-stacked"
+                                    headClassName="clients-card-head"
+                                    avatarClassName="clients-card-avatar"
+                                    infoClassName="clients-result-info"
+                                    actionsClassName="clients-request-actions"
+                                    approveButtonClassName="apply-btn"
+                                    rejectButtonClassName="cancel-btn"
+                                />
+                            ))}
                         </div>
                     </div>
                 </div>

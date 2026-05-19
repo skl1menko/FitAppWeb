@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import {FiCamera, GiWeight, IoMdPerson, MdEmail, FaBalanceScale, GoCheckCircleFill} from "../../assets/icons";
-import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import MeasurementProgressSection from "../../components/MeasurementProgressSection";
 import useBodyClass from "../../hooks/useBodyClass";
 import profileService from "../../services/profileService";
 import "./ProfilePage.scss";
@@ -46,31 +46,6 @@ const formatProgressDateTime = (dateValue) => {
         hour: "2-digit",
         minute: "2-digit"
     });
-};
-
-const formatMeasurementValue = (value) => {
-    if (value === null || value === undefined || Number.isNaN(Number(value))) {
-        return "0";
-    }
-
-    return Number(value).toLocaleString(undefined, {
-        maximumFractionDigits: 1
-    });
-};
-
-const ProgressTooltip = ({active, payload, unit}) => {
-    if (!active || !payload?.length) {
-        return null;
-    }
-
-    const point = payload[0]?.payload || {};
-
-    return (
-        <div className="profile-chart-tooltip">
-            <p>{point.fullLabel || point.label}</p>
-            <strong>{formatMeasurementValue(payload[0]?.value)} {unit}</strong>
-        </div>
-    );
 };
 
 const ProfilePage = () => {
@@ -235,13 +210,6 @@ const ProfilePage = () => {
         }
     };
 
-    const activeProgressPoint = progressData.at(-1) || null;
-    const activeProgressIndex = progressData.length - 1;
-    const previousProgressPoint = activeProgressIndex > 0 ? progressData[activeProgressIndex - 1] : null;
-    const progressDelta = activeProgressPoint && previousProgressPoint
-        ? activeProgressPoint.value - previousProgressPoint.value
-        : null;
-
     return (
         <div className="profile-page-cont">
             <div className="profile-page-content">
@@ -367,9 +335,6 @@ const ProfilePage = () => {
 
                     <aside className="profile-card-cont profile-card-summary">
                         <div className="profile-summary-head">
-                            <div className="profile-summary-icon">
-                                <GiWeight />
-                            </div>
                             <div>
                                 <h2>Your summary</h2>
                                 <p>Quick access to the key personal details stored on this page.</p>
@@ -395,7 +360,6 @@ const ProfilePage = () => {
                         </div>
 
                         <div className="profile-tip-box">
-                            <FaBalanceScale />
                             <p>Keep measurements up to date to make future progress tracking easier.</p>
                         </div>
 
@@ -414,90 +378,18 @@ const ProfilePage = () => {
                 </form>
 
                 <section className="profile-card-cont profile-progress-card">
-                    <div className="profile-progress-head">
-                        <div>
-                            <h2>Measurement progress</h2>
-                            <p>Track how your body measurements change across saved snapshots.</p>
-                        </div>
-                        <div className="profile-progress-meta">
-                            <span>Active metric</span>
-                            <strong>{activeFieldMeta.label}</strong>
-                        </div>
-                    </div>
-
-                    <div className="profile-progress-tabs">
-                        {BODY_MEASUREMENT_FIELDS.map((field) => (
-                            <button
-                                key={field.key}
-                                type="button"
-                                className={`profile-progress-tab ${activeProgressField === field.key ? "active" : ""}`}
-                                onClick={() => setActiveProgressField(field.key)}
-                            >
-                                {field.label}
-                            </button>
-                        ))}
-                    </div>
-
-                    <div className="profile-progress-layout">
-                        <div className="profile-progress-chart">
-                            {isProgressLoading ? (
-                                <p className="profile-hint-text">Loading progress...</p>
-                            ) : progressData.length > 0 ? (
-                                <ResponsiveContainer width="100%" height={280}>
-                                    <LineChart data={progressData} margin={{ top: 12, right: 12, left: -12, bottom: 0 }}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#e5edf8" vertical={false} />
-                                        <XAxis
-                                            dataKey="chartKey"
-                                            tick={{ fontSize: 12, fill: "#8a97ab" }}
-                                            axisLine={false}
-                                            tickLine={false}
-                                            tickFormatter={(_, index) => progressData[index]?.label || ""}
-                                            minTickGap={24}
-                                        />
-                                        <YAxis
-                                            tick={{ fontSize: 12, fill: "#8a97ab" }}
-                                            axisLine={false}
-                                            tickLine={false}
-                                            width={58}
-                                            tickFormatter={(value) => formatMeasurementValue(value)}
-                                        />
-                                        <Tooltip content={<ProgressTooltip unit={activeFieldMeta.unit} />} />
-                                        <Line
-                                            type="monotone"
-                                            dataKey="value"
-                                            stroke="#2563eb"
-                                            strokeWidth={3}
-                                            dot={{ r: 5, fill: "#2563eb", stroke: "#ffffff", strokeWidth: 2 }}
-                                            activeDot={{ r: 7, fill: "#1d4ed8", stroke: "#ffffff", strokeWidth: 2 }}
-                                        />
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            ) : (
-                                <div className="profile-progress-empty">
-                                    <p>No measurement history yet. Save your stats to start tracking changes.</p>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="profile-progress-summary">
-                            <div className="profile-progress-stat">
-                                <span>Latest value</span>
-                                <strong>
-                                    {activeProgressPoint ? `${formatMeasurementValue(activeProgressPoint.value)} ${activeFieldMeta.unit}` : "No data"}
-                                </strong>
-                            </div>
-                            <div className="profile-progress-stat">
-                                <span>Change vs previous</span>
-                                <strong className={progressDelta === null ? "" : progressDelta >= 0 ? "positive" : "negative"}>
-                                    {progressDelta === null ? "No data" : `${progressDelta >= 0 ? "+" : ""}${formatMeasurementValue(progressDelta)} ${activeFieldMeta.unit}`}
-                                </strong>
-                            </div>
-                            <div className="profile-progress-stat">
-                                <span>Saved points</span>
-                                <strong>{progressData.length}</strong>
-                            </div>
-                        </div>
-                    </div>
+                    <MeasurementProgressSection
+                        title="Measurement progress"
+                        description="Track how your body measurements change across saved snapshots."
+                        fields={BODY_MEASUREMENT_FIELDS}
+                        activeField={activeProgressField}
+                        onFieldChange={setActiveProgressField}
+                        data={progressData}
+                        unit={activeFieldMeta.unit}
+                        isLoading={isProgressLoading}
+                        loadingText="Loading progress..."
+                        emptyText="No measurement history yet. Save your stats to start tracking changes."
+                    />
                 </section>
             </div>
         </div>

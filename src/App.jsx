@@ -12,9 +12,9 @@ import WorkoutDetails from "./features/workout/components/WorkoutDetails.jsx"
 import ExercisesPage from './features/exercises/ExercisesPage.jsx'
 import SchedulePage from './features/schedule/SchedulePage.jsx'
 import authService from './services/authService.js'
-import TrainerPage from './features/trainers/TrainerPage.jsx'
-import ClientsPage from './features/clients/ClientsPage.jsx'
-import ClientTrackingPage from './features/clients/ClientTrackingPage.jsx'
+import TrainerPage from './features/trainer-client/trainers/TrainerPage.jsx'
+import ClientsPage from './features/trainer-client/clients/ClientsPage.jsx'
+import ClientTrackingPage from './features/trainer-client/clients/ClientTrackingPage.jsx'
 import ProfilePage from './features/profile/ProfilePage.jsx'
 
 const RoleConnectionsRedirect = () => {

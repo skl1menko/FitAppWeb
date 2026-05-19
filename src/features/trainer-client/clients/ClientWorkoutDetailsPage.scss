@@ -1,0 +1,14 @@
+@use "../../workout/components/WorkoutDetails.scss";
+
+.trainer-client-workout-owner {
+    margin: 8px 0 0;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.trainer-client-workout-error {
+    margin: 0;
+    color: #dc2626;
+    font-size: 14px;
+}

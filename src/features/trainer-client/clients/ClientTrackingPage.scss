@@ -91,6 +91,31 @@ body.client-tracking-body {
         font-size: 20px;
         color: #111827;
     }
+
+    p {
+        margin: 4px 0 0;
+        color: #6b7280;
+    }
+}
+
+.client-tracking-workouts-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.client-tracking-workout-count {
+    min-width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
 }
 
 .client-tracking-chart-header-cont {
@@ -248,32 +273,7 @@ body.client-tracking-body {
 }
 
 .client-tracking-workout-card {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-
-    strong {
-        color: #111827;
-    }
-
-    p {
-        margin: 4px 0 0;
-        color: #6b7280;
-        font-size: 13px;
-    }
-}
-
-.client-tracking-workout-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    color: #374151;
-    font-size: 13px;
+    margin-top: 4px;
 }
 
 .client-tracking-hint-text,
@@ -328,11 +328,6 @@ body.client-tracking-body {
 
         .client-tracking-selector-row {
             gap: 8px;
-        }
-
-        .client-tracking-workout-card {
-            flex-direction: column;
-            align-items: flex-start;
         }
     }
 }

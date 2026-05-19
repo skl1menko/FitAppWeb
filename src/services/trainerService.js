@@ -17,6 +17,10 @@ const trainerService = {
         return api.get(`/trainers/clients/${clientId}/workouts`);
     },
 
+    getClientWorkoutDetails: (clientId, workoutId) => {
+        return api.get(`/trainers/clients/${clientId}/workouts/${workoutId}`);
+    },
+
     getClientBodyMeasurements: (clientId) => {
         return api.get(`/trainers/clients/${clientId}/body-measurements`);
     },

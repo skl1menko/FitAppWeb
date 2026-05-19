@@ -1,8 +1,7 @@
 import {useEffect, useMemo, useState} from "react";
 import {useLocation, useNavigate, useParams} from "react-router";
-import {FiArrowLeft, IoMdPerson, RiFireLine, IoFootstepsOutline, CiHeart, BsChevronDown} from "../../../assets/icons";
+import {FiArrowLeft, IoMdPerson, BsChevronDown, PiBarbellLight, CiCircleCheck, FiCalendar, FaRegClock, GiWeight, RiFireLine} from "../../../assets/icons";
 import MeasurementProgressSection from "../../../components/MeasurementProgressSection";
-import DatePickerCustom from "../../../components/DatePickerCustom";
 import trainerService from "../../../services/trainerService";
 import authService from "../../../services/authService";
 import useBodyClass from "../../../hooks/useBodyClass";
@@ -10,7 +9,10 @@ import ActivityChart from "../../dashboard/components/ActivityOverview/ActivityC
 import usePill from "../../dashboard/components/ActivityOverview/usePill";
 import {getWeekLabel, getWeekRange, getMonthLabel, getMonthRange} from "../../dashboard/components/ActivityOverview/dateRangeUtils";
 import {STAT_CONFIG, transformMetrics, transformMonthMetrics} from "../../dashboard/components/ActivityOverview/chartUtils";
+import {isWorkoutCompleted} from "../../workout/utils/workoutStatus";
+import {formatGroupedNumber} from "../../../utils/formatNumber";
 import "./ClientTrackingPage.scss";
+import "../../workout/components/WorkoutsListCard.scss";
 
 const formatDateInput = (date) => {
     const year = date.getFullYear();
@@ -30,6 +32,33 @@ const getWorkoutDateKey = (workout) => {
 };
 
 const getWorkoutCalories = (workout) => Number(workout?.caloriesBurned) || 0;
+
+const formatWorkoutDuration = (startValue, endValue) => {
+    if (!startValue || !endValue) {
+        return "-";
+    }
+
+    const start = new Date(startValue).getTime();
+    const end = new Date(endValue).getTime();
+
+    if (Number.isNaN(start) || Number.isNaN(end) || end <= start) {
+        return "-";
+    }
+
+    const totalMinutes = Math.floor((end - start) / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours === 0) {
+        return `${minutes} min`;
+    }
+
+    if (minutes === 0) {
+        return `${hours} h`;
+    }
+
+    return `${hours} h ${minutes} min`;
+};
 
 const buildFallbackDailyMetricsFromWorkouts = (workouts, dateValue) => {
     const totalEnergyBurned = workouts
@@ -159,6 +188,11 @@ const ClientTrackingPage = () => {
         () => MEASUREMENT_FIELDS.find((field) => field.key === activeMeasurementField) || MEASUREMENT_FIELDS[0],
         [activeMeasurementField]
     );
+    const completedWorkouts = useMemo(() => {
+        return workouts
+            .filter((workout) => isWorkoutCompleted(workout))
+            .sort((a, b) => new Date(b?.endTime || b?.end_time || 0) - new Date(a?.endTime || a?.end_time || 0));
+    }, [workouts]);
 
     useEffect(() => {
         if (role !== "trainer") {
@@ -392,22 +426,71 @@ const ClientTrackingPage = () => {
                 </div>
 
                 <div className="client-tracking-workouts-cont">
-                    <h2>Client workouts</h2>
-                    {workouts.length === 0 && (
-                        <p className="client-tracking-hint-text">No workouts yet.</p>
-                    )}
-                    {workouts.map((workout) => (
-                        <div key={workout.workoutId} className="client-tracking-workout-card">
-                            <div>
-                                <strong>{workout.workoutName || "Workout"}</strong>
-                                <p>{workout.startTime ? new Date(workout.startTime).toLocaleString() : "No time"}</p>
-                            </div>
-                            <div className="client-tracking-workout-stats">
-                                <span>Tonnage: {Number(workout.totalTonnage) || 0}</span>
-                                <span>Calories: {Number(workout.caloriesBurned) || 0}</span>
-                            </div>
+                    <div className="client-tracking-workouts-header">
+                        <div>
+                            <h2>Completed workouts</h2>
                         </div>
-                    ))}
+                    </div>
+                    {completedWorkouts.length === 0 && (
+                        <p className="client-tracking-hint-text">No completed workouts yet.</p>
+                    )}
+                    {completedWorkouts.map((workout) => {
+                        const workoutId = workout.workoutId || workout.id;
+                        const workoutDate = workout.startTime || workout.start_time;
+                        const endTime = workout.endTime || workout.end_time;
+
+                        return (
+                            <div
+                                key={workoutId}
+                                className="workout-cont client-tracking-workout-card"
+                                onClick={() => navigate(`/clients/${clientId}/workouts/${workoutId}`, {
+                                    state: {
+                                        clientName: clientInfo.clientName,
+                                        clientEmail: clientInfo.clientEmail
+                                    }
+                                })}
+                            >
+                                <div className="workout-left-cont">
+                                    <div className="workout-icon-cont">
+                                        <PiBarbellLight size={24} color="#3B82F6" />
+                                    </div>
+                                    <div className="workout-info-cont">
+                                        <div className="workout-label">
+                                            <span>{workout.workoutName || "Workout"}</span>
+                                            <CiCircleCheck size={18} color="#10B981" className="completed-icon" />
+                                        </div>
+                                        <div className="workout-stat-cont">
+                                            <span className="workout-stat">
+                                                <FiCalendar size={14} className="calendar-icon" />
+                                                {workoutDate ? new Date(workoutDate).toLocaleDateString("en-US", {
+                                                    month: "short",
+                                                    day: "numeric",
+                                                    year: "numeric"
+                                                }) : "No date"}
+                                            </span>
+                                            <span className="workout-stat">
+                                                <FaRegClock size={14} className="clock-icon" />
+                                                {formatWorkoutDuration(workout.startTime || workout.start_time, endTime)}
+                                            </span>
+                                            <span className="workout-stat">
+                                                {Number(workout.exerciseCount) || 0} exercises
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="workout-right-cont">
+                                    <span className="workout-stat">
+                                        <GiWeight size={18} className="weight-icon" />
+                                        {formatGroupedNumber(workout.totalTonnage || 0)} kg
+                                    </span>
+                                    <span className="workout-stat">
+                                        <RiFireLine size={18} className="calories-icon" color="#FF8904" />
+                                        {workout.caloriesBurned || 0} kcal
+                                    </span>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>

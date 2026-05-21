@@ -4,15 +4,12 @@ import "./ActivityOverview.scss";
 import ActivityChart from "./ActivityChart";
 import { getWeekRange, getWeekLabel, getMonthRange, getMonthLabel } from "./dateRangeUtils";
 import usePill from "./usePill";
+import { PERIOD_CONFIG, STAT_CONFIG } from "./chartUtils";
 
 const ActivityOverview = () => {
     const [weekOffset, setWeekOffset] = useState(0);
     const [monthOffset, setMonthOffset] = useState(0);
-
-    const periods = ["Week", "Month"];
     const [activePeriod, setActivePeriod] = useState(0);
-
-    const stats = ["Steps", "Calories", "Heart Rate"];
     const [activeStat, setActiveStat] = useState(0);
 
     const statPill = usePill(activeStat);
@@ -45,27 +42,27 @@ const ActivityOverview = () => {
                 <div className="overview-selector-cont">
                     <div className="selector-cont">
                         <div className="selector-pill" style={statPill.style} />
-                        {stats.map((s, i) => (
+                        {STAT_CONFIG.map((stat, i) => (
                             <button
-                                key={s}
+                                key={stat.dataKey}
                                 ref={el => statPill.refs.current[i] = el}
                                 className={`selector-btn ${activeStat === i ? "selector-btn--active" : ""}`}
                                 onClick={() => setActiveStat(i)}
                             >
-                                {s}
+                                {stat.label}
                             </button>
                         ))}
                     </div>
                     <div className="selector-cont">
                         <div className="selector-pill" style={periodPill.style} />
-                        {periods.map((p, i) => (
+                        {PERIOD_CONFIG.map((period, i) => (
                             <button
-                                key={p}
+                                key={period.value}
                                 ref={el => periodPill.refs.current[i] = el}
                                 className={`selector-btn ${activePeriod === i ? "selector-btn--active" : ""}`}
                                 onClick={() => setActivePeriod(i)}
                             >
-                                {p}
+                                {period.label}
                             </button>
                         ))}
                     </div>

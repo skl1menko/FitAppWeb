@@ -1,108 +1,61 @@
-import { useEffect, useState } from "react"
+import { useMemo, useState } from "react";
 import "./DashboardPage.scss"
 import DashboardStat from "./components/DashboardStat"
 import DatePickerCustom from "../../components/DatePickerCustom";
 import { IoFootstepsOutline, RiFireLine, FaRegClock, CiHeart } from "../../assets/icons";
-import healthMetricsService from "../../services/healthMetricsService";
-import workoutService from "../../services/WorkoutServices/workoutService";
 import ActivityOverview from "./components/ActivityOverview/ActivityOverview";
 import GoalCard from "./components/GoalCard/GoalCard";
 import WorkoutCalendarCard from "./components/WorkoutCalendarCard/WorkoutCalendarCard";
 import RecentWorkoutsCard from "./components/RecentWorkoutsCard";
 import useBodyClass from "../../hooks/useBodyClass";
+import useDashboardMetrics, { getTrendLabel } from "./hooks/useDashboardMetrics";
 
 const DashboardPage = () => {
-
     useBodyClass("dashboard-body");
 
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [metrics, setMetrics] = useState({ today: null, yesterday: null });
-    const [activeMinutes, setActiveMinutes] = useState({ today: 0, yesterday: 0 });
+    const { metrics, activeMinutes, isLoading, error } = useDashboardMetrics(selectedDate);
+    const todayMetrics = metrics.today;
+    const yesterdayMetrics = metrics.yesterday;
 
-    const formatLocalDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-    };
-
-    const calcTrend = (today, yesterday) => {
-        if (!today || !yesterday || yesterday === 0) return '+0%';
-        const diff = ((today - yesterday) / yesterday) * 100;
-        const sign = diff >= 0 ? '+' : '';
-        return `${sign}${diff.toFixed(0)}%`;
-    };
-
-    const getWorkoutDurationMinutes = (workout) => {
-        const startValue = workout?.startTime || workout?.start_time;
-        const endValue = workout?.endTime || workout?.end_time;
-
-        if (!startValue || !endValue) {
-            return 0;
+    const statCards = useMemo(() => ([
+        {
+            label: "Steps Today",
+            value: todayMetrics?.totalStepCount ?? 0,
+            unit: "steps",
+            color: "#577BFF",
+            icon: <IoFootstepsOutline color="#fff" size={24} />,
+            trendLabel: getTrendLabel(todayMetrics?.totalStepCount, yesterdayMetrics?.totalStepCount),
+            trendDirection: (todayMetrics?.totalStepCount ?? 0) < (yesterdayMetrics?.totalStepCount ?? 0) ? "down" : "up"
+        },
+        {
+            label: "Calories Burned",
+            value: todayMetrics?.totalEnergyBurned ?? 0,
+            unit: "kcal",
+            color: "#FF8700",
+            icon: <RiFireLine color="#fff" size={24} />,
+            trendLabel: getTrendLabel(todayMetrics?.totalEnergyBurned, yesterdayMetrics?.totalEnergyBurned),
+            trendDirection: (todayMetrics?.totalEnergyBurned ?? 0) > (yesterdayMetrics?.totalEnergyBurned ?? 0) ? "down" : "up"
+        },
+        {
+            label: "Active Minutes",
+            value: activeMinutes.today,
+            unit: "min",
+            color: "#11BC94",
+            icon: <FaRegClock color="#fff" size={24} />,
+            trendLabel: getTrendLabel(activeMinutes.today, activeMinutes.yesterday),
+            trendDirection: activeMinutes.today < activeMinutes.yesterday ? "down" : "up"
+        },
+        {
+            label: "AVG Heart Rate",
+            value: todayMetrics?.avgHeartRate ?? 0,
+            unit: "bpm",
+            color: "#fd5e61eb",
+            icon: <CiHeart color="#fff" size={24} />,
+            trendLabel: getTrendLabel(todayMetrics?.avgHeartRate, yesterdayMetrics?.avgHeartRate),
+            trendDirection: (todayMetrics?.avgHeartRate ?? 0) < (yesterdayMetrics?.avgHeartRate ?? 0) ? "down" : "up"
         }
-
-        const start = new Date(startValue).getTime();
-        const end = new Date(endValue).getTime();
-
-        if (Number.isNaN(start) || Number.isNaN(end) || end <= start) {
-            return 0;
-        }
-
-        return Math.round((end - start) / 60000);
-    };
-
-    const getTotalActiveMinutes = (workouts = []) => {
-        return workouts.reduce((total, workout) => total + getWorkoutDurationMinutes(workout), 0);
-    };
-
-    const getWorkoutRangeParams = (date) => {
-        const start = new Date(date);
-        const end = new Date(date);
-
-        start.setHours(0, 0, 0, 0);
-        end.setHours(23, 59, 59, 999);
-
-        return {
-            start: start.toISOString(),
-            end: end.toISOString()
-        };
-    };
-
-    useEffect(() => {
-        const today = new Date(selectedDate);
-        const yesterday = new Date(selectedDate);
-        yesterday.setDate(today.getDate() - 1);
-
-        const todayMetricsDate = formatLocalDate(today);
-        const yesterdayMetricsDate = formatLocalDate(yesterday);
-        const todayWorkoutRange = getWorkoutRangeParams(today);
-        const yesterdayWorkoutRange = getWorkoutRangeParams(yesterday);
-
-        Promise.all([
-            healthMetricsService.getByPeriod('daily', todayMetricsDate, todayMetricsDate),
-            healthMetricsService.getByPeriod('daily', yesterdayMetricsDate, yesterdayMetricsDate),
-            workoutService.getByPeriod(todayWorkoutRange.start, todayWorkoutRange.end),
-            workoutService.getByPeriod(yesterdayWorkoutRange.start, yesterdayWorkoutRange.end)
-        ]).then(([todayRes, yesterdayRes, todayWorkoutsRes, yesterdayWorkoutsRes]) => {
-            const todayData = todayRes.data.data.detailedMetrics?.[0];
-            const yesterdayData = yesterdayRes.data.data.detailedMetrics?.[0];
-            
-            setMetrics({ 
-                today: todayData, 
-                yesterday: yesterdayData 
-            });
-            setActiveMinutes({
-                today: getTotalActiveMinutes(todayWorkoutsRes?.data?.data || []),
-                yesterday: getTotalActiveMinutes(yesterdayWorkoutsRes?.data?.data || [])
-            });
-        }).catch((error) => {
-            console.error('Ошибка при загрузке метрик:', error);
-        });
-    }, [selectedDate]);
-
-
-    const t = metrics?.today;
-    const y = metrics?.yesterday;
+    ]), [activeMinutes.today, activeMinutes.yesterday, todayMetrics, yesterdayMetrics]);
 
     return (
         <div className="dashboard-main-cont">
@@ -110,14 +63,29 @@ const DashboardPage = () => {
                 <div className="dashboard-top-bar">
                     <DatePickerCustom value={selectedDate} onChange={setSelectedDate} />
                 </div>
+                {error && (
+                    <div className="dashboard-feedback dashboard-feedback-error">
+                        {error}
+                    </div>
+                )}
+                {isLoading && (
+                    <div className="dashboard-feedback">
+                        Loading dashboard data...
+                    </div>
+                )}
                 <div className="dashboard-stats-cont">
-                    <DashboardStat color="#577BFF" icon={<IoFootstepsOutline color="#fff" size={24} />} trend={calcTrend(t?.totalStepCount, y?.totalStepCount)} label="Steps Today" num={t?.totalStepCount || 0} text="steps" />
-
-                    <DashboardStat color="#FF8700" icon={<RiFireLine color="#fff" size={24} />} trend={calcTrend(t?.totalEnergyBurned, y?.totalEnergyBurned)} label="Calories Burned" num={t?.totalEnergyBurned || 0} text="kcal" />
-
-                    <DashboardStat color="#11BC94" icon={<FaRegClock color="#fff" size={24} />} trend={calcTrend(activeMinutes.today, activeMinutes.yesterday)} label="Active Minutes" num={activeMinutes.today} text="min" />
-
-                    <DashboardStat color="#fd5e61eb" icon={<CiHeart color="#fff" size={24} />} trend={calcTrend(t?.avgHeartRate, y?.avgHeartRate)} label="AVG Heart Rate" num={t?.avgHeartRate || 0} text="bpm" />
+                    {statCards.map((card) => (
+                        <DashboardStat
+                            key={card.label}
+                            color={card.color}
+                            icon={card.icon}
+                            trendLabel={card.trendLabel}
+                            trendDirection={card.trendDirection}
+                            label={card.label}
+                            value={card.value}
+                            unit={card.unit}
+                        />
+                    ))}
                 </div>
                 <div className="dashboard-overview-cont">
                     <div className="dashboard-charts-cont">
@@ -126,17 +94,16 @@ const DashboardPage = () => {
                     </div>
                     <div className="dashboard-goals-cont">
                         <GoalCard
-                            steps={t?.totalStepCount || 0}
-                            calories={t?.totalEnergyBurned || 0}
+                            steps={todayMetrics?.totalStepCount ?? 0}
+                            calories={todayMetrics?.totalEnergyBurned ?? 0}
                             activeMin={activeMinutes.today}
                         />
-                        <WorkoutCalendarCard
-                        />
+                        <WorkoutCalendarCard />
                     </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default DashboardPage;

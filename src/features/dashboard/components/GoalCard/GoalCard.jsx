@@ -2,8 +2,16 @@ import './GoalCard.scss';
 import GoalRing from './GoalRing';
 import { RiFireLine, IoFootstepsOutline, FaRegClock } from '../../../../assets/icons';
 
+const getPercent = (value, goal) => {
+    if (!goal || goal <= 0) {
+        return 0;
+    }
+
+    return Math.min(Math.round((value / goal) * 100), 100);
+};
+
 const GoalProgressBar = ({ label, value, goal, unit, color }) => {
-    const pct = Math.min((value / goal) * 100, 100);
+    const pct = getPercent(value, goal);
     const fmtVal = typeof value === 'number' ? value.toLocaleString() : value;
     const fmtGoal = typeof goal === 'number' ? goal.toLocaleString() : goal;
     return (
@@ -20,8 +28,6 @@ const GoalProgressBar = ({ label, value, goal, unit, color }) => {
 };
 
 const GoalCard = ({ steps = 0, stepsGoal = 10000, calories = 0, caloriesGoal = 500, activeMin = 0, activeMinGoal = 60 }) => {
-    const pct = (val, goal) => Math.min(Math.round((val / goal) * 100), 100);
-
     return (
         <div className="goal-card-cont">
             <div className="goal-header">
@@ -31,21 +37,21 @@ const GoalCard = ({ steps = 0, stepsGoal = 10000, calories = 0, caloriesGoal = 5
                 <GoalRing
                     icon={<IoFootstepsOutline size={16} />}
                     label="Steps"
-                    percent={pct(steps, stepsGoal)}
+                    percent={getPercent(steps, stepsGoal)}
                     color="#3B82F6"
                     size={80}
                 />
                 <GoalRing
                     icon={<RiFireLine size={16} />}
                     label="Calories"
-                    percent={pct(calories, caloriesGoal)}
+                    percent={getPercent(calories, caloriesGoal)}
                     color="#FF8700"
                     size={80}
                 />
                 <GoalRing
                     icon={<FaRegClock size={14} />}
                     label="Active Min"
-                    percent={pct(activeMin, activeMinGoal)}
+                    percent={getPercent(activeMin, activeMinGoal)}
                     color="#2ECC71"
                     size={80}
                 />
@@ -60,4 +66,3 @@ const GoalCard = ({ steps = 0, stepsGoal = 10000, calories = 0, caloriesGoal = 5
 };
 
 export default GoalCard;
-

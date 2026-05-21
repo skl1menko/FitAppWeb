@@ -32,6 +32,20 @@ body.dashboard-body {
             }
         }
 
+        .dashboard-feedback {
+            padding: 12px 16px;
+            border-radius: 12px;
+            background-color: #e5eefc;
+            color: #24457a;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .dashboard-feedback-error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
         .dashboard-stats-cont{
             display: grid;
             grid-template-columns: repeat(4, 1fr);

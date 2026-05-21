@@ -95,6 +95,9 @@ const WorkoutCalendarCard = () => {
 
     return (
         <div className="workout-calendar-card">
+            <div className="calendar-header">
+                <h2>Workout Calendar</h2>
+            </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateCalendar
                     views={['month', 'day']}

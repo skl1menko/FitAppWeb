@@ -35,7 +35,7 @@ const DashboardPage = () => {
             color: "#FF8700",
             icon: <RiFireLine color="#fff" size={24} />,
             trendLabel: getTrendLabel(todayMetrics?.totalEnergyBurned, yesterdayMetrics?.totalEnergyBurned),
-            trendDirection: (todayMetrics?.totalEnergyBurned ?? 0) > (yesterdayMetrics?.totalEnergyBurned ?? 0) ? "down" : "up"
+            trendDirection: Number(todayMetrics?.totalEnergyBurned ?? 0) < Number(yesterdayMetrics?.totalEnergyBurned ?? 0) ? "down" : "up"
         },
         {
             label: "Active Minutes",
@@ -88,17 +88,21 @@ const DashboardPage = () => {
                     ))}
                 </div>
                 <div className="dashboard-overview-cont">
-                    <div className="dashboard-charts-cont">
+                    <div className="dashboard-activity">
                         <ActivityOverview />
-                        <RecentWorkoutsCard />
                     </div>
-                    <div className="dashboard-goals-cont">
+                    <div className="dashboard-goal-card">
                         <GoalCard
                             steps={todayMetrics?.totalStepCount ?? 0}
                             calories={todayMetrics?.totalEnergyBurned ?? 0}
                             activeMin={activeMinutes.today}
                         />
+                    </div>
+                    <div className="dashboard-calendar-card">
                         <WorkoutCalendarCard />
+                    </div>
+                    <div className="dashboard-recent-workouts">
+                        <RecentWorkoutsCard />
                     </div>
                 </div>
             </div>

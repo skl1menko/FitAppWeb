@@ -56,46 +56,81 @@ body.dashboard-body {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 16px;
+            align-items: start;
 
-            .dashboard-charts-cont{
-                grid-column: span 3;
+            .dashboard-activity{
+                grid-column: 1 / 4;
+                grid-row: 1;
                 display: flex;
                 flex-direction: column;
-                gap: 24px;
                 min-width: 0;
             }
 
-            .dashboard-goals-cont{
+            .dashboard-goal-card,
+            .dashboard-calendar-card,
+            .dashboard-recent-workouts {
+                min-width: 0;
+            }
+
+            .dashboard-goal-card {
                 display: flex;
                 flex-direction: column;
+                grid-column: 4;
+                grid-row: 1;
                 gap: 24px;
+            }
+
+            .dashboard-calendar-card {
+                display: flex;
+                flex-direction: column;
+                grid-column: 4;
+                grid-row: 2;
+            }
+
+            .dashboard-recent-workouts {
+                display: flex;
+                flex-direction: column;
+                grid-column: 1 / 4;
+                grid-row: 2;
             }
         }
     }
 
-    // Large tablets (≤ 1200px): 4 stats → 2 columns, overview stacks
-    @media (max-width: 1200px) {
+    @media (max-width: 1200px) and (min-width: 641px) {
         .dashboard-main-content {
             padding: 24px 32px;
 
             .dashboard-stats-cont {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(4, 1fr);
             }
 
             .dashboard-overview-cont {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
 
-                .dashboard-charts-cont {
-                    grid-column: span 1;
+                .dashboard-activity {
+                    grid-column: 1 / -1;
+                    grid-row: auto;
                 }
 
-                .dashboard-goals-cont {
-                    grid-column: span 1;
-                    gap: 12px;
+                .dashboard-goal-card {
+                    grid-column: 1;
+                    grid-row: auto;
+                    gap: 0;
+                }
+
+                .dashboard-calendar-card {
+                    grid-column: 2;
+                    grid-row: auto;
+                }
+
+                .dashboard-recent-workouts {
+                    grid-column: 1 / -1;
+                    grid-row: auto;
                 }
             }
         }
     }
+
 
     // Mobile (≤ 640px): compact padding, 2-column stats
     @media (max-width: 640px) {
@@ -112,13 +147,15 @@ body.dashboard-body {
                 grid-template-columns: 1fr;
                 gap: 12px;
 
-                .dashboard-charts-cont {
-                    grid-column: span 1;
-                    gap: 12px;
+                .dashboard-activity,
+                .dashboard-goal-card,
+                .dashboard-calendar-card,
+                .dashboard-recent-workouts {
+                    grid-column: 1 / -1;
+                    grid-row: auto;
                 }
 
-                .dashboard-goals-cont {
-                    grid-column: span 1;
+                .dashboard-goal-card {
                     gap: 12px;
                 }
             }

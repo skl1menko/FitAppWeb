@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
+import { Link, useNavigate } from 'react-router';
 import './RecentWorkouts.scss';
-import workoutService from '../../../services/WorkoutServices/workoutService';
 import {
     GoPulse,
     LuDumbbell,
@@ -10,6 +10,8 @@ import {
 } from '../../../assets/icons';
 import { formatGroupedNumber } from '../../../utils/formatNumber';
 import { isWorkoutCompleted } from '../../workout/utils/workoutStatus';
+import useDashboardWorkouts from '../hooks/useDashboardWorkouts';
+import { formatRelativeWorkoutDate, getWorkoutDurationMinutes } from '../utils/dashboardWorkoutUtils';
 
 const ICON_STYLES = [
     { bg: '#d1fae5', color: '#10b981', Icon: GoPulse },
@@ -18,48 +20,29 @@ const ICON_STYLES = [
     { bg: '#f3e8ff', color: '#c084fc', Icon: RiFireLine },
 ];
 
-const formatDate = (dateStr) => {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
-    const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-    if (date.toDateString() === today.toDateString()) return `Today, ${timeStr}`;
-    if (date.toDateString() === yesterday.toDateString()) return `Yesterday, ${timeStr}`;
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + `, ${timeStr}`;
-};
-
-const getDuration = (start, end) => {
-    if (!start || !end) return null;
-    const mins = Math.round((new Date(end) - new Date(start)) / 60000);
-    return mins > 0 ? mins : null;
-};
-
 const RecentWorkoutsCard = () => {
-    const [workouts, setWorkouts] = useState([]);
+    const navigate = useNavigate();
+    const { workouts, isLoading, error } = useDashboardWorkouts();
 
-    useEffect(() => {
-        workoutService.getAll().then(res => {
-            setWorkouts(res.data.data);
-        });
-    }, []);
-
-    const completedWorkouts = workouts.filter((workout) => isWorkoutCompleted(workout));
+    const completedWorkouts = useMemo(() => {
+        return workouts.filter((workout) => isWorkoutCompleted(workout));
+    }, [workouts]);
 
     return (
         <div className="recent-workout-cont">
             <div className="recent-workout-header">
                 <h2>Recent Workouts</h2>
-                <a href="/workouts" className="rw-view-all">
+                <Link to="/workouts" className="rw-view-all">
                     View All <BsChevronRight />
-                </a>
+                </Link>
             </div>
 
             <div className="recent-workout-list">
+                {error && <span className="rw-stats">{error}</span>}
+                {!error && isLoading && <span className="rw-stats">Loading workouts...</span>}
                 {completedWorkouts.slice(0, 5).map((w, i) => {
                     const { bg, color, Icon } = ICON_STYLES[i % ICON_STYLES.length];
-                    const duration = getDuration(w.startTime, w.endTime);
+                    const duration = getWorkoutDurationMinutes(w);
                     const metric = w.programName || (w.totalTonnage ? `${formatGroupedNumber(w.totalTonnage)} kg` : null);
                     const subStats = [
                         duration ? `${duration} min` : null,
@@ -69,13 +52,13 @@ const RecentWorkoutsCard = () => {
                         .join(' · ');
 
                     return (
-                        <div className="rw-item" key={w.workoutId} onClick={() => window.location.href = `/workout/${w.workoutId}`}>
+                        <div className="rw-item" key={w.workoutId} onClick={() => navigate(`/workout/${w.workoutId}`)}>
                             <div className="rw-icon-badge" style={{ background: bg }}>
                                 <Icon style={{ color }} />
                             </div>
                             <div className="rw-info">
                                 <span className="rw-name">{w.workoutName || 'Workout'}</span>
-                                <span className="rw-date">{formatDate(w.startTime)}</span>
+                                <span className="rw-date">{formatRelativeWorkoutDate(w)}</span>
                             </div>
                             <div className="rw-meta">
                                 {metric && <span className="rw-metric">{metric}</span>}
@@ -85,6 +68,9 @@ const RecentWorkoutsCard = () => {
                         </div>
                     );
                 })}
+                {!error && !isLoading && completedWorkouts.length === 0 && (
+                    <span className="rw-stats">No completed workouts yet.</span>
+                )}
             </div>
         </div>
     );

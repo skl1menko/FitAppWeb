@@ -1,6 +1,7 @@
 import "./GoalRing.scss";
 
 const GoalRing = ({ icon, label, percent = 0, color = "#E8334A", size = 80 }) => {
+    const normalizedPercent = Math.max(0, Math.min(percent, 100));
     const rings = [
         { r: size * 0.46, strokeWidth: size * 0.09 },
         { r: size * 0.35, strokeWidth: size * 0.09 },
@@ -8,20 +9,20 @@ const GoalRing = ({ icon, label, percent = 0, color = "#E8334A", size = 80 }) =>
 
     const mainRing = rings[0];
     const circumference = 2 * Math.PI * mainRing.r;
-    const offset = circumference * (1 - Math.min(percent, 100) / 100);
+    const offset = circumference * (1 - normalizedPercent / 100);
+    const iconSize = size * 0.3;
+    const iconOffset = iconSize / 2;
 
     return (
         <div className="goal-ring-cont">
             <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-
                 <circle
-                    key={0}
-                    cx={80 / 2}
-                    cy={80 / 2}
-                    r={80 * 0.46}
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={mainRing.r}
                     fill="none"
                     stroke={`${color}22`}
-                    strokeWidth={80 * 0.09}
+                    strokeWidth={mainRing.strokeWidth}
                 />
 
                 <circle
@@ -44,10 +45,10 @@ const GoalRing = ({ icon, label, percent = 0, color = "#E8334A", size = 80 }) =>
                     fill={color}
                 />
                 <foreignObject
-                    x={size / 2 - 12}
-                    y={size / 2 - 12}
-                    width={24}
-                    height={24}
+                    x={size / 2 - iconOffset}
+                    y={size / 2 - iconOffset}
+                    width={iconSize}
+                    height={iconSize}
                 >
                     <div className="goal-ring-icon">{icon}</div>
                 </foreignObject>
@@ -55,10 +56,8 @@ const GoalRing = ({ icon, label, percent = 0, color = "#E8334A", size = 80 }) =>
 
             <div className="goal-ring-label-cont">
                 <span className="goal-ring-label">{label}</span>
-                <span className="goal-ring-percent">{percent}%</span>
+                <span className="goal-ring-percent">{normalizedPercent}%</span>
             </div>
-
-
         </div>
     );
 };

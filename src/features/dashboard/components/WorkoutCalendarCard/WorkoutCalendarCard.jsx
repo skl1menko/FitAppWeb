@@ -5,47 +5,26 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickerDay } from '@mui/x-date-pickers/PickerDay';
 import { Popover } from '@mui/material';
-import workoutService from '../../../../services/WorkoutServices/workoutService';
+import useDashboardWorkouts from '../../hooks/useDashboardWorkouts';
+import {
+    formatWorkoutTime,
+    getWorkoutDateKey,
+    getWorkoutDurationMinutes
+} from '../../utils/dashboardWorkoutUtils';
 import './WorkoutCalendarCard.scss';
-
-const getDuration = (start, end) => {
-    if (!start || !end) return null;
-    const minutes = Math.round((new Date(end) - new Date(start)) / 60000);
-    return minutes > 0 ? minutes : null;
-};
-
-const formatWorkoutTime = (startTime) => {
-    if (!startTime) return 'No time';
-    return dayjs(startTime).format('HH:mm');
-};
 
 const DayWithWorkoutBadge = (props) => {
     const { day, outsideCurrentMonth, workoutsByDate, onDayClick, ...other } = props;
     const dateKey = day.format('YYYY-MM-DD');
     const hasWorkout = !outsideCurrentMonth && Boolean(workoutsByDate[dateKey]?.length);
-
-    const dayNode = (
-        <PickerDay
-            {...other}
-            day={day}
-            outsideCurrentMonth={outsideCurrentMonth}
-            onClick={(event) => {
-                other.onClick?.(event);
-                onDayClick(event, dateKey, hasWorkout);
-            }}
-        />
-    );
-
-    if (!hasWorkout) {
-        return dayNode;
-    }
+    const dayClassName = hasWorkout ? "has-workout-day" : undefined;
 
     return (
         <PickerDay
             {...other}
             day={day}
             outsideCurrentMonth={outsideCurrentMonth}
-            className="has-workout-day"
+            className={dayClassName}
             onClick={(event) => {
                 other.onClick?.(event);
                 onDayClick(event, dateKey, hasWorkout);
@@ -55,27 +34,19 @@ const DayWithWorkoutBadge = (props) => {
 };
 
 const WorkoutCalendarCard = () => {
-    const [workouts, setWorkouts] = useState([]);
+    const { workouts } = useDashboardWorkouts();
     const [selectedDate, setSelectedDate] = useState(dayjs());
     const [anchorEl, setAnchorEl] = useState(null);
     const [activeDateKey, setActiveDateKey] = useState(null);
 
-    useEffect(() => {
-        workoutService
-            .getAll()
-            .then((res) => {
-                setWorkouts(res?.data?.data || []);
-            })
-            .catch((error) => {
-                console.error('Ошибка при загрузке тренировок для календаря:', error);
-            });
-    }, []);
-
     const workoutsByDate = useMemo(() => {
         return workouts.reduce((acc, workout) => {
-            if (!workout?.startTime) return acc;
+            const dateKey = getWorkoutDateKey(workout);
 
-            const dateKey = dayjs(workout.startTime).format('YYYY-MM-DD');
+            if (!dateKey) {
+                return acc;
+            }
+
             if (!acc[dateKey]) {
                 acc[dateKey] = [];
             }
@@ -122,8 +93,11 @@ const WorkoutCalendarCard = () => {
         };
     }, [anchorEl, activeDateWorkouts.length]);
 
-    return(
+    return (
         <div className="workout-calendar-card">
+            <div className="calendar-header">
+                <h2>Workout Calendar</h2>
+            </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateCalendar
                     views={['month', 'day']}
@@ -155,15 +129,14 @@ const WorkoutCalendarCard = () => {
                 }}
             >
                 <div className="workout-day-popover">
-                    
                     {activeDateWorkouts.map((workout) => {
-                        const duration = getDuration(workout.startTime, workout.endTime);
+                        const duration = getWorkoutDurationMinutes(workout);
 
                         return (
                             <div key={workout.workoutId} className="workout-day-popover__item">
                                 <p className="workout-day-popover__name">{workout.workoutName || 'Workout'}</p>
                                 <p className="workout-day-popover__meta">
-                                    {formatWorkoutTime(workout.startTime)}
+                                    {formatWorkoutTime(workout)}
                                     {duration ? ` · ${duration} min` : ''}
                                     {workout.caloriesBurned != null ? ` · ${Math.round(workout.caloriesBurned)} kcal` : ''}
                                 </p>
@@ -172,10 +145,8 @@ const WorkoutCalendarCard = () => {
                     })}
                 </div>
             </Popover>
-
         </div>
-         
-    )
-}
+    );
+};
 
 export default WorkoutCalendarCard;

@@ -70,19 +70,15 @@ const WorkoutSessionPage = () => {
                     <CustomBtn text={isPlannedMode ? "DELETE" : "CANCEL"} onClick={isPlannedMode ? cancelWorkout : openCancelConfirmModal} className="cancel-btn" />
                 </div>
                 <div className="workout-info-cont">
-                    {!isPlannedMode ? (
+                    {isPlannedMode ? (
                         <>
                             <div className="info-block">
                                 <div className="info-icon timer">
                                     <FaRegClock size={28} />
                                 </div>
                                 <div className="info-cont timer">
-                                    <span className="info-label timer">{isPlannedMode ? "SCHEDULED" : "TIME"}</span>
-                                    {isPlannedMode ? (
-                                        <span className="tonnage-value">{formatPlannedStart(scheduledStartAt)}</span>
-                                    ) : (
-                                        isSessionReady && <Timer startAt={timerStartAt} />
-                                    )}
+                                    <span className="info-label timer">SCHEDULED</span>
+                                    <span className="tonnage-value">{formatPlannedStart(scheduledStartAt)}</span>
                                 </div>
                             </div>
                             <div className="info-block">
@@ -96,10 +92,28 @@ const WorkoutSessionPage = () => {
                                 </div>
                             </div>
                         </>
-                    ): <div className="divider"></div>
-
-                    }
-                    
+                    ) : (
+                        <>
+                            <div className="info-block">
+                                <div className="info-icon timer">
+                                    <FaRegClock size={28} />
+                                </div>
+                                <div className="info-cont timer">
+                                    <span className="info-label timer">TIME</span>
+                                    {isSessionReady && <Timer startAt={timerStartAt} />}
+                                </div>
+                            </div>
+                            <div className="info-block">
+                                <div className="info-icon tonnage">
+                                    <GiWeight size={28} />
+                                </div>
+                                <div className="info-cont tonnage">
+                                    <span className="info-label tonnage">TONNAGE</span>
+                                    <span className="tonnage-value">{formatGroupedNumber(summaryStats.tonnage)} KG</span>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
                 <div className="exercise-cont">
                     <div className="exercise-list">

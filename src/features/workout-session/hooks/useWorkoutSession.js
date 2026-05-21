@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import workoutService from "../../../services/WorkoutServices/workoutService";
 import useWorkoutExercises from "./useWorkoutExercises";
@@ -28,8 +28,7 @@ const useWorkoutSession = () => {
     const plannedReturnPath = isPlannedMode && typeof location.state?.returnTo === "string"
         ? location.state.returnTo
         : "/workouts";
-
-    const [isSessionReady, setIsSessionReady] = useState(!shouldStartNew);
+    const isSessionReady = isPlannedMode || !shouldStartNew;
     const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
     const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
     const [isAddExerciseModalOpen, setIsAddExerciseModalOpen] = useState(false);
@@ -42,6 +41,7 @@ const useWorkoutSession = () => {
     });
     const [workoutName, setWorkoutName] = useState("");
     const [workoutNameError, setWorkoutNameError] = useState("");
+    const [isWorkoutNameDirty, setIsWorkoutNameDirty] = useState(false);
     const [scheduledStartAt, setScheduledStartAt] = useState(null);
     const [timerStartAt, setTimerStartAt] = useState(() => {
         return getStoredTimerStartAt();
@@ -51,6 +51,7 @@ const useWorkoutSession = () => {
         tonnage: 0,
         setsCount: 0
     });
+    const lastLoadedWorkoutIdRef = useRef(null);
 
     const {
         workoutExercises,
@@ -61,7 +62,7 @@ const useWorkoutSession = () => {
     } = useWorkoutExercises(activeWorkoutId);
 
     // Loads workout aggregates (sets/tonnage) and prefills workout name.
-    const loadWorkoutSummary = async (workoutId) => {
+    const loadWorkoutSummary = useCallback(async (workoutId) => {
         if (!workoutId) {
             return null;
         }
@@ -88,16 +89,25 @@ const useWorkoutSession = () => {
                 tonnage: workoutData.tonnage,
                 setsCount: workoutData.setsCount
             }));
-            setWorkoutName((prev) => prev || workout.workoutName || "");
+
+            const isNewWorkoutContext = lastLoadedWorkoutIdRef.current !== workoutId;
+            if (isNewWorkoutContext || !isWorkoutNameDirty) {
+                setWorkoutName(workout.workoutName || "");
+                if (isNewWorkoutContext) {
+                    setIsWorkoutNameDirty(false);
+                }
+            }
+
+            lastLoadedWorkoutIdRef.current = workoutId;
             return workout;
         } catch (error) {
             console.error("Failed to load workout summary:", error?.response?.data || error);
             return null;
         }
-    };
+    }, [isPlannedMode, isWorkoutNameDirty, loadWorkoutExercises]);
 
     // Resolves the currently active workout from state or API and syncs localStorage.
-    const syncActiveWorkout = async () => {
+    const syncActiveWorkout = useCallback(async () => {
         if (isPlannedMode) {
             if (!requestedWorkoutId) {
                 navigate("/workouts");
@@ -147,13 +157,20 @@ const useWorkoutSession = () => {
         } catch (error) {
             console.error("Failed to resolve active workout:", error?.response?.data || error);
         }
-    };
+    }, [
+        activeWorkoutId,
+        clearWorkoutExercises,
+        isPlannedMode,
+        loadWorkoutSummary,
+        navigate,
+        requestedWorkoutId
+    ]);
 
     // Opens finish modal and captures current elapsed time for summary.
     const openFinishModal = () => {
         setSummaryStats((prev) => ({
             ...prev,
-            timeSeconds: getElapsedSeconds()
+            timeSeconds: getElapsedSeconds(timerStartAt)
         }));
         setIsCancelConfirmOpen(false);
         setIsAddExerciseModalOpen(false);
@@ -193,6 +210,7 @@ const useWorkoutSession = () => {
     // Updates workout name field and resets its validation error.
     const handleWorkoutNameChange = (value) => {
         setWorkoutName(value);
+        setIsWorkoutNameDirty(true);
         if (workoutNameError) {
             setWorkoutNameError("");
         }
@@ -205,7 +223,9 @@ const useWorkoutSession = () => {
         setActiveWorkoutId(null);
         setWorkoutName("");
         setWorkoutNameError("");
+        setIsWorkoutNameDirty(false);
         setScheduledStartAt(null);
+        lastLoadedWorkoutIdRef.current = null;
         clearWorkoutExercises();
         setTimerStartAt(null);
         setIsFinishModalOpen(false);
@@ -316,13 +336,7 @@ const useWorkoutSession = () => {
 
     // Handles "new=1" query param to start a fresh session and clean timer state.
     useEffect(() => {
-        if (isPlannedMode) {
-            setIsSessionReady(true);
-            return;
-        }
-
-        if (!shouldStartNew) {
-            setIsSessionReady(true);
+        if (isPlannedMode || !shouldStartNew) {
             return;
         }
 
@@ -332,13 +346,18 @@ const useWorkoutSession = () => {
         const nextParams = new URLSearchParams(searchParams);
         nextParams.delete("new");
         setSearchParams(nextParams, { replace: true });
-        setIsSessionReady(true);
     }, [isPlannedMode, searchParams, setSearchParams, shouldStartNew]);
 
     // Keeps active workout data synchronized when workout id changes.
     useEffect(() => {
-        syncActiveWorkout();
-    }, [activeWorkoutId, isPlannedMode, requestedWorkoutId]);
+        const timeoutId = window.setTimeout(() => {
+            void syncActiveWorkout();
+        }, 0);
+
+        return () => {
+            window.clearTimeout(timeoutId);
+        };
+    }, [syncActiveWorkout]);
 
     useEffect(() => {
         const handleVisibilitySync = () => {
@@ -358,7 +377,7 @@ const useWorkoutSession = () => {
             document.removeEventListener("visibilitychange", handleVisibilitySync);
             window.removeEventListener("focus", handleFocusSync);
         };
-    }, [activeWorkoutId]);
+    }, [syncActiveWorkout]);
 
     return {
         isSessionReady,

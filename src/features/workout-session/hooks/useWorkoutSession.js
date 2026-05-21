@@ -3,12 +3,18 @@ import { useLocation, useNavigate, useSearchParams } from "react-router";
 import workoutService from "../../../services/WorkoutServices/workoutService";
 import useWorkoutExercises from "./useWorkoutExercises";
 import {
-    ACTIVE_WORKOUT_ID_KEY,
-    TIMER_START_AT_KEY,
-    WORKOUT_STATUS_CHANGED_EVENT
-} from "../constants";
+    clearStoredTimerStartAt,
+    clearStoredWorkoutSession,
+    getStoredTimerStartAt,
+    getStoredWorkoutSession,
+    notifyWorkoutStatusChanged,
+    setStoredTimerStartAt,
+    setStoredWorkoutSession
+} from "../utils/workoutSessionStorage";
 import { getElapsedSeconds } from "../utils/sessionTime";
+import { normalizeWorkouts } from "../../workout/utils/normalizeWorkout";
 import { isWorkoutActive } from "../../workout/utils/workoutStatus";
+import { showWorkoutAlert } from "../../workout/utils/workoutFeedback";
 
 // Orchestrates workout session lifecycle: active workout resolution, timer state,
 // modal visibility, finish/cancel actions, and summary refresh.
@@ -32,15 +38,13 @@ const useWorkoutSession = () => {
             return requestedWorkoutId;
         }
 
-        const savedWorkoutId = Number(localStorage.getItem(ACTIVE_WORKOUT_ID_KEY));
-        return Number.isFinite(savedWorkoutId) && savedWorkoutId > 0 ? savedWorkoutId : null;
+        return getStoredWorkoutSession().activeWorkoutId;
     });
     const [workoutName, setWorkoutName] = useState("");
     const [workoutNameError, setWorkoutNameError] = useState("");
     const [scheduledStartAt, setScheduledStartAt] = useState(null);
     const [timerStartAt, setTimerStartAt] = useState(() => {
-        const savedStartAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
-        return Number.isFinite(savedStartAt) && savedStartAt > 0 ? savedStartAt : null;
+        return getStoredTimerStartAt();
     });
     const [summaryStats, setSummaryStats] = useState({
         timeSeconds: 0,
@@ -69,12 +73,12 @@ const useWorkoutSession = () => {
                 return null;
             }
 
-            const serverStartAt = Date.parse(workout.startTime || workout.start_time || "");
-            setScheduledStartAt(workout.startTime || workout.start_time || null);
+            const serverStartAt = Date.parse(workout.startTime || "");
+            setScheduledStartAt(workout.startTime || null);
             if (!isPlannedMode && Number.isFinite(serverStartAt) && serverStartAt > 0) {
                 setTimerStartAt(serverStartAt);
-                localStorage.setItem(TIMER_START_AT_KEY, String(serverStartAt));
-                window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
+                setStoredTimerStartAt(serverStartAt);
+                notifyWorkoutStatusChanged();
             } else if (isPlannedMode) {
                 setTimerStartAt(null);
             }
@@ -115,12 +119,12 @@ const useWorkoutSession = () => {
 
             // Stale local id (e.g. from another device/session): clear and resolve from API list.
             setActiveWorkoutId(null);
-            localStorage.removeItem(ACTIVE_WORKOUT_ID_KEY);
+            clearStoredWorkoutSession();
         }
 
         try {
             const workoutsResponse = await workoutService.getAll();
-            const workouts = workoutsResponse?.data?.data || [];
+            const workouts = normalizeWorkouts(workoutsResponse?.data?.data);
             const activeWorkout = workouts.find((workout) => isWorkoutActive(workout));
 
             if (!activeWorkout?.workoutId) {
@@ -131,14 +135,14 @@ const useWorkoutSession = () => {
                     setsCount: 0
                 }));
                 setTimerStartAt(null);
-                localStorage.removeItem(TIMER_START_AT_KEY);
-                window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
+                clearStoredTimerStartAt();
+                notifyWorkoutStatusChanged();
                 return;
             }
 
             const resolvedWorkoutId = Number(activeWorkout.workoutId);
             setActiveWorkoutId(resolvedWorkoutId);
-            localStorage.setItem(ACTIVE_WORKOUT_ID_KEY, String(resolvedWorkoutId));
+            setStoredWorkoutSession({ activeWorkoutId: resolvedWorkoutId });
             await loadWorkoutSummary(resolvedWorkoutId);
         } catch (error) {
             console.error("Failed to resolve active workout:", error?.response?.data || error);
@@ -196,9 +200,7 @@ const useWorkoutSession = () => {
 
     // Clears workout session state in localStorage and in-memory UI state.
     const resetSessionState = () => {
-        localStorage.removeItem(TIMER_START_AT_KEY);
-        localStorage.removeItem(ACTIVE_WORKOUT_ID_KEY);
-        window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
+        clearStoredWorkoutSession();
 
         setActiveWorkoutId(null);
         setWorkoutName("");
@@ -234,7 +236,7 @@ const useWorkoutSession = () => {
             } catch (error) {
                 const message = error?.response?.data?.message || (isPlannedMode ? "Failed to save workout" : "Failed to finish workout");
                 console.error(isPlannedMode ? "Save planned workout failed:" : "Finish workout failed:", error?.response?.data || error);
-                alert(message);
+                showWorkoutAlert(message);
                 return;
             }
         }
@@ -253,7 +255,7 @@ const useWorkoutSession = () => {
             } catch (error) {
                 const message = error?.response?.data?.message || "Failed to cancel workout";
                 console.error("Cancel workout failed:", error?.response?.data || error);
-                alert(message);
+                showWorkoutAlert(message);
                 return;
             }
         }
@@ -275,14 +277,15 @@ const useWorkoutSession = () => {
             });
 
             const startedAt = Date.parse(nowIso);
-            localStorage.setItem(ACTIVE_WORKOUT_ID_KEY, String(activeWorkoutId));
-            localStorage.setItem(TIMER_START_AT_KEY, String(startedAt));
-            window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
+            setStoredWorkoutSession({
+                activeWorkoutId,
+                timerStartAt: startedAt
+            });
             navigate("/workout/session");
         } catch (error) {
             const message = error?.response?.data?.message || "Failed to start planned workout";
             console.error("Start planned workout failed:", error?.response?.data || error);
-            alert(message);
+            showWorkoutAlert(message);
         }
     };
 
@@ -323,8 +326,8 @@ const useWorkoutSession = () => {
             return;
         }
 
-        localStorage.removeItem(TIMER_START_AT_KEY);
-        window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
+        clearStoredTimerStartAt();
+        notifyWorkoutStatusChanged();
 
         const nextParams = new URLSearchParams(searchParams);
         nextParams.delete("new");

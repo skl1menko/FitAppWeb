@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router";
 import {
     RiFireLine,
     FiArrowLeft,
-    FiCalendar,
     FiClock,
     FiFileText, GiWeight
 } from "../../../assets/icons";
@@ -13,23 +12,8 @@ import "./WorkoutDetails.scss";
 import CustomBtn from "../../../components/CustomBtn";
 import useBodyClass from "../../../hooks/useBodyClass";
 import { formatGroupedNumber } from "../../../utils/formatNumber";
-
-const fmtDuration = (startValue, endValue) => {
-    if (!startValue || !endValue) return "-";
-
-    const start = new Date(startValue).getTime();
-    const end = new Date(endValue).getTime();
-
-    if (Number.isNaN(start) || Number.isNaN(end) || end <= start) return "-";
-
-    const totalMinutes = Math.floor((end - start) / 60000);
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    if (hours === 0) return `${minutes} min`;
-    if (minutes === 0) return `${hours} h`;
-    return `${hours} h ${minutes} min`;
-};
+import { formatWorkoutDuration } from "../utils/workoutFormatters";
+import { normalizeWorkout } from "../utils/normalizeWorkout";
 
 const WorkoutDetails = () => {
     const { workoutId } = useParams();
@@ -46,7 +30,7 @@ const WorkoutDetails = () => {
             try {
                 const response = await workoutService.getById(workoutId);
                 if (!active) return;
-                setWorkout(response?.data?.data ?? null);
+                setWorkout(normalizeWorkout(response?.data?.data));
             } catch {
                 if (!active) return;
                 setWorkout(null);
@@ -95,7 +79,7 @@ const WorkoutDetails = () => {
                                         <FiClock aria-hidden="true" /> Duration
                                     </span>
                                     <span>
-                                        {fmtDuration(workout.startTime, workout.endTime)}
+                                        {formatWorkoutDuration(workout.startTime, workout.endTime, "-")}
                                     </span>
                                 </div>
                             </div>

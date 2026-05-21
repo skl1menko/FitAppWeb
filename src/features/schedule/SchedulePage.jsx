@@ -8,6 +8,7 @@ import DatePickerCustom from "../../components/DatePickerCustom";
 import workoutService from "../../services/WorkoutServices/workoutService";
 import { useNavigate } from "react-router";
 import authService from "../../services/authService";
+import { setActiveWorkoutId } from "../workout/utils/activeWorkoutStorage";
 
 const createWorkoutId = () => {
     if (typeof crypto !== "undefined") {
@@ -241,7 +242,7 @@ const SchedulePage = () => {
                 start_time: new Date().toISOString(),
                 is_started: true
             });
-            localStorage.setItem("activeWorkoutId", String(workoutId));
+            setActiveWorkoutId(workoutId);
             navigate("/workout/session");
         } catch (error) {
             const message = error?.response?.data?.message || "Failed to start workout";

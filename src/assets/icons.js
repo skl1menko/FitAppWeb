@@ -1,5 +1,5 @@
 //google icon, heart icon, balance scale icon
-export { FaGoogle, FaHeart, FaBalanceScale, FaPlus } from "react-icons/fa";
+export { FaGoogle, FaHeart, FaBalanceScale, FaPlus, FaCheck } from "react-icons/fa";
 
 //clock icon, trending up icon, trending down icon
 export { FaArrowTrendUp, FaArrowTrendDown, FaRegClock } from "react-icons/fa6";

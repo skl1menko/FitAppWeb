@@ -1,0 +1,107 @@
+body.trainer-page-body {
+    background-color: #f9fafb;
+}
+
+.trainer-page-cont {
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 24px 75px;
+
+    .trainer-page-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .trainer-hero-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 16px;
+
+            .trainer-status-card {
+                background: #fff;
+                border: 1px solid #e5e7eb;
+                border-radius: 16px;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 8px;
+
+                span {
+                    color: #6b7280;
+                    font-size: 13px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
+                }
+
+                strong {
+                    color: #111827;
+                    font-size: 20px;
+                }
+
+                p {
+                    margin: 0;
+                    color: #4b5563;
+                    font-size: 14px;
+                }
+
+                .trainer-secondary-btn {
+                    border: 1px solid #d1d5db;
+                    background-color: #fff;
+                    color: #374151;
+                    border-radius: 10px;
+                    padding: 10px 14px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    cursor: pointer;
+
+                    &:disabled {
+                        color: #9ca3af;
+                        cursor: not-allowed;
+                    }
+                }
+
+                &.trainer-status-card-requests {
+                    justify-content: flex-start;
+
+                    .trainer-results-list {
+                        max-height: 320px;
+                        padding-right: 2px;
+
+                        .trainer-hint-text {
+                            margin: 0;
+                            color: #6b7280;
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .trainer-page-cont {
+        padding: 20px 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .trainer-page-cont {
+        padding: 16px;
+
+        .trainer-page-content {
+            .trainer-hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .trainer-status-card {
+                .trainer-secondary-btn {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

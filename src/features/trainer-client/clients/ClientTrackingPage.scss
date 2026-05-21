@@ -1,0 +1,291 @@
+body.client-tracking-body {
+    background-color: #f9fafb;
+}
+
+.client-tracking-page-cont {
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 24px 75px;
+
+    .client-tracking-page-content {
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .client-tracking-back-btn {
+            width: fit-content;
+            border: none;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .client-tracking-hero {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+
+            .client-tracking-hero-main {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+
+                .client-tracking-avatar {
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 22px;
+                }
+
+                h1 {
+                    margin: 0;
+                    font-size: 28px;
+                }
+
+                p {
+                    margin: 4px 0 0;
+                    color: #dbeafe;
+                }
+            }
+        }
+    }
+}
+
+.client-tracking-panel-cont {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    h2 {
+        margin: 0;
+        font-size: 20px;
+        color: #111827;
+    }
+
+    p {
+        margin: 4px 0 0;
+        color: #6b7280;
+    }
+
+    &.metrics {
+        .client-tracking-chart-header-cont {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+
+            .client-tracking-chart-header {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+
+                h2 {
+                    margin: 0;
+                    font-size: 24px;
+                    font-weight: 700;
+                    color: #1f2937;
+                }
+
+                .client-tracking-period-picker {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+
+                    .client-tracking-period-picker-btn {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 24px;
+                        height: 24px;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 8px;
+                        background: #fff;
+                        cursor: pointer;
+                        transition: background-color 0.15s, border-color 0.15s;
+
+                        &:hover {
+                            background: #eff6ff;
+                            border-color: #155dfc;
+
+                            .client-tracking-period-arrow {
+                                color: #155dfc;
+                            }
+                        }
+
+                        .client-tracking-period-arrow {
+                            color: #6b7280;
+                            transition: color 0.15s;
+
+                            &.left {
+                                transform: rotate(90deg);
+                            }
+
+                            &.right {
+                                transform: rotate(-90deg);
+                            }
+                        }
+                    }
+
+                    .client-tracking-period-picker-label {
+                        font-size: 13px;
+                        font-weight: 500;
+                        color: #6b7280;
+                        white-space: nowrap;
+                    }
+                }
+            }
+
+            .client-tracking-selector-row {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+
+                .client-tracking-selector-cont {
+                    position: relative;
+                    display: inline-flex;
+                    padding: 4px;
+                    border-radius: 14px;
+                    background-color: #f3f4f6;
+
+                    .client-tracking-selector-pill {
+                        position: absolute;
+                        top: 4px;
+                        height: calc(100% - 8px);
+                        background: #fff;
+                        border-radius: 10px;
+                        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+                        transition: left 0.2s ease, width 0.2s ease;
+                        pointer-events: none;
+                    }
+
+                    .client-tracking-selector-btn {
+                        position: relative;
+                        z-index: 1;
+                        text-align: center;
+                        white-space: nowrap;
+                        border-radius: 10px;
+                        padding: 6px 12px;
+                        font-size: 13px;
+                        font-weight: 500;
+                        color: #6b7280;
+                        cursor: pointer;
+                        transition: color 0.2s;
+                        border: none;
+                        background-color: transparent;
+
+                        &:hover {
+                            color: #155dfc;
+                        }
+
+                        &.active {
+                            color: #155dfc;
+                        }
+                    }
+                }
+            }
+        }
+
+        .client-tracking-chart-wrap {
+            width: 100%;
+            height: 320px;
+            padding-top: 12px;
+        }
+    }
+
+    &.workouts {
+        .client-tracking-workouts-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .client-tracking-workout-card {
+            margin-top: 4px;
+        }
+    }
+
+    .client-tracking-hint-text,
+    .client-tracking-error-text,
+    .client-tracking-warning-text {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .client-tracking-hint-text {
+        color: #6b7280;
+    }
+
+    .client-tracking-error-text {
+        color: #dc2626;
+    }
+
+    .client-tracking-warning-text {
+        color: #92400e;
+    }
+}
+
+@media (max-width: 1024px) {
+    .client-tracking-page-cont {
+        padding: 20px 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .client-tracking-page-cont {
+        padding: 16px;
+
+        .client-tracking-page-content {
+            .client-tracking-hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .client-tracking-panel-cont {
+                padding: 16px;
+
+                &.metrics {
+                    .client-tracking-chart-header-cont {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 12px;
+
+                        .client-tracking-chart-header {
+                            h2 {
+                                font-size: 18px;
+                            }
+                        }
+
+                        .client-tracking-selector-row {
+                            gap: 8px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

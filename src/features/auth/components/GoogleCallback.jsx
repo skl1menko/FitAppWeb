@@ -1,14 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import authService from "../../../services/authService";
+import AuthPageHeader from "./AuthPageHeader";
+import "./AuthCont.scss";
+import "../components/AuthForm.scss";
 
 const GoogleCallback = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const [roleRequired, setRoleRequired] = useState(false);
+    const [setupToken, setSetupToken] = useState("");
+    const [selectedRole, setSelectedRole] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const emailFromParams = searchParams.get("email") || "";
     
     useEffect(() => {
         const token = searchParams.get('token');
         const error = searchParams.get('error');
+        const roleRequiredFlag = searchParams.get('role_required');
+        const incomingSetupToken = searchParams.get('setup_token');
         if (token) {
             localStorage.setItem('token', token);
 
@@ -23,12 +34,90 @@ const GoogleCallback = () => {
                 .catch(() => {
                     navigate('/auth?error=profile_fetch_failed');
                 })
+        } else if (roleRequiredFlag === '1' && incomingSetupToken) {
+            setRoleRequired(true);
+            setSetupToken(incomingSetupToken);
         } else if (error){
-            navigate(`/auth?error=${error}`);
+            navigate(`/auth/login?error=${encodeURIComponent(error)}`);
         } else{
-            navigate('/auth');
+            navigate('/auth/login');
         }
     }, [searchParams, navigate]);
+
+    const handleCompleteRole = async () => {
+        if (!selectedRole) {
+            setErrorMessage("Please select your role to continue.");
+            return;
+        }
+
+        setErrorMessage("");
+        setIsSubmitting(true);
+        try {
+            await authService.completeGoogleRole(setupToken, selectedRole);
+            navigate('/dashboard');
+        } catch (error) {
+            setErrorMessage(error?.response?.data?.message || "Failed to complete Google sign-in");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (roleRequired) {
+        return (
+            <div className="auth-page-container">
+                <AuthPageHeader />
+                <div className="auth-content-container">
+                    <div className="auth-content-heading-cont">
+                        <h1>Welcome to PowerFit</h1>
+                        <p>{emailFromParams ? `Account: ${emailFromParams}` : "Almost done!"}</p>
+                    </div>
+                    <div className="auth-form-cont">
+                        <form
+                            className="auth-form signup-form"
+                            onSubmit={(event) => {
+                                event.preventDefault();
+                                handleCompleteRole();
+                            }}
+                        >
+                            <div className="role-select-cont">
+                                <p className="role-label">Choose your role to finish Google sign-in:</p>
+                                <div className="role-options">
+                                    <label className="role-option">
+                                        <input
+                                            type="radio"
+                                            name="googleRole"
+                                            value="athlete"
+                                            checked={selectedRole === "athlete"}
+                                            onChange={(event) => setSelectedRole(event.target.value)}
+                                            required
+                                        />
+                                        <span>Athlete</span>
+                                    </label>
+                                    <label className="role-option">
+                                        <input
+                                            type="radio"
+                                            name="googleRole"
+                                            value="trainer"
+                                            checked={selectedRole === "trainer"}
+                                            onChange={(event) => setSelectedRole(event.target.value)}
+                                            required
+                                        />
+                                        <span>Trainer</span>
+                                    </label>
+                                </div>
+                            </div>
+                            {errorMessage ? <p className="auth-form-error">{errorMessage}</p> : null}
+                            <div className="submit-btn-cont">
+                                <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                                    {isSubmitting ? "Finishing..." : "Continue"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return(
         <div className="google-callback-container">

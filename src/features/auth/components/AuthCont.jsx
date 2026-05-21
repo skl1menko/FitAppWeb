@@ -3,23 +3,15 @@ import { FaGoogle } from "../../../assets/icons";
 import LogInForm from './LogInForm';
 import SignUpForm from './SignUpForm';
 import { useNavigate, useLocation } from 'react-router';
-import { useState } from 'react';
 const AuthCont = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
     const authType = location.pathname === '/auth/signup' ? 'signup' : 'login';
-    const [selectedRole, setSelectedRole] = useState('');
 
     const handleGoogleLogin = () => {
-        if (authType === 'signup' && !selectedRole) {
-            alert('Please select a role before continuing with Google Sign-In.');
-            return;
-        }
-
-        const role = authType === 'signup' ? selectedRole : '';
         const base = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-        window.location.href = `${base}/auth/google?role=${role}`;
+        window.location.href = `${base}/auth/google`;
     };
 
     return(
@@ -46,7 +38,7 @@ const AuthCont = () => {
                 {authType === 'login' ? (
                     <LogInForm />
                 ) : (
-                    <SignUpForm onRoleChange={setSelectedRole}/>
+                    <SignUpForm />
                 )}
             </div>
             <div className="separator-cont">

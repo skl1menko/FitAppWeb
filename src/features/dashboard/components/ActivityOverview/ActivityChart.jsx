@@ -1,6 +1,6 @@
 
 import healthMetricsService from "../../../../services/healthMetricsService";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
     ResponsiveContainer
@@ -20,21 +20,34 @@ const CustomTooltip = ({ active, payload, label, unit }) => {
     );
 };
 
-const ActivityChart = ({ startDate, endDate, activeStat = 0, activePeriod = 0 }) => {
-    const [chartData, setChartData] = useState([]);
-    const [loading, setLoading] = useState(true);
+const ActivityChart = ({
+    startDate,
+    endDate,
+    activeStat = 0,
+    activePeriod = 0,
+    chartData: externalChartData,
+    loading: externalLoading,
+    emptyText = "Loading..."
+}) => {
+    const [internalChartData, setInternalChartData] = useState([]);
+    const [internalLoading, setInternalLoading] = useState(true);
 
     const { dataKey, color, unit } = STAT_CONFIG[activeStat];
     const isMonth = activePeriod === 1;
+    const hasExternalData = Array.isArray(externalChartData);
 
     useEffect(() => {
-        setLoading(true);
+        if (hasExternalData) {
+            return;
+        }
+
+        setInternalLoading(true);
         const periodType = isMonth ? 'monthly' : 'weekly';
         healthMetricsService.getByPeriod(periodType, startDate, endDate)
             .then(res => {
                 const metrics = res.data?.data?.detailedMetrics ?? [];
                 const sorted = [...metrics].sort((a, b) => a.endDate.localeCompare(b.endDate));
-                setChartData(
+                setInternalChartData(
                     isMonth
                         ? transformMonthMetrics(sorted, startDate, endDate)
                         : transformMetrics(sorted, startDate, endDate)
@@ -42,15 +55,26 @@ const ActivityChart = ({ startDate, endDate, activeStat = 0, activePeriod = 0 })
             })
             .catch(err => {
                 console.error('Error fetching metrics:', err);
-                setChartData([]);
+                setInternalChartData([]);
             })
-            .finally(() => setLoading(false));
-    }, [startDate, endDate, activePeriod]);
+            .finally(() => setInternalLoading(false));
+    }, [endDate, hasExternalData, isMonth, startDate]);
+
+    const chartData = useMemo(
+        () => (hasExternalData ? externalChartData : internalChartData),
+        [externalChartData, hasExternalData, internalChartData]
+    );
+
+    const loading = hasExternalData ? Boolean(externalLoading) : internalLoading;
 
     const gradientId = `gradient-${dataKey}-${activePeriod}`;
 
     if (loading) {
-        return <div className="activity-chart-empty">Loading...</div>;
+        return <div className="activity-chart-empty">{emptyText}</div>;
+    }
+
+    if (!chartData?.length) {
+        return <div className="activity-chart-empty">No data available.</div>;
     }
 
     return (

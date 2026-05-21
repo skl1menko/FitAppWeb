@@ -1,7 +1,7 @@
 import './MainHeader.scss'
 import Logo from '../assets/Logo.svg'
 import Avatar from '../assets/mobile-bg.jpg'
-import { LuLayoutDashboard, LuMenu, LuX, PiBarbellLight, MdSportsGymnastics, GiProgression, FiCalendar, BsChevronDown } from "../assets/icons";
+import { LuLayoutDashboard, LuMenu, LuX, PiBarbellLight, MdSportsGymnastics, FiCalendar, BsChevronDown, IoMdPerson } from "../assets/icons";
 import { NavLink, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import authService from '../services/authService';
@@ -15,11 +15,20 @@ const ACTIVE_WORKOUT_ID_KEY = 'activeWorkoutId';
 
 
 const MainHeader = () => {
+    const getUserProfile = () => {
+        const user = authService.getUser() || {};
+        return {
+            name: user.fullName || user.full_name || "User",
+            role: user.role || "",
+            avatarUrl: user.avatarUrl || user.avatar_url || ""
+        };
+    };
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
-    const [userName, setUserName] = useState('');
-    const [userRole, setUserRole] = useState('');
+    const [userName, setUserName] = useState(() => getUserProfile().name);
+    const [userRole, setUserRole] = useState(() => getUserProfile().role);
+    const [userAvatar, setUserAvatar] = useState(() => getUserProfile().avatarUrl);
     const [isBurgerOpen, setIsBurgerOpen] = useState(false);
     const [isWorkoutsDropdownOpen, setIsWorkoutsDropdownOpen] = useState(false);
     const [isWorkoutsDropdownLocked, setIsWorkoutsDropdownLocked] = useState(false);
@@ -28,15 +37,23 @@ const MainHeader = () => {
         return Number.isFinite(startAt) && startAt > 0;
     });
     const navigate = useNavigate();
+    const connectionsRoute = userRole === 'trainer' ? '/clients' : '/trainers';
+    const connectionsLabel = userRole === 'trainer' ? 'Clients' : 'Trainer';
 
     useEffect(() =>{
-        const user = authService.getUser();
-        if (user && user.fullName) {
-            setUserName(user.fullName);
-        }
-        if (user && user.role) {
-            setUserRole(user.role);
-        }
+        const syncUserProfile = () => {
+            const profile = getUserProfile();
+            setUserName(profile.name);
+            setUserRole(profile.role);
+            setUserAvatar(profile.avatarUrl);
+        };
+
+        syncUserProfile();
+        window.addEventListener(authService.PROFILE_UPDATED_EVENT, syncUserProfile);
+
+        return () => {
+            window.removeEventListener(authService.PROFILE_UPDATED_EVENT, syncUserProfile);
+        };
     },[]);
 
     useEffect(() => {
@@ -169,10 +186,13 @@ const MainHeader = () => {
                 <NavLink to="/exercises" className={({ isActive }) => isActive ? 'active' : ''}>
                     <MdSportsGymnastics className="main-header-icon"/> Exercises
                 </NavLink>
+                <NavLink to={connectionsRoute} className={({ isActive }) => isActive ? 'active' : ''}>
+                    <IoMdPerson className="main-header-icon"/> {connectionsLabel}
+                </NavLink>
                 
             </div>
             <div className="main-header user-cont" onClick={toggleMenu}>
-                <img src={Avatar} alt="" className="user-avatar" />
+                <img src={userAvatar || Avatar} alt="" className="user-avatar" />
                 <div className="main-header-username-cont">
                     <h1 className='main-header-username'>{userName}</h1>
                     <span className='main-header-user-role'>{userRole}</span>
@@ -206,6 +226,9 @@ const MainHeader = () => {
                     </NavLink>
                     <NavLink to="/exercises" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
                         <MdSportsGymnastics className="main-header-icon"/> Exercises
+                    </NavLink>
+                    <NavLink to={connectionsRoute} onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
+                        <IoMdPerson className="main-header-icon"/> {connectionsLabel}
                     </NavLink>
                    
                 </div>

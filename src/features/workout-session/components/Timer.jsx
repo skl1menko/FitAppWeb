@@ -1,25 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
-
-const TIMER_START_AT_KEY = "workoutSessionStartAt";
-const WORKOUT_STATUS_CHANGED_EVENT = "workoutSessionStatusChanged";
+import {
+    getStoredTimerStartAt,
+    notifyWorkoutStatusChanged,
+    setStoredTimerStartAt
+} from "../utils/workoutSessionStorage";
 
 function Timer({ startAt: externalStartAt = null }) {
     const [startAt, setStartAt] = useState(() => {
         const fromProp = Number(externalStartAt);
         if (Number.isFinite(fromProp) && fromProp > 0) {
-            localStorage.setItem(TIMER_START_AT_KEY, String(fromProp));
+            setStoredTimerStartAt(fromProp);
             return fromProp;
         }
 
-        const savedStartAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
-
-        if (Number.isFinite(savedStartAt) && savedStartAt > 0) {
+        const savedStartAt = getStoredTimerStartAt();
+        if (savedStartAt) {
             return savedStartAt;
         }
 
         const startedNow = Date.now();
-        localStorage.setItem(TIMER_START_AT_KEY, String(startedNow));
-        window.dispatchEvent(new Event(WORKOUT_STATUS_CHANGED_EVENT));
+        setStoredTimerStartAt(startedNow);
+        notifyWorkoutStatusChanged();
         return startedNow;
     });
     const [now, setNow] = useState(() => Date.now());
@@ -31,7 +32,7 @@ function Timer({ startAt: externalStartAt = null }) {
         }
 
         setStartAt(fromProp);
-        localStorage.setItem(TIMER_START_AT_KEY, String(fromProp));
+        setStoredTimerStartAt(fromProp);
     }, [externalStartAt]);
 
     useEffect(() => {

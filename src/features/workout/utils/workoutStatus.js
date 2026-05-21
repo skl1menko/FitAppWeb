@@ -3,10 +3,6 @@ const getStartedFlag = (workout) => {
         return workout.isStarted;
     }
 
-    if (typeof workout?.is_started === "boolean") {
-        return workout.is_started;
-    }
-
     return null;
 };
 
@@ -16,10 +12,10 @@ export const isWorkoutStarted = (workout) => {
         return startedFlag;
     }
 
-    return Boolean(workout?.startTime || workout?.start_time || workout?.endTime || workout?.end_time);
+    return Boolean(workout?.startTime || workout?.endTime);
 };
 
-export const isWorkoutCompleted = (workout) => Boolean(workout?.endTime || workout?.end_time);
+export const isWorkoutCompleted = (workout) => Boolean(workout?.endTime);
 
 export const isWorkoutActive = (workout) => isWorkoutStarted(workout) && !isWorkoutCompleted(workout);
 

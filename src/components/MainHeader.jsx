@@ -5,12 +5,13 @@ import { LuLayoutDashboard, LuMenu, LuX, PiBarbellLight, MdSportsGymnastics, FiC
 import { NavLink, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import authService from '../services/authService';
-import workoutService from '../services/WorkoutServices/workoutService';
-import { isWorkoutActive } from '../features/workout/utils/workoutStatus';
-
-const TIMER_START_AT_KEY = 'workoutSessionStartAt';
-const WORKOUT_STATUS_CHANGED_EVENT = 'workoutSessionStatusChanged';
-const ACTIVE_WORKOUT_ID_KEY = 'activeWorkoutId';
+import { syncActiveWorkoutState } from '../features/workout/services/workoutSessionManager';
+import {
+    ACTIVE_WORKOUT_ID_KEY,
+    TIMER_START_AT_KEY,
+    WORKOUT_STATUS_CHANGED_EVENT,
+    getStoredTimerStartAt
+} from '../features/workout-session/utils/workoutSessionStorage';
 
 
 
@@ -33,8 +34,7 @@ const MainHeader = () => {
     const [isWorkoutsDropdownOpen, setIsWorkoutsDropdownOpen] = useState(false);
     const [isWorkoutsDropdownLocked, setIsWorkoutsDropdownLocked] = useState(false);
     const [isWorkoutActive, setIsWorkoutActive] = useState(() => {
-        const startAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
-        return Number.isFinite(startAt) && startAt > 0;
+        return getStoredTimerStartAt() !== null;
     });
     const navigate = useNavigate();
     const connectionsRoute = userRole === 'trainer' ? '/clients' : '/trainers';
@@ -60,28 +60,12 @@ const MainHeader = () => {
         let isMounted = true;
 
         const syncWorkoutStatus = async () => {
-            const startAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
-            const localActive = Number.isFinite(startAt) && startAt > 0;
+            const localActive = getStoredTimerStartAt() !== null;
 
-            try {
-                const response = await workoutService.getAll();
-                const workouts = response?.data?.data || [];
-                const activeWorkout = workouts.find((workout) => isWorkoutActive(workout));
-                const hasServerActiveWorkout = Boolean(activeWorkout?.workoutId);
+            const { hasActiveWorkout: hasStorageOrServerActiveWorkout } = await syncActiveWorkoutState();
 
-                if (hasServerActiveWorkout) {
-                    localStorage.setItem(ACTIVE_WORKOUT_ID_KEY, String(activeWorkout.workoutId));
-                } else if (!localActive) {
-                    localStorage.removeItem(ACTIVE_WORKOUT_ID_KEY);
-                }
-
-                if (isMounted) {
-                    setIsWorkoutActive(localActive || hasServerActiveWorkout);
-                }
-            } catch {
-                if (isMounted) {
-                    setIsWorkoutActive(localActive);
-                }
+            if (isMounted) {
+                setIsWorkoutActive(localActive || hasStorageOrServerActiveWorkout);
             }
         };
 

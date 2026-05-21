@@ -1,4 +1,4 @@
-import { TIMER_START_AT_KEY } from "../constants";
+import { getStoredTimerStartAt } from "./workoutSessionStorage";
 
 export const formatDuration = (totalSeconds) => {
     const safeSeconds = Math.max(0, Number(totalSeconds) || 0);
@@ -12,8 +12,8 @@ export const formatDuration = (totalSeconds) => {
 };
 
 export const getElapsedSeconds = () => {
-    const startAt = Number(localStorage.getItem(TIMER_START_AT_KEY));
-    if (!Number.isFinite(startAt) || startAt <= 0) {
+    const startAt = getStoredTimerStartAt();
+    if (!startAt) {
         return 0;
     }
 

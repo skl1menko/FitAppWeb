@@ -5,6 +5,7 @@ import ExerciseSetRow from "./ExerciseSetRow";
 import CustomBtn from "../../../components/CustomBtn";
 import { GoPlus, GiWeight, LuX } from "../../../assets/icons";
 import { formatGroupedNumber } from "../../../utils/formatNumber";
+import { showWorkoutAlert } from "../../workout/utils/workoutFeedback";
 
 const EMPTY_SET_VALUES = {
     weight_kg: 0,
@@ -99,7 +100,7 @@ const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, isPlanned
             }
         } catch (error) {
             console.error("Failed to delete exercise from workout:", error?.response?.data || error);
-            alert(error?.response?.data?.message || "Failed to delete exercise");
+            showWorkoutAlert(error?.response?.data?.message || "Failed to delete exercise");
         }
     };
 

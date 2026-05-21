@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react";
 import workoutService from "../../../services/WorkoutServices/workoutService";
 import workoutExerciseService from "../../../services/WorkoutServices/workoutExerciseService";
+import { normalizeWorkout } from "../../workout/utils/normalizeWorkout";
+import { showWorkoutAlert } from "../../workout/utils/workoutFeedback";
 
 // Manages workout exercise collection: load list with summary data,
 // add exercise to active workout, remove exercise from active workout.
@@ -15,8 +17,8 @@ const useWorkoutExercises = (activeWorkoutId) => {
 
         try {
             const detailResponse = await workoutService.getById(workoutId);
-            const workout = detailResponse?.data?.data;
-            if (!workout) {
+            const workout = normalizeWorkout(detailResponse?.data?.data);
+            if (!workout?.workoutId) {
                 return null;
             }
 
@@ -72,7 +74,7 @@ const useWorkoutExercises = (activeWorkoutId) => {
         } catch (error) {
             const message = error?.response?.data?.message || "Failed to add exercise";
             console.error("Add exercise failed:", error?.response?.data || error);
-            alert(message);
+            showWorkoutAlert(message);
             return false;
         }
     }, [activeWorkoutId]);
@@ -89,7 +91,7 @@ const useWorkoutExercises = (activeWorkoutId) => {
         } catch (error) {
             const message = error?.response?.data?.message || "Failed to delete exercise";
             console.error("Delete exercise failed:", error?.response?.data || error);
-            alert(message);
+            showWorkoutAlert(message);
             return false;
         }
     }, [activeWorkoutId]);

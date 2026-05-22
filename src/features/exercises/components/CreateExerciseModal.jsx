@@ -34,6 +34,7 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
                         type="button"
                         className="close-create-modal"
                         onClick={handleClose}
+                        disabled={isCreating}
                         aria-label="Close"
                     >
                         x
@@ -47,6 +48,7 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
                         className="image-upload-circle"
                         onClick={() => fileInputRef.current?.click()}
                         aria-label="Upload exercise image"
+                        disabled={isCreating}
                     >
                         {imagePreviewUrl ? (
                             <img src={imagePreviewUrl} alt="Exercise preview" />
@@ -60,6 +62,7 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
                         type="file"
                         accept="image/*"
                         className="hidden-file-input"
+                        disabled={isCreating}
                         onChange={(e) => handleImageFileChange(e.target.files?.[0] || null)}
                     />
                     <p>Tap the circle to upload a photo</p>
@@ -75,6 +78,8 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
                             value={newExercise.name}
                             onChange={(e) => handleCreateInput("name", e.target.value)}
                             placeholder="e.g. Cable Fly"
+                            disabled={isCreating}
+                            aria-invalid={Boolean(fieldErrors.name)}
                         />
                         {fieldErrors.name ? <p className="field-error">{fieldErrors.name}</p> : null}
                     </label>
@@ -87,17 +92,19 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
                             value={newExercise.muscleGroup}
                             onChange={(groupValue) => handleCreateInput("muscleGroup", groupValue)}
                             placeholder="Choose muscle group"
+                            disabled={isCreating}
                         />
                         {fieldErrors.muscleGroup ? <p className="field-error">{fieldErrors.muscleGroup}</p> : null}
                     </div>
 
                     <label className="field">
                         <span>Description (optional)</span>
-                        <input
+                        <textarea
                             value={newExercise.description}
                             onChange={(e) => handleCreateInput("description", e.target.value)}
                             rows={3}
                             placeholder="Short exercise description"
+                            disabled={isCreating}
                         />
                     </label>
                 </div>
@@ -110,6 +117,8 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
                         value={newExercise.imageUrl}
                         onChange={(e) => handleCreateInput("imageUrl", e.target.value)}
                         placeholder="https://..."
+                        disabled={isCreating}
+                        aria-invalid={Boolean(fieldErrors.imageUrl)}
                     />
                     {fieldErrors.imageUrl ? <p className="field-error">{fieldErrors.imageUrl}</p> : null}
                 </label>
@@ -121,6 +130,7 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
                         type="button"
                         className="cancel-btn"
                         onClick={handleClose}
+                        disabled={isCreating}
                     >
                         Cancel
                     </button>

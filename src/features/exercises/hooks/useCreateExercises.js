@@ -1,5 +1,20 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import exercisesService from "../../../services/exercisesService";
+
+const INITIAL_FORM_STATE = {
+    name: "",
+    muscleGroup: "",
+    description: "",
+    imageUrl: "",
+    imageFile: null
+};
+
+const getRequestErrorMessage = (error, fallbackMessage) => (
+    error?.response?.data?.message
+    || error?.response?.data?.error
+    || error?.message
+    || fallbackMessage
+);
 
 const useCreateExercise = ({ onClose, onCreated } = {}) => {
     const [isCreating, setIsCreating] = useState(false);
@@ -8,50 +23,73 @@ const useCreateExercise = ({ onClose, onCreated } = {}) => {
     const [imagePreviewUrl, setImagePreviewUrl] = useState("");
     const fileInputRef = useRef(null);
     const isCreateInFlightRef = useRef(false);
-    const [newExercise, setNewExercise] = useState({
-        name: "",
-        muscleGroup: "",
-        description: "",
-        imageUrl: "",
-        imageFile: null
-    });
+    const previewUrlRef = useRef("");
+    const [newExercise, setNewExercise] = useState(INITIAL_FORM_STATE);
+
+    useEffect(() => {
+        return () => {
+            if (previewUrlRef.current) {
+                URL.revokeObjectURL(previewUrlRef.current);
+            }
+        };
+    }, []);
 
     const handleCreateInput = (field, value) => {
         setNewExercise((prev) => ({
             ...prev,
             [field]: value
         }));
+        setCreateError("");
         setFieldErrors((prev) => ({
             ...prev,
             [field]: ""
         }));
     };
 
+    const clearPreviewUrl = () => {
+        if (previewUrlRef.current) {
+            URL.revokeObjectURL(previewUrlRef.current);
+            previewUrlRef.current = "";
+        }
+    };
+
     const resetCreateForm = () => {
-        setNewExercise({
-            name: "",
-            muscleGroup: "",
-            description: "",
-            imageUrl: "",
-            imageFile: null
-        });
+        clearPreviewUrl();
+        setNewExercise(INITIAL_FORM_STATE);
         setImagePreviewUrl("");
         setCreateError("");
         setFieldErrors({});
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
     const handleImageFileChange = (file) => {
         handleCreateInput("imageFile", file || null);
+        setFieldErrors((prev) => ({
+            ...prev,
+            imageFile: "",
+            imageUrl: ""
+        }));
+
+        clearPreviewUrl();
 
         if (!file) {
             setImagePreviewUrl("");
             return;
         }
 
-        setImagePreviewUrl(URL.createObjectURL(file));
+        const nextPreviewUrl = URL.createObjectURL(file);
+        previewUrlRef.current = nextPreviewUrl;
+        setImagePreviewUrl(nextPreviewUrl);
     };
 
     const handleClose = () => {
+        if (isCreating) {
+            return;
+        }
+
         resetCreateForm();
         onClose?.();
     };
@@ -105,7 +143,7 @@ const useCreateExercise = ({ onClose, onCreated } = {}) => {
                         return;
                     }
                 } catch (error) {
-                    const message = error?.message || "Image upload failed, please try again";
+                    const message = getRequestErrorMessage(error, "Image upload failed, please try again");
                     setFieldErrors({ imageFile: message });
                     return;
                 }
@@ -123,10 +161,14 @@ const useCreateExercise = ({ onClose, onCreated } = {}) => {
             const created = response?.data?.data;
             if (created) {
                 onCreated?.(created);
-                handleClose();
+                resetCreateForm();
+                onClose?.();
+                return;
             }
-        } catch {
-            setCreateError("Failed to create exercise");
+            
+            setCreateError("Exercise was created, but the app did not receive the saved record.");
+        } catch (error) {
+            setCreateError(getRequestErrorMessage(error, "Failed to create exercise"));
         } finally {
             isCreateInFlightRef.current = false;
             setIsCreating(false);
@@ -148,4 +190,3 @@ const useCreateExercise = ({ onClose, onCreated } = {}) => {
 }
 
 export default useCreateExercise;
-

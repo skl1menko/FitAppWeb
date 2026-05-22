@@ -108,9 +108,9 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
 
     const chartData = Array.isArray(stats?.chartData) ? stats.chartData : [];
     const hasData = chartData.length > 0;
-    const exerciseName = exercise?.exerciseName || exercise?.name || "Exercise";
+    const exerciseName = exercise?.name || "Exercise";
     const muscleGroup = exercise?.muscleGroup || "General";
-    const imageUrl = exercise?.imageUrl || exercise?.image_url || "";
+    const imageUrl = exercise?.imageUrl || "";
     const lastSession = chartData.at(-1);
 
     return (

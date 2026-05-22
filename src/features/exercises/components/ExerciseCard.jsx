@@ -19,7 +19,7 @@ const ExerciseCard = ({ exercises = [], showDelete = false, onDelete, onSelect }
             {exercises.map((exercise) => (
                 <div
                     className="exercise-card-content"
-                    key={exercise?.exerciseId || exercise?._id || exercise?.id || exercise?.exerciseName}
+                    key={exercise?.id || exercise?.name}
                     role="button"
                     tabIndex={0}
                     onClick={() => onSelect?.(exercise)}
@@ -29,7 +29,7 @@ const ExerciseCard = ({ exercises = [], showDelete = false, onDelete, onSelect }
                             onSelect?.(exercise);
                         }
                     }}
-                    aria-label={`Open stats for ${exercise?.exerciseName || "exercise"}`}
+                    aria-label={`Open stats for ${exercise?.name || "exercise"}`}
                 >
                     {showDelete ? (
                         <button
@@ -37,9 +37,9 @@ const ExerciseCard = ({ exercises = [], showDelete = false, onDelete, onSelect }
                             className="exercise-delete-btn"
                             onClick={(event) => {
                                 event.stopPropagation();
-                                onDelete?.(exercise);
+                            onDelete?.(exercise);
                             }}
-                            aria-label={`Delete ${exercise?.exerciseName || "exercise"}`}
+                            aria-label={`Delete ${exercise?.name || "exercise"}`}
                             title="Delete custom exercise"
                         >
                             x
@@ -56,7 +56,7 @@ const ExerciseCard = ({ exercises = [], showDelete = false, onDelete, onSelect }
                         </div>
                     </div>
                     <div className="exercise-name-cont">
-                        <h1>{exercise?.exerciseName || "No exercises found"}</h1>
+                        <h1>{exercise?.name || "No exercises found"}</h1>
                     </div>
                 </div>
             ))}

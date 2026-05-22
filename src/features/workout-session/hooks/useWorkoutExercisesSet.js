@@ -1,31 +1,26 @@
 import { useCallback, useEffect, useState } from "react";
 import workoutSetService from "../../../services/WorkoutServices/workoutSetService";
 
-// Manages sets inside workout exercises: preload sets for visible exercises,
-// add/update/delete sets, and provide local set cache by workout exercise id.
-const useWorkoutExercisesSet = (activeWorkoutId = null, workoutExercises = []) => {
-    const [setsByExerciseId, setSetsByExerciseId] = useState({});
-
-    // Loads sets for one workout_exercises.id into local cache.
-    const fetchExerciseSets = useCallback(async (workoutId, exerciseId) => {
-        if (!workoutId || !exerciseId) {
-            return;
+const buildSetsMap = (workoutExercises = []) => {
+    return (Array.isArray(workoutExercises) ? workoutExercises : []).reduce((acc, exercise) => {
+        const workoutExerciseId = Number(exercise?.id);
+        if (!Number.isFinite(workoutExerciseId) || workoutExerciseId <= 0) {
+            return acc;
         }
 
-        try {
-            const response = await workoutSetService.getSets(workoutId, exerciseId);
-            setSetsByExerciseId((prev) => ({
-                ...prev,
-                [exerciseId]: response?.data?.data || []
-            }));
-        } catch (error) {
-            console.error("Failed to fetch exercise sets:", error);
-            setSetsByExerciseId((prev) => ({
-                ...prev,
-                [exerciseId]: []
-            }));
-        }
-    }, []);
+        acc[workoutExerciseId] = Array.isArray(exercise?.sets) ? exercise.sets : [];
+        return acc;
+    }, {});
+};
+
+// Manages sets inside workout exercises using workout detail payload as the
+// single source of truth, plus local optimistic updates between refreshes.
+const useWorkoutExercisesSet = (workoutExercises = []) => {
+    const [setsByExerciseId, setSetsByExerciseId] = useState(() => buildSetsMap(workoutExercises));
+
+    useEffect(() => {
+        setSetsByExerciseId(buildSetsMap(workoutExercises));
+    }, [workoutExercises]);
 
     const addSet = useCallback(async (workoutId, exerciseId, setData) => {
         if (!workoutId || !exerciseId) {
@@ -39,7 +34,6 @@ const useWorkoutExercisesSet = (activeWorkoutId = null, workoutExercises = []) =
             weight_kg: setData?.weight_kg ?? 0,
             reps: setData?.reps ?? 0,
             rpe: setData?.rpe ?? null,
-            isJustAdded: true,
             isPendingCreate: true
         };
 
@@ -52,17 +46,13 @@ const useWorkoutExercisesSet = (activeWorkoutId = null, workoutExercises = []) =
             const response = await workoutSetService.addSet(workoutId, exerciseId, setData);
             const newSet = response?.data?.data;
             if (newSet) {
-                const preparedNewSet = {
-                    ...newSet,
-                    isJustAdded: true
-                };
                 setSetsByExerciseId((prev) => ({
                     ...prev,
                     [exerciseId]: (prev[exerciseId] || []).map((set) =>
-                        set.setId === tempSetId ? preparedNewSet : set
+                        set.setId === tempSetId ? newSet : set
                     )
                 }));
-                return preparedNewSet;
+                return newSet;
             }
 
             setSetsByExerciseId((prev) => ({
@@ -139,23 +129,8 @@ const useWorkoutExercisesSet = (activeWorkoutId = null, workoutExercises = []) =
         [setsByExerciseId]
     );
 
-    useEffect(() => {
-        if (!activeWorkoutId || !Array.isArray(workoutExercises) || workoutExercises.length === 0) {
-            return;
-        }
-
-        workoutExercises.forEach((exercise) => {
-            const workoutExerciseId = Number(exercise?.id);
-            if (Number.isFinite(workoutExerciseId) && workoutExerciseId > 0) {
-                fetchExerciseSets(activeWorkoutId, workoutExerciseId);
-            }
-        });
-    }, [activeWorkoutId, workoutExercises, fetchExerciseSets]);
-
     return {
-        setsByExerciseId,
         getExerciseSets,
-        fetchExerciseSets,
         addSet,
         addDefaultSet,
         updateSet,

@@ -1,54 +1,41 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import workoutService from "../../../services/WorkoutServices/workoutService";
 import workoutExerciseService from "../../../services/WorkoutServices/workoutExerciseService";
 import { normalizeWorkout } from "../../workout/utils/normalizeWorkout";
 import { showWorkoutAlert } from "../../workout/utils/workoutFeedback";
 
+export const loadWorkoutExercisesSummary = async (workoutId) => {
+    if (!workoutId) {
+        return null;
+    }
+
+    const detailResponse = await workoutService.getById(workoutId);
+    const workout = normalizeWorkout(detailResponse?.data?.data);
+    if (!workout?.workoutId) {
+        return null;
+    }
+
+    const exercisesWithSets = Array.isArray(workout.exercisesWithSets)
+        ? workout.exercisesWithSets
+        : [];
+
+    const setsCount = exercisesWithSets.reduce((acc, exercise) => {
+        return acc + (exercise?.sets?.length || 0);
+    }, 0);
+
+    const tonnage = Number(workout.totalTonnage) || 0;
+
+    return {
+        exercisesWithSets,
+        workout,
+        tonnage,
+        setsCount
+    };
+};
+
 // Manages workout exercise collection: load list with summary data,
 // add exercise to active workout, remove exercise from active workout.
 const useWorkoutExercises = (activeWorkoutId) => {
-    const [workoutExercises, setWorkoutExercises] = useState([]);
-
-    // Loads workout detail and normalizes exercise list plus aggregate stats.
-    const loadWorkoutExercises = useCallback(async (workoutId) => {
-        if (!workoutId) {
-            return null;
-        }
-
-        try {
-            const detailResponse = await workoutService.getById(workoutId);
-            const workout = normalizeWorkout(detailResponse?.data?.data);
-            if (!workout?.workoutId) {
-                return null;
-            }
-
-            const exercisesWithSets = Array.isArray(workout.exercisesWithSets)
-                ? workout.exercisesWithSets
-                : [];
-
-            setWorkoutExercises(exercisesWithSets);
-
-            const setsCount = exercisesWithSets.reduce((acc, exercise) => {
-                return acc + (exercise?.sets?.length || 0);
-            }, 0);
-
-            const tonnage = Number(workout.totalTonnage) || 0;
-
-            return {
-                workout,
-                tonnage,
-                setsCount
-            };
-        } catch (error) {
-            console.error("Failed to load workout exercises:", error?.response?.data || error);
-            return null;
-        }
-    }, []);
-
-    const clearWorkoutExercises = useCallback(() => {
-        setWorkoutExercises([]);
-    }, []);
-
     // Adds one or many catalog exercises to current active workout.
     const confirmAddExercise = useCallback(async (selectedExercises = []) => {
         if (!activeWorkoutId) {
@@ -97,9 +84,6 @@ const useWorkoutExercises = (activeWorkoutId) => {
     }, [activeWorkoutId]);
 
     return {
-        workoutExercises,
-        loadWorkoutExercises,
-        clearWorkoutExercises,
         confirmAddExercise,
         removeExerciseFromWorkout
     };

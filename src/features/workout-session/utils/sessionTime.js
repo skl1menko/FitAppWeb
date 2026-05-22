@@ -11,8 +11,12 @@ export const formatDuration = (totalSeconds) => {
     return `${hours}h ${minutes}min ${seconds}s`;
 };
 
-export const getElapsedSeconds = () => {
-    const startAt = getStoredTimerStartAt();
+export const getElapsedSeconds = (startAtOverride = null) => {
+    const normalizedOverride = Number(startAtOverride);
+    const startAt = Number.isFinite(normalizedOverride) && normalizedOverride > 0
+        ? normalizedOverride
+        : getStoredTimerStartAt();
+
     if (!startAt) {
         return 0;
     }

@@ -1,0 +1,88 @@
+.schedule-page-block.right {
+    .block-header {
+        .header-label {
+            p {
+                font-size: 14px;
+                font-weight: 500;
+                color: #6b7280;
+            }
+        }
+    }
+
+    .workout-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 12px;
+
+        .workout-list-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+
+            .plans-feedback {
+                font-size: 14px;
+                color: #6b7280;
+                padding: 8px 4px;
+
+                &.error {
+                    color: #b91c1c;
+                }
+            }
+
+            .plans-view-switch {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background-color: #f3f4f6;
+                border-radius: 12px;
+                padding: 4px;
+                width: fit-content;
+            }
+
+            .plans-view-switch-btn {
+                border: none;
+                background: transparent;
+                color: #6b7280;
+                border-radius: 10px;
+                padding: 8px 12px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: color 0.2s ease;
+
+                &:hover {
+                    color: #155dfc;
+                }
+
+                &.active {
+                    background-color: #ffffff;
+                    color: #155dfc;
+                    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+                }
+            }
+
+            .plans-list {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .schedule-page-block.right {
+        .workout-list {
+            padding: 0;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .schedule-page-block.right {
+        .workout-list {
+            padding: 0;
+        }
+    }
+}

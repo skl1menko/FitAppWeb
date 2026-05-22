@@ -1,0 +1,285 @@
+.schedule-page-block {
+    .block-header.create-plan-header {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+
+        .header-icon {
+            grid-column: 1;
+            grid-row: 1 / 3;
+        }
+
+        .header-title-row {
+            grid-column: 2;
+            grid-row: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+
+            .mobile-toggle-row {
+                margin-left: auto;
+                margin-right: 0;
+                flex-shrink: 0;
+            }
+        }
+
+        .header-description {
+            grid-column: 2;
+            grid-row: 2;
+        }
+    }
+
+    .block-content.left {
+        .plan-name-cont {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .optional-toggle-btn {
+            align-self: flex-start;
+            border: none;
+            background-color: #eef2f7;
+            color: #1f2937;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 999px;
+            padding: 6px 12px;
+
+            &:hover {
+                background-color: #e2e8f0;
+            }
+        }
+
+        .schedule-textarea {
+            min-height: 96px;
+            resize: vertical;
+        }
+
+        .add-workout-list {
+            display: flex;
+            flex-direction: column;
+            border: 1px dashed #bdbec1;
+            border-radius: 12px;
+            padding: 12px;
+            background-color: #fffaf5;
+            gap: 12px;
+            width: 100%;
+
+            .add-workout-header {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                h1 {
+                    font-size: 18px;
+                    font-weight: 600;
+                }
+
+                span {
+                    font-size: 13px;
+                    color: #6b7280;
+                }
+            }
+
+            .add-workout-cont {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                padding: 12px;
+                background-color: #ffffff;
+
+                .add-workout-row-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+
+                    span {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #111827;
+                    }
+                }
+
+                .workout-input-grid {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    gap: 12px;
+                }
+
+                .workout-date-row {
+                    display: flex;
+
+                    .datepicker-custom {
+                        width: 100%;
+
+                        .datepicker-trigger {
+                            width: 100%;
+                            justify-content: space-between;
+                        }
+                    }
+                }
+
+                .workout-optional-row {
+                    display: flex;
+                    justify-content: flex-start;
+                }
+
+                .delete-workout {
+                    border: none;
+                    background-color: #fdf3f4;
+                    color: #ef4444b6;
+                    font-size: 14px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    border-radius: 8px;
+                    padding: 6px 10px;
+                    height: 35px;
+
+                    &:hover:not(:disabled) {
+                        background-color: #fef2f2;
+                        color: #ef4444;
+                    }
+
+                    &:disabled {
+                        cursor: not-allowed;
+                        opacity: 0.45;
+                    }
+                }
+            }
+
+            .add-workout-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                border: none;
+                background-color: #f0ece7;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                border-radius: 8px;
+                padding: 8px 12px;
+                width: fit-content;
+
+                &:hover {
+                    background-color: rgba(210, 207, 205, 0.544);
+                }
+            }
+        }
+
+        .create-plan-btn {
+            align-self: start;
+            background-color: #f97317;
+
+            &:hover {
+                background-color: #db6314;
+            }
+        }
+
+        .form-feedback {
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 14px;
+            font-weight: 500;
+
+            &.error {
+                background-color: #fef2f2;
+                color: #b91c1c;
+                border: 1px solid #fecaca;
+            }
+
+            &.success {
+                background-color: #ecfdf5;
+                color: #047857;
+                border: 1px solid #a7f3d0;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .schedule-page-block.left.is-collapsed {
+        .block-header.create-plan-header {
+            .header-description {
+                display: none;
+            }
+        }
+
+        .block-content.left {
+            display: none;
+        }
+    }
+
+    .schedule-page-block {
+        .block-header.create-plan-header {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: flex-start;
+            column-gap: 12px;
+            row-gap: 6px;
+
+            .header-icon {
+                grid-column: 1;
+                grid-row: 1 / 3;
+            }
+
+            .header-title-row {
+                grid-column: 2;
+                grid-row: 1;
+                width: 100%;
+                align-items: start;
+
+                .header-label {
+                    min-width: 0;
+
+                    h1 {
+                        font-size: 20px;
+                    }
+                }
+
+                .mobile-toggle-row {
+                    align-self: flex-start;
+                }
+            }
+
+            .header-description {
+                grid-column: 2 / 4;
+                grid-row: 2;
+            }
+
+            .mobile-toggle-row {
+                justify-content: flex-end;
+                flex-shrink: 0;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .schedule-page-block {
+        .add-workout-list {
+            .add-workout-cont {
+                .workout-input-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .add-workout-btn {
+                width: 100%;
+            }
+        }
+
+        .create-plan-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+}

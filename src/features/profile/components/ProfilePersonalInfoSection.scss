@@ -1,0 +1,84 @@
+.profile-avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.profile-avatar-button {
+    position: relative;
+    width: 124px;
+    height: 124px;
+    border: none;
+    border-radius: 28px;
+    padding: 0;
+    background: linear-gradient(145deg, #dbeafe 0%, #eff6ff 100%);
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.16);
+}
+
+.profile-avatar-image,
+.profile-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+}
+
+.profile-avatar-image {
+    object-fit: cover;
+    display: block;
+}
+
+.profile-avatar-placeholder {
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+}
+
+.profile-avatar-edit {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background-color: #111827;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.profile-avatar-copy {
+    flex: 1 1 240px;
+
+    strong {
+        display: block;
+        color: #111827;
+        font-size: 18px;
+        margin-bottom: 6px;
+    }
+
+    p {
+        margin: 0 0 12px;
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+}
+
+.profile-fields-grid {
+    display: grid;
+    gap: 14px;
+}
+
+@media (max-width: 680px) {
+    .profile-avatar-button {
+        width: 108px;
+        height: 108px;
+        border-radius: 24px;
+    }
+}

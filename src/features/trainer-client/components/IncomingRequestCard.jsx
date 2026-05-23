@@ -2,6 +2,27 @@ import {FaCheck, IoMdPerson, MdOutlineCancel} from "../../../assets/icons";
 import CustomBtn from "../../../components/CustomBtn";
 import "./IncomingRequestCard.scss";
 
+const VARIANT_CLASSES = {
+    trainer: {
+        card: "trainer-result-card trainer-request-card",
+        head: "trainer-card-head",
+        avatar: "trainer-card-avatar",
+        info: "trainer-result-info",
+        actions: "trainer-request-actions trainer-request-actions-compact",
+        approveButton: "trainer-request-icon-btn trainer-request-approve-btn",
+        rejectButton: "trainer-request-icon-btn trainer-request-reject-btn"
+    },
+    clients: {
+        card: "clients-result-card",
+        head: "clients-card-head",
+        avatar: "clients-card-avatar",
+        info: "clients-result-info",
+        actions: "clients-request-actions",
+        approveButton: "apply-btn",
+        rejectButton: "cancel-btn"
+    }
+};
+
 const IncomingRequestCard = ({
     athleteId,
     trainerId,
@@ -10,6 +31,7 @@ const IncomingRequestCard = ({
     activeActionKey,
     onApprove,
     onReject,
+    variant = "trainer",
     cardClassName,
     headClassName,
     avatarClassName,
@@ -22,13 +44,14 @@ const IncomingRequestCard = ({
     const rejectKey = `reject-${athleteId}-${trainerId}`;
     const isApproving = activeActionKey === approveKey;
     const isRejecting = activeActionKey === rejectKey;
-    const cardClasses = cardClassName || "trainer-result-card trainer-request-card";
-    const headClasses = headClassName || "trainer-card-head";
-    const avatarClasses = avatarClassName || "trainer-card-avatar";
-    const infoClasses = infoClassName || "trainer-result-info";
-    const actionsClasses = actionsClassName || "trainer-request-actions trainer-request-actions-compact";
-    const rejectButtonClasses = rejectButtonClassName || "trainer-request-icon-btn trainer-request-reject-btn";
-    const approveButtonClasses = approveButtonClassName || "trainer-request-icon-btn trainer-request-approve-btn";
+    const variantClasses = VARIANT_CLASSES[variant] || VARIANT_CLASSES.trainer;
+    const cardClasses = cardClassName || variantClasses.card;
+    const headClasses = headClassName || variantClasses.head;
+    const avatarClasses = avatarClassName || variantClasses.avatar;
+    const infoClasses = infoClassName || variantClasses.info;
+    const actionsClasses = actionsClassName || variantClasses.actions;
+    const rejectButtonClasses = rejectButtonClassName || variantClasses.rejectButton;
+    const approveButtonClasses = approveButtonClassName || variantClasses.approveButton;
 
     return (
         <div className={cardClasses}>

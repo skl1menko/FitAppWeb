@@ -1,6 +1,25 @@
 import {IoMdPerson} from "../../../assets/icons";
 import "./SearchResultCard.scss";
 
+const VARIANT_CLASSES = {
+    trainer: {
+        card: "trainer-result-card",
+        head: "trainer-card-head",
+        avatar: "trainer-card-avatar",
+        info: "trainer-result-info",
+        meta: "trainer-meta-text",
+        actionButton: "trainer-action-btn"
+    },
+    clients: {
+        card: "clients-result-card",
+        head: "clients-card-head",
+        avatar: "clients-card-avatar",
+        info: "clients-result-info",
+        meta: "clients-meta-text",
+        actionButton: "clients-action-btn"
+    }
+};
+
 const SearchResultCard = ({
     name,
     email,
@@ -8,6 +27,7 @@ const SearchResultCard = ({
     buttonLabel,
     onAction,
     disabled,
+    variant = "trainer",
     cardClassName,
     headClassName,
     avatarClassName,
@@ -15,12 +35,13 @@ const SearchResultCard = ({
     metaClassName,
     actionButtonClassName
 }) => {
-    const cardClasses = cardClassName || "trainer-result-card";
-    const headClasses = headClassName || "trainer-card-head";
-    const avatarClasses = avatarClassName || "trainer-card-avatar";
-    const infoClasses = infoClassName || "trainer-result-info";
-    const metaClasses = metaClassName || "trainer-meta-text";
-    const actionButtonClasses = actionButtonClassName || "trainer-action-btn";
+    const variantClasses = VARIANT_CLASSES[variant] || VARIANT_CLASSES.trainer;
+    const cardClasses = cardClassName || variantClasses.card;
+    const headClasses = headClassName || variantClasses.head;
+    const avatarClasses = avatarClassName || variantClasses.avatar;
+    const infoClasses = infoClassName || variantClasses.info;
+    const metaClasses = metaClassName || variantClasses.meta;
+    const actionButtonClasses = actionButtonClassName || variantClasses.actionButton;
 
     return (
         <div className={cardClasses}>

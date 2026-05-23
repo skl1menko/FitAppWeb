@@ -1,6 +1,25 @@
 import {GoCheckCircleFill} from "../../../assets/icons";
 import "./SearchPanel.scss";
 
+const VARIANT_CLASSES = {
+    trainer: {
+        panel: "trainer-panel-cont",
+        searchRow: "trainer-search-row",
+        hint: "trainer-hint-text",
+        message: "trainer-message-text",
+        error: "trainer-error-text",
+        results: "trainer-results-list"
+    },
+    clients: {
+        panel: "clients-panel-cont",
+        searchRow: "clients-search-row",
+        hint: "clients-hint-text",
+        message: "clients-message-text",
+        error: "clients-error-text",
+        results: "clients-results-list"
+    }
+};
+
 const SearchPanel = ({
     title,
     query,
@@ -11,6 +30,7 @@ const SearchPanel = ({
     message,
     error,
     showResults = true,
+    variant = "trainer",
     panelClassName,
     searchRowClassName,
     hintClassName,
@@ -19,12 +39,13 @@ const SearchPanel = ({
     resultsClassName,
     children
 }) => {
-    const panelClasses = panelClassName || "trainer-panel-cont";
-    const searchRowClasses = searchRowClassName || "trainer-search-row";
-    const hintClasses = hintClassName || "trainer-hint-text";
-    const messageClasses = messageClassName || "trainer-message-text";
-    const errorClasses = errorClassName || "trainer-error-text";
-    const resultsClasses = resultsClassName || "trainer-results-list";
+    const variantClasses = VARIANT_CLASSES[variant] || VARIANT_CLASSES.trainer;
+    const panelClasses = panelClassName || variantClasses.panel;
+    const searchRowClasses = searchRowClassName || variantClasses.searchRow;
+    const hintClasses = hintClassName || variantClasses.hint;
+    const messageClasses = messageClassName || variantClasses.message;
+    const errorClasses = errorClassName || variantClasses.error;
+    const resultsClasses = resultsClassName || variantClasses.results;
 
     return (
         <div className={panelClasses}>

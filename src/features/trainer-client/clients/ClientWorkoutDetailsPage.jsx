@@ -1,76 +1,29 @@
-import {useEffect, useState} from "react";
 import {useLocation, useNavigate, useParams} from "react-router";
 import {FiArrowLeft, FiClock, FiFileText, GiWeight, RiFireLine} from "../../../assets/icons";
 import {FaDumbbell} from "react-icons/fa";
-import trainerService from "../../../services/trainerService";
 import useBodyClass from "../../../hooks/useBodyClass";
 import {formatGroupedNumber} from "../../../utils/formatNumber";
+import { normalizeTrainerClientInfo } from "../utils/normalizeTrainerClient";
+import { formatWorkoutDuration } from "../utils/clientTrackingUtils";
+import useClientWorkoutDetails from "../hooks/useClientWorkoutDetails";
 import "./ClientWorkoutDetailsPage.scss";
-
-const formatWorkoutDuration = (startValue, endValue) => {
-    if (!startValue || !endValue) return "-";
-
-    const start = new Date(startValue).getTime();
-    const end = new Date(endValue).getTime();
-
-    if (Number.isNaN(start) || Number.isNaN(end) || end <= start) return "-";
-
-    const totalMinutes = Math.floor((end - start) / 60000);
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    if (hours === 0) return `${minutes} min`;
-    if (minutes === 0) return `${hours} h`;
-    return `${hours} h ${minutes} min`;
-};
 
 const ClientWorkoutDetailsPage = () => {
     const {clientId, workoutId} = useParams();
     const navigate = useNavigate();
     const {state} = useLocation();
-
-    const [clientInfo, setClientInfo] = useState({
-        clientName: state?.clientName || "Client",
-        clientEmail: state?.clientEmail || ""
+    const optimisticClientInfo = normalizeTrainerClientInfo(state);
+    const {
+        clientInfo,
+        workout,
+        workoutError
+    } = useClientWorkoutDetails({
+        clientId,
+        workoutId,
+        optimisticClientInfo
     });
-    const [workout, setWorkout] = useState(null);
-    const [error, setError] = useState("");
 
     useBodyClass("workout-page-body");
-
-    useEffect(() => {
-        let active = true;
-
-        const loadWorkout = async () => {
-            setError("");
-
-            try {
-                const response = await trainerService.getClientWorkoutDetails(clientId, workoutId);
-                if (!active) return;
-
-                const workoutData = response?.data?.data?.workout ?? null;
-                const clientData = response?.data?.data?.client ?? null;
-
-                setWorkout(workoutData);
-                if (clientData) {
-                    setClientInfo({
-                        clientName: clientData.clientName || state?.clientName || "Client",
-                        clientEmail: clientData.clientEmail || state?.clientEmail || ""
-                    });
-                }
-            } catch (loadError) {
-                if (!active) return;
-                setWorkout(null);
-                setError(loadError?.response?.data?.message || "Failed to load client workout details.");
-            }
-        };
-
-        loadWorkout();
-
-        return () => {
-            active = false;
-        };
-    }, [clientId, workoutId, state?.clientEmail, state?.clientName]);
 
     return (
         <div className="workout-details-page">
@@ -85,7 +38,7 @@ const ClientWorkoutDetailsPage = () => {
                 </button>
             </div>
 
-            {error ? <p className="trainer-client-workout-error">{error}</p> : null}
+            {workoutError ? <p className="trainer-client-workout-error">{workoutError}</p> : null}
 
             {workout ? (
                 <>

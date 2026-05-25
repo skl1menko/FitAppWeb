@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import trainerService from "../../../services/trainerService";
 import {
     normalizeTrainer,
@@ -7,8 +7,10 @@ import {
 } from "../utils/normalizeTrainerClient";
 import useActionKey from "./useActionKey";
 import useAsyncFeedback, { getErrorMessage } from "./useAsyncFeedback";
+import { useTranslation } from "react-i18next";
 
 const useTrainerDirectory = ({ role } = {}) => {
+    const { t } = useTranslation();
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [myTrainer, setMyTrainer] = useState(null);
@@ -28,7 +30,7 @@ const useTrainerDirectory = ({ role } = {}) => {
         finishAction
     } = useActionKey();
 
-    const loadPageData = async () => {
+    const loadPageData = useCallback(async () => {
         const [trainerRes, incomingRes, outgoingRes] = await Promise.all([
             trainerService.getMyTrainer(),
             trainerService.getIncomingRequests(),
@@ -38,7 +40,7 @@ const useTrainerDirectory = ({ role } = {}) => {
         setMyTrainer(trainerRes?.data?.data ? normalizeTrainer(trainerRes.data.data) : null);
         setIncomingRequests(normalizeTrainerRequests(incomingRes?.data?.data));
         setOutgoingRequests(normalizeTrainerRequests(outgoingRes?.data?.data));
-    };
+    }, []);
 
     useEffect(() => {
         if (role !== "athlete") {
@@ -50,7 +52,7 @@ const useTrainerDirectory = ({ role } = {}) => {
             setIncomingRequests([]);
             setOutgoingRequests([]);
         });
-    }, [role]);
+    }, [loadPageData, role]);
 
     useEffect(() => {
         if (role !== "athlete") {
@@ -71,7 +73,7 @@ const useTrainerDirectory = ({ role } = {}) => {
                 const response = await trainerService.searchTrainers(query);
                 setResults(normalizeTrainers(response?.data?.data));
             } catch (searchError) {
-                setFailure(getErrorMessage(searchError, "Failed to search trainers"));
+                setFailure(getErrorMessage(searchError, t("trainer_clients.errors.searchTrainersFailed")));
                 setResults([]);
             } finally {
                 setIsSearching(false);
@@ -79,7 +81,7 @@ const useTrainerDirectory = ({ role } = {}) => {
         }, 300);
 
         return () => clearTimeout(timeoutId);
-    }, [query, role]);
+    }, [clearFeedback, query, role, setFailure, t]);
 
     const pendingOutgoingByTrainerId = useMemo(() => {
         const map = new Map();
@@ -95,10 +97,10 @@ const useTrainerDirectory = ({ role } = {}) => {
 
         try {
             const response = await trainerService.selectTrainer(trainerId);
-            setSuccess(response?.data?.message || "Request sent to trainer");
+            setSuccess(response?.data?.message || t("trainer_clients.errors.requestSentToTrainer"));
             await loadPageData();
         } catch (actionError) {
-            setFailure(getErrorMessage(actionError, "Failed to send request"));
+            setFailure(getErrorMessage(actionError, t("trainer_clients.errors.sendRequestFailed")));
         } finally {
             finishAction();
         }
@@ -114,10 +116,10 @@ const useTrainerDirectory = ({ role } = {}) => {
 
         try {
             const response = await trainerService.unlinkMyTrainer();
-            setSuccess(response?.data?.message || "Trainer unlinked");
+            setSuccess(response?.data?.message || t("trainer_clients.errors.trainerUnlinked"));
             await loadPageData();
         } catch (actionError) {
-            setFailure(getErrorMessage(actionError, "Failed to unlink trainer"));
+            setFailure(getErrorMessage(actionError, t("trainer_clients.errors.unlinkTrainerFailed")));
         } finally {
             finishAction();
         }
@@ -129,10 +131,10 @@ const useTrainerDirectory = ({ role } = {}) => {
 
         try {
             const response = await trainerService.approveRequest(athleteId, trainerId);
-            setSuccess(response?.data?.message || "Request approved");
+            setSuccess(response?.data?.message || t("trainer_clients.errors.requestApproved"));
             await loadPageData();
         } catch (actionError) {
-            setFailure(getErrorMessage(actionError, "Failed to approve request"));
+            setFailure(getErrorMessage(actionError, t("trainer_clients.errors.approveRequestFailed")));
         } finally {
             finishAction();
         }
@@ -144,10 +146,10 @@ const useTrainerDirectory = ({ role } = {}) => {
 
         try {
             const response = await trainerService.rejectRequest(athleteId, trainerId);
-            setSuccess(response?.data?.message || "Request rejected");
+            setSuccess(response?.data?.message || t("trainer_clients.errors.requestRejected"));
             await loadPageData();
         } catch (actionError) {
-            setFailure(getErrorMessage(actionError, "Failed to reject request"));
+            setFailure(getErrorMessage(actionError, t("trainer_clients.errors.rejectRequestFailed")));
         } finally {
             finishAction();
         }

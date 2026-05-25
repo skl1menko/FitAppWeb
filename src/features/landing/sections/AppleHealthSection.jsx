@@ -1,5 +1,6 @@
 import './AppleHealthSection.scss'
 import { FaHeart, CiHeart } from "../../../assets/icons";
+import { useTranslation } from 'react-i18next';
 
 const AHList = ({ text }) => {
     return(
@@ -55,25 +56,26 @@ const ActivityRings = () => {
 }
 
 const AppleHealthSection = () => {
+    const { t } = useTranslation();
     return(
         <div className="ah-section-container">
             <div className="ah-content-cont">
                 <div className="ah-left-cont">
                     <div className="ah-integ-cont">
                        <FaHeart size={16} color='#DC2626'/>
-                       <span>Apple Health Integration</span> 
+                       <span>{t('landing.appleHealth.badge')}</span> 
                     </div>
                     <div className="ah-heading-cont">
-                        <h2>Syncs Seamlessly with<br/> Apple Health</h2>
-                        <p>Your workouts automatically sync to Apple Health, contributing to
-                            <br/> your Activity Rings. Close your rings while you lift.
+                        <h2>{t('landing.appleHealth.titleLine1')}<br/> {t('landing.appleHealth.titleLine2')}</h2>
+                        <p>{t('landing.appleHealth.descriptionLine1')}
+                            <br/> {t('landing.appleHealth.descriptionLine2')}
                         </p>
                     </div>
                     <div className="ah-list-cont">
-                        <AHList text={"Sync active calories"}/>
-                        <AHList text={"Update workout duration"}/>
-                        <AHList text={"Heart rate tracking support"}/>
-                        <AHList text={"Contribute to Move & Exercise rings"}/>
+                        <AHList text={t('landing.appleHealth.list.calories')}/>
+                        <AHList text={t('landing.appleHealth.list.duration')}/>
+                        <AHList text={t('landing.appleHealth.list.heartRate')}/>
+                        <AHList text={t('landing.appleHealth.list.rings')}/>
 
                     </div>
                 </div>

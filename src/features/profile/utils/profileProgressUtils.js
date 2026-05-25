@@ -1,4 +1,6 @@
-export const formatProfileProgressLabel = (dateValue) => {
+const getLocale = (language = "en") => language === "uk" ? "uk-UA" : "en-GB";
+
+export const formatProfileProgressLabel = (dateValue, language = "en") => {
     if (!dateValue) {
         return "";
     }
@@ -8,13 +10,13 @@ export const formatProfileProgressLabel = (dateValue) => {
         return "";
     }
 
-    return date.toLocaleDateString("en-GB", {
+    return date.toLocaleDateString(getLocale(language), {
         day: "2-digit",
         month: "short"
     });
 };
 
-export const formatProfileProgressDateTime = (dateValue) => {
+export const formatProfileProgressDateTime = (dateValue, language = "en") => {
     if (!dateValue) {
         return "";
     }
@@ -24,7 +26,7 @@ export const formatProfileProgressDateTime = (dateValue) => {
         return "";
     }
 
-    return date.toLocaleString("en-GB", {
+    return date.toLocaleString(getLocale(language), {
         day: "2-digit",
         month: "short",
         hour: "2-digit",
@@ -32,11 +34,11 @@ export const formatProfileProgressDateTime = (dateValue) => {
     });
 };
 
-export const normalizeProfileProgressData = (points = [], unit = "") => (
+export const normalizeProfileProgressData = (points = [], unit = "", language = "en") => (
     (Array.isArray(points) ? points : []).map((point) => ({
         chartKey: point.date,
-        label: formatProfileProgressLabel(point.date),
-        fullLabel: formatProfileProgressDateTime(point.date),
+        label: formatProfileProgressLabel(point.date, language),
+        fullLabel: formatProfileProgressDateTime(point.date, language),
         date: point.date,
         value: Number(point.value) || 0,
         unit

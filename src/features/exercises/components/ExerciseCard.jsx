@@ -1,4 +1,7 @@
 import "./ExerciseCard.scss";
+import { useTranslation } from "react-i18next";
+import { getMuscleGroupTranslationKey } from "../constants/muscleGroups";
+import { translateExerciseName } from "../utils/translateExerciseName";
 
 const getMuscleGroupClass = (muscleGroup) => {
     const value = (muscleGroup || "general").toLowerCase();
@@ -14,9 +17,19 @@ const getMuscleGroupClass = (muscleGroup) => {
 };
 
 const ExerciseCard = ({ exercises = [], showDelete = false, onDelete, onSelect }) => {
+    const { t } = useTranslation();
     return (
         <div className="exercise-card-cont">
             {exercises.map((exercise) => (
+                (() => {
+                    const exerciseName = translateExerciseName({
+                        exerciseName: exercise?.name,
+                        muscleGroup: exercise?.muscleGroup,
+                        t,
+                        fallback: t('exercises.card.noName'),
+                    });
+                    const muscleGroupLabel = t(`exercises.muscleGroups.${getMuscleGroupTranslationKey(exercise?.muscleGroup)}`);
+                    return (
                 <div
                     className="exercise-card-content"
                     key={exercise?.id || exercise?.name}
@@ -29,7 +42,7 @@ const ExerciseCard = ({ exercises = [], showDelete = false, onDelete, onSelect }
                             onSelect?.(exercise);
                         }
                     }}
-                    aria-label={`Open stats for ${exercise?.name || "exercise"}`}
+                    aria-label={t('exercises.card.openStatsFor', { name: exerciseName })}
                 >
                     {showDelete ? (
                         <button
@@ -39,8 +52,8 @@ const ExerciseCard = ({ exercises = [], showDelete = false, onDelete, onSelect }
                                 event.stopPropagation();
                             onDelete?.(exercise);
                             }}
-                            aria-label={`Delete ${exercise?.name || "exercise"}`}
-                            title="Delete custom exercise"
+                            aria-label={t('exercises.card.deleteExercise', { name: exerciseName })}
+                            title={t('exercises.card.deleteCustomTitle')}
                         >
                             x
                         </button>
@@ -48,7 +61,7 @@ const ExerciseCard = ({ exercises = [], showDelete = false, onDelete, onSelect }
                     <div className="exercise-img-cont">
                         <div className="exercise-muscle-cont">
                             <span className={`exercise-badge ${getMuscleGroupClass(exercise?.muscleGroup)}`}>
-                                {exercise?.muscleGroup || "General"}
+                                {muscleGroupLabel}
                             </span>
                         </div>
                         <div className="exercise-img">
@@ -56,9 +69,11 @@ const ExerciseCard = ({ exercises = [], showDelete = false, onDelete, onSelect }
                         </div>
                     </div>
                     <div className="exercise-name-cont">
-                        <h1>{exercise?.name || "No exercises found"}</h1>
+                        <h1>{exerciseName}</h1>
                     </div>
                 </div>
+                    );
+                })()
             ))}
         </div>
     );

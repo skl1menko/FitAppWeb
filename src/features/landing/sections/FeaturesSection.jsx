@@ -1,35 +1,37 @@
 import "./FeaturesSection.scss"
 import FeaturesSectionCards from "../components/FeaturesSectionCards";
 import { LuDumbbell, GoPulse, VscGraph } from "../../../assets/icons";
+import { useTranslation } from "react-i18next";
 
 
 
 
 const FeaturesSection = () =>{
+    const { t } = useTranslation();
     return(
         <div className="features-section-container">
             <div className="top-cont">
-                <h1>Why Choose PowerFit?</h1>
-                <span>Everything you need to crush your fitness goals, all in one powerful app.</span>
+                <h1>{t('landing.features.title')}</h1>
+                <span>{t('landing.features.subtitle')}</span>
             </div>
             <div className="bottom-cont">
                 <FeaturesSectionCards
                     bgcolor="#EFF6FF"
                     icon={<LuDumbbell size={24} color="#2563EB" />}
-                    headingText="Real-Time Tracking"
-                    parText="Don't wait until the workout is over. See your stats in real-time to optimize your intensity and stay in the right zone for maximum results."
+                    headingText={t('landing.features.cards.tracking.title')}
+                    parText={t('landing.features.cards.tracking.text')}
                 />
                 <FeaturesSectionCards
                     bgcolor="#EEF2FF"
                     icon={<GoPulse size={24} color="#4F46E5" />}
-                    headingText="Personalized Workouts"
-                    parText="Custom workout plans tailored to your goals, fitness level, and preferences. Adapts as you get stronger."
+                    headingText={t('landing.features.cards.workouts.title')}
+                    parText={t('landing.features.cards.workouts.text')}
                 />
                 <FeaturesSectionCards
                     bgcolor="#FAF5FF"
                     icon={<VscGraph size={24} color="#9333EA" />}
-                    headingText="Real-Time Analytics"
-                    parText="Detailed insights into your progress with advanced analytics and visualizations. Track volume, 1RM, and more."
+                    headingText={t('landing.features.cards.analytics.title')}
+                    parText={t('landing.features.cards.analytics.text')}
                 /> 
             </div>
         </div>

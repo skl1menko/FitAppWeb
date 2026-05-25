@@ -56,7 +56,10 @@ export const normalizeClient = (client = {}) => ({
     clientName: client?.clientName ?? client?.client_name ?? client?.athleteName ?? client?.athlete_name ?? client?.name ?? "",
     athleteName: client?.athleteName ?? client?.athlete_name ?? client?.clientName ?? client?.client_name ?? client?.name ?? "",
     clientEmail: client?.clientEmail ?? client?.client_email ?? client?.athleteEmail ?? client?.athlete_email ?? client?.email ?? "",
-    athleteEmail: client?.athleteEmail ?? client?.athlete_email ?? client?.clientEmail ?? client?.client_email ?? client?.email ?? ""
+    athleteEmail: client?.athleteEmail ?? client?.athlete_email ?? client?.clientEmail ?? client?.client_email ?? client?.email ?? "",
+    programId: toOptionalNumber(client?.programId ?? client?.program_id),
+    programName: client?.programName ?? client?.program_name ?? "",
+    programAssignedAt: client?.programAssignedAt ?? client?.program_assigned_at ?? null
 });
 
 export const normalizeClients = (clients = []) => (

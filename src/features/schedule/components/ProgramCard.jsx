@@ -7,7 +7,8 @@ const ProgramCard = ({
     isCreatingWorkout = false,
     isOpen = false,
     program,
-    registerPlanWorkoutsRef = null
+    registerPlanWorkoutsRef = null,
+    t
 }) => {
     return (
         <div className="plan-card" key={program.programId}>
@@ -17,10 +18,10 @@ const ProgramCard = ({
                     {program.description ? <p>{program.description}</p> : null}
                     {program.isAssigned ? (
                         <span className="plan-assigned-by">
-                            Assigned by trainer: {program.assignedByName || "trainer"}
+                            {t('schedule.programCard.assignedByTrainer', { name: program.assignedByName || t('schedule.programCard.trainerFallback') })}
                         </span>
                     ) : null}
-                    <span>{program.workouts.length} workouts</span>
+                    <span>{t('schedule.programCard.workoutsCount', { count: program.workouts.length })}</span>
                 </div>
                 <div className="plan-meta">
                     <span>{formatPlanDate(program.createdAt)}</span>
@@ -30,7 +31,7 @@ const ProgramCard = ({
                             className="plan-delete-btn"
                             onClick={() => actions.deletePlan?.(program.programId)}
                         >
-                            Delete plan
+                            {t('schedule.programCard.deletePlan')}
                         </button>
                     ) : null}
                 </div>
@@ -52,7 +53,7 @@ const ProgramCard = ({
                                 <div className="plan-workout-info">
                                     <h3>{workout.workoutName}</h3>
                                     <span>{formatWorkoutDateTime(workout.startTime)}</span>
-                                    {completed ? <span className="workout-status">Completed</span> : null}
+                                    {completed ? <span className="workout-status">{t('schedule.programCard.completed')}</span> : null}
                                 </div>
                                 <div className="plan-workout-actions">
                                     <button
@@ -60,7 +61,7 @@ const ProgramCard = ({
                                         className="workout-btn edit"
                                         onClick={() => actions.editWorkout?.(workout.workoutId)}
                                     >
-                                        Edit workout
+                                        {t('schedule.programCard.editWorkout')}
                                     </button>
                                     <button
                                         type="button"
@@ -68,7 +69,7 @@ const ProgramCard = ({
                                         onClick={() => actions.startWorkout?.(workout.workoutId)}
                                         disabled={completed}
                                     >
-                                        Start now
+                                        {t('schedule.programCard.startNow')}
                                     </button>
                                 </div>
                             </div>
@@ -82,7 +83,7 @@ const ProgramCard = ({
                         disabled={isCreatingWorkout || program.isAssigned}
                     >
                         <FaPlus size={10} />
-                        {isCreatingWorkout ? "Adding..." : ""}
+                        {isCreatingWorkout ? t('schedule.programCard.adding') : t('schedule.programCard.addWorkout')}
                     </button>
                 </div>
             ) : null}
@@ -94,7 +95,7 @@ const ProgramCard = ({
                 aria-expanded={isOpen}
                 aria-controls={`plan-workouts-${program.programId}`}
             >
-                <span>{isOpen ? "Hide workouts" : "Show workouts"}</span>
+                <span>{isOpen ? t('schedule.programCard.hideWorkouts') : t('schedule.programCard.showWorkouts')}</span>
                 <BsChevronDown className={`plan-toggle-icon ${isOpen ? "open" : ""}`} />
             </button>
         </div>

@@ -1,6 +1,9 @@
 import "./CancelWorkoutConfirmModal.scss";
+import { useTranslation } from "react-i18next";
 
 const CancelWorkoutConfirmModal = ({ isOpen, onClose, onConfirm }) => {
+    const { t } = useTranslation();
+
     if (!isOpen) {
         return null;
     }
@@ -10,14 +13,14 @@ const CancelWorkoutConfirmModal = ({ isOpen, onClose, onConfirm }) => {
             <button
                 className="cancel-workout-backdrop"
                 onClick={onClose}
-                aria-label="Close cancel workout confirmation"
+                aria-label={t('workout_session.cancelModal.closeAria')}
             />
             <div className="cancel-workout-modal-card">
-                <h2 id="cancel-workout-title">Cancel Workout?</h2>
-                <p>This will delete the current workout session and all unsaved progress. Are you sure?</p>
+                <h2 id="cancel-workout-title">{t('workout_session.cancelModal.title')}</h2>
+                <p>{t('workout_session.cancelModal.description')}</p>
                 <div className="cancel-workout-actions">
-                    <button className="cancel-workout-no-btn" onClick={onClose}>No, keep workout</button>
-                    <button className="cancel-workout-yes-btn" onClick={onConfirm}>Yes, cancel workout</button>
+                    <button className="cancel-workout-no-btn" onClick={onClose}>{t('workout_session.cancelModal.keep')}</button>
+                    <button className="cancel-workout-yes-btn" onClick={onConfirm}>{t('workout_session.cancelModal.confirm')}</button>
                 </div>
             </div>
         </div>

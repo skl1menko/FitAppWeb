@@ -3,8 +3,9 @@ import { FaGoogle } from "../../../assets/icons";
 import LogInForm from './LogInForm';
 import SignUpForm from './SignUpForm';
 import { useNavigate, useLocation } from 'react-router';
+import { useTranslation } from 'react-i18next';
 const AuthCont = () => {
-
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
     const authType = location.pathname === '/auth/signup' ? 'signup' : 'login';
@@ -17,21 +18,21 @@ const AuthCont = () => {
     return(
         <div className="auth-content-container">
             <div className="auth-content-heading-cont">
-                <h1>Welcome to PowerFit</h1>
-                <p>Your journey to fitness starts here</p>
+                <h1>{t('auth.welcomeTitle')}</h1>
+                <p>{t('auth.welcomeSubtitle')}</p>
             </div>
            <div className="type-auth-cont">
                 <div 
                     className={`auth-link-cont ${authType === 'login' ? 'active' : ''}`}
                     onClick={() => navigate('/auth/login')}
                 >
-                    <span>Log In</span>
+                    <span>{t('auth.loginTab')}</span>
                 </div>
                 <div 
                     className={`auth-link-cont ${authType === 'signup' ? 'active' : ''}`}
                     onClick={() => navigate('/auth/signup')}
                 >
-                    <span>Sign Up</span>
+                    <span>{t('auth.signupTab')}</span>
                 </div>
             </div>
             <div className="auth-form-cont">
@@ -44,16 +45,16 @@ const AuthCont = () => {
             <div className="separator-cont">
                 <div className="separator-line"></div>
                 <div className="separator-text">
-                    <span>or continue with</span>
+                    <span>{t('auth.continueWith')}</span>
                 </div>
                 <div className="separator-line"></div>
             </div>
             <div className="social-auth-cont">
                 <div className="social-auth-btn-cont">
-                    <button className="social-auth-btn" onClick={handleGoogleLogin}><FaGoogle/> Google</button>
+                    <button className="social-auth-btn" onClick={handleGoogleLogin}><FaGoogle/> {t('auth.google')}</button>
                 </div>
                 <div className="agree-policy-cont">
-                    <span>By continuing, you agree to our <a href="#">Terms of Service</a> and <br/><a href="#">Privacy Policy</a>.</span>
+                    <span>{t('auth.termsPrefix')} <a href="#">{t('auth.termsOfService')}</a> та <br/><a href="#">{t('auth.privacyPolicy')}</a>.</span>
                 </div>
             </div>
         </div>

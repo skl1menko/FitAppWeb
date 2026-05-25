@@ -7,12 +7,14 @@ import {
     isNotFoundError
 } from "../utils/clientTrackingUtils";
 import { getErrorMessage } from "./useAsyncFeedback";
+import { useTranslation } from "react-i18next";
 
 const useClientMeasurementProgress = ({
     clientId,
     role,
     activeMeasurementField
 } = {}) => {
+    const { t, i18n } = useTranslation();
     const [measurementProgressData, setMeasurementProgressData] = useState([]);
     const [isMeasurementsLoading, setIsMeasurementsLoading] = useState(false);
     const [measurementsError, setMeasurementsError] = useState("");
@@ -41,15 +43,15 @@ const useClientMeasurementProgress = ({
                 const points = response?.data?.data?.progressData || [];
                 setMeasurementProgressData(points.map((point) => ({
                     chartKey: point.date,
-                    label: formatMeasurementLabel(point.date),
-                    fullLabel: formatMeasurementDateTime(point.date),
+                    label: formatMeasurementLabel(point.date, i18n.resolvedLanguage),
+                    fullLabel: formatMeasurementDateTime(point.date, i18n.resolvedLanguage),
                     value: Number(point.value) || 0
                 })));
             } catch (progressError) {
                 if (isNotFoundError(progressError)) {
                     setMeasurementProgressData([]);
                 } else {
-                    setMeasurementsError(getErrorMessage(progressError, "Failed to load body measurement progress."));
+                    setMeasurementsError(getErrorMessage(progressError, t("trainer_clients.errors.loadMeasurementProgressFailed")));
                 }
             } finally {
                 setIsMeasurementsLoading(false);
@@ -57,7 +59,7 @@ const useClientMeasurementProgress = ({
         };
 
         loadMeasurementProgress();
-    }, [activeMeasurementField, clientId, role]);
+    }, [activeMeasurementField, clientId, i18n.resolvedLanguage, role, t]);
 
     return {
         measurementProgressData,

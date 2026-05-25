@@ -8,6 +8,7 @@ import { startNewWorkoutSession } from "./services/workoutSessionManager.js";
 import { showActiveWorkoutExistsAlert, showWorkoutAlert } from "./utils/workoutFeedback.js";
 import useWorkoutList from "./hooks/useWorkoutList.js";
 import useActiveWorkoutStatus from "./hooks/useActiveWorkoutStatus.js";
+import {useTranslation} from "react-i18next";
 
 const WorkoutPage = () => {
     const navigate = useNavigate();
@@ -48,15 +49,17 @@ const WorkoutPage = () => {
         }
     };
 
+    const { t } = useTranslation();
+
     return (
         <div className="workout-page-cont">
             <div className="workout-page-content">
                 <div className="start-workout-cont">
-                    <CustomBtn icon={<RxLapTimer />} className="start-workout-btn" text="Start New Workout" onClick={handleStartWorkout} />
+                    <CustomBtn icon={<RxLapTimer />} className="start-workout-btn" text={t('workout.button.startNewWorkout')} onClick={handleStartWorkout} />
                     <CustomBtn
                         icon={<FaPlus />}
                         className="create-workout-btn"
-                        text={isCreatingScheduledWorkout ? "Creating..." : "Create New Workout"}
+                        text={isCreatingScheduledWorkout ? "Creating..." : t('workout.button.createNewWorkout')}
                         onClick={handleCreateScheduledWorkout}
                         disabled={hasActiveWorkout || isCreatingScheduledWorkout}
                     />
@@ -64,7 +67,7 @@ const WorkoutPage = () => {
                 <div className="workout-lists-grid">
                     <div className="workout-list-cont">
                         <div className="workouts-card-header">
-                            <h2>Recent Workouts</h2>
+                            <h2>{t('workout.recentWorkout.header')}</h2>
                         </div>
                         <div className="workout-list">
                             <WorkoutsListCard
@@ -73,12 +76,13 @@ const WorkoutPage = () => {
                                 isLoading={isLoadingWorkouts}
                                 errorMessage={workoutsError}
                                 onDeleteWorkout={deleteWorkout}
+                                t = {t}
                             />
                         </div>
                     </div>
                     <div className="workout-list-cont">
                         <div className="workouts-card-header">
-                            <h2>Planned Workouts</h2>
+                            <h2>{t('workout.plannedWorkout.header')}</h2>
                         </div>
                         <div className="workout-list">
                             <WorkoutsListCard
@@ -86,6 +90,7 @@ const WorkoutPage = () => {
                                 variant="planned"
                                 isLoading={isLoadingWorkouts}
                                 errorMessage={workoutsError}
+                                t = {t}
                             />
                         </div>
                     </div>

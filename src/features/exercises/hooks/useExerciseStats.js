@@ -5,10 +5,12 @@ import {
     buildExerciseStats,
     getRecentWorkouts
 } from "../utils/exerciseStats";
+import { useTranslation } from "react-i18next";
 
 const INITIAL_STATS = { chartData: [] };
 
 const useExerciseStats = (exerciseId) => {
+    const { t, i18n } = useTranslation();
     const [exerciseStats, setExerciseStats] = useState(INITIAL_STATS);
     const [isStatsLoading, setIsStatsLoading] = useState(false);
     const [statsError, setStatsError] = useState("");
@@ -48,14 +50,16 @@ const useExerciseStats = (exerciseId) => {
                 setExerciseStats(buildExerciseStats({
                     exerciseId,
                     workouts: recentWorkouts,
-                    workoutDetails: fulfilledDetails
+                    workoutDetails: fulfilledDetails,
+                    t,
+                    language: i18n.resolvedLanguage
                 }));
             } catch (error) {
                 if (!isMounted) {
                     return;
                 }
 
-                setStatsError(error?.message || "Failed to load exercise stats");
+                setStatsError(error?.message || t('exercises.errors.loadStatsFailed'));
                 setExerciseStats(INITIAL_STATS);
             } finally {
                 if (isMounted) {
@@ -69,7 +73,7 @@ const useExerciseStats = (exerciseId) => {
         return () => {
             isMounted = false;
         };
-    }, [exerciseId]);
+    }, [exerciseId, i18n.resolvedLanguage, t]);
 
     return {
         exerciseStats,

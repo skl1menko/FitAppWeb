@@ -21,7 +21,8 @@ const ScheduleBuilderSection = ({
     setProgramDescription = null,
     setProgramName = null,
     showDescription = false,
-    workouts = []
+    workouts = [],
+    t
 }) => {
     return (
         <div className={`schedule-page-block left ${isBuilderOpen ? "" : "is-collapsed"}`}>
@@ -31,7 +32,7 @@ const ScheduleBuilderSection = ({
                 </div>
                 <div className="header-title-row">
                     <div className="header-label">
-                        <h1>Create a workout plan</h1>
+                        <h1>{t('schedule.builder.title')}</h1>
                     </div>
                     <div className="mobile-toggle-row">
                         <button
@@ -39,7 +40,7 @@ const ScheduleBuilderSection = ({
                             className="mobile-toggle-btn"
                             onClick={onToggleBuilder}
                         >
-                            {isBuilderOpen ? "Hide" : "Show"}
+                            {isBuilderOpen ? t('schedule.builder.hide') : t('schedule.builder.show')}
                         </button>
                     </div>
                 </div>
@@ -47,11 +48,11 @@ const ScheduleBuilderSection = ({
 
             <form className="block-content left" onSubmit={onCreateProgram}>
                 <div className="plan-name-cont">
-                    <span>Plan name</span>
+                    <span>{t('schedule.builder.planName')}</span>
                     <input
                         type="text"
                         className="schedule-input"
-                        placeholder="Enter plan name"
+                        placeholder={t('schedule.builder.planNamePlaceholder')}
                         value={programName}
                         onChange={(event) => setProgramName?.(event.target.value)}
                     />
@@ -60,16 +61,16 @@ const ScheduleBuilderSection = ({
                         className="optional-toggle-btn"
                         onClick={onToggleDescription}
                     >
-                        {showDescription ? "Remove description" : "Add description"}
+                        {showDescription ? t('schedule.builder.removeDescription') : t('schedule.builder.addDescription')}
                     </button>
                 </div>
 
                 {showDescription ? (
                     <div className="plan-name-cont">
-                        <span>Description</span>
+                        <span>{t('schedule.builder.description')}</span>
                         <textarea
                             className="schedule-input schedule-textarea"
-                            placeholder="Short description"
+                            placeholder={t('schedule.builder.descriptionPlaceholder')}
                             value={programDescription}
                             onChange={(event) => setProgramDescription?.(event.target.value)}
                         />
@@ -78,21 +79,21 @@ const ScheduleBuilderSection = ({
 
                 <div className="add-workout-list">
                     <div className="add-workout-header">
-                        <h1>Workouts inside the plan</h1>
-                        <span>Fill in the workout name and optional start time.</span>
+                        <h1>{t('schedule.builder.workoutsTitle')}</h1>
+                        <span>{t('schedule.builder.workoutsSubtitle')}</span>
                     </div>
 
                     {workouts.map((workout, index) => (
                         <div className="add-workout-cont" key={workout.id}>
                             <div className="add-workout-row-header">
-                                <span>Workout {index + 1}</span>
+                                <span>{t('schedule.builder.workoutLabel', { index: index + 1 })}</span>
                                 <button
                                     type="button"
                                     className="delete-workout"
                                     onClick={() => onRemoveWorkout?.(workout.id)}
                                     disabled={workouts.length === 1}
                                 >
-                                    Remove
+                                    {t('schedule.builder.removeWorkout')}
                                 </button>
                             </div>
 
@@ -100,7 +101,7 @@ const ScheduleBuilderSection = ({
                                 <input
                                     type="text"
                                     className="schedule-input"
-                                    placeholder="Enter workout name"
+                                    placeholder={t('schedule.builder.workoutNamePlaceholder')}
                                     value={workout.name}
                                     onChange={(event) => onWorkoutChange?.(workout.id, "name", event.target.value)}
                                 />
@@ -121,14 +122,14 @@ const ScheduleBuilderSection = ({
                                     className="optional-toggle-btn"
                                     onClick={() => onToggleWorkoutDate?.(workout.id)}
                                 >
-                                    {workout.showDate ? "Remove date" : "Add date"}
+                                    {workout.showDate ? t('schedule.builder.removeDate') : t('schedule.builder.addDate')}
                                 </button>
                             </div>
                         </div>
                     ))}
 
                     <button type="button" className="add-workout-btn" onClick={onAddWorkout}>
-                        <FaPlus size={10} /> Add workout
+                        <FaPlus size={10} /> {t('schedule.builder.addWorkout')}
                     </button>
                 </div>
 
@@ -137,7 +138,7 @@ const ScheduleBuilderSection = ({
 
                 <CustomBtn
                     icon={<FaPlus />}
-                    text={isSubmitting ? "Saving..." : "Create plan"}
+                    text={isSubmitting ? t('schedule.builder.saving') : t('schedule.builder.createPlan')}
                     className="create-plan-btn"
                     type="submit"
                     disabled={isSubmitting}

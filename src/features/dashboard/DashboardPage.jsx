@@ -9,9 +9,11 @@ import WorkoutCalendarCard from "./components/WorkoutCalendarCard/WorkoutCalenda
 import RecentWorkoutsCard from "./components/RecentWorkoutsCard";
 import useBodyClass from "../../hooks/useBodyClass";
 import useDashboardMetrics, { getTrendLabel } from "./hooks/useDashboardMetrics";
+import { useTranslation } from "react-i18next";
 
 const DashboardPage = () => {
     useBodyClass("dashboard-body");
+    const { t } = useTranslation();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const { metrics, activeMinutes, isLoading, error } = useDashboardMetrics(selectedDate);
@@ -20,42 +22,42 @@ const DashboardPage = () => {
 
     const statCards = useMemo(() => ([
         {
-            label: "Steps Today",
+            label: t('dashboard.stats.stepsToday'),
             value: todayMetrics?.totalStepCount ?? 0,
-            unit: "steps",
+            unit: t('dashboard.units.steps'),
             color: "#577BFF",
             icon: <IoFootstepsOutline color="#fff" size={24} />,
             trendLabel: getTrendLabel(todayMetrics?.totalStepCount, yesterdayMetrics?.totalStepCount),
             trendDirection: (todayMetrics?.totalStepCount ?? 0) < (yesterdayMetrics?.totalStepCount ?? 0) ? "down" : "up"
         },
         {
-            label: "Calories Burned",
+            label: t('dashboard.stats.caloriesBurned'),
             value: todayMetrics?.totalEnergyBurned ?? 0,
-            unit: "kcal",
+            unit: t('dashboard.units.kcal'),
             color: "#FF8700",
             icon: <RiFireLine color="#fff" size={24} />,
             trendLabel: getTrendLabel(todayMetrics?.totalEnergyBurned, yesterdayMetrics?.totalEnergyBurned),
             trendDirection: Number(todayMetrics?.totalEnergyBurned ?? 0) < Number(yesterdayMetrics?.totalEnergyBurned ?? 0) ? "down" : "up"
         },
         {
-            label: "Active Minutes",
+            label: t('dashboard.stats.activeMinutes'),
             value: activeMinutes.today,
-            unit: "min",
+            unit: t('dashboard.units.min'),
             color: "#11BC94",
             icon: <FaRegClock color="#fff" size={24} />,
             trendLabel: getTrendLabel(activeMinutes.today, activeMinutes.yesterday),
             trendDirection: activeMinutes.today < activeMinutes.yesterday ? "down" : "up"
         },
         {
-            label: "AVG Heart Rate",
+            label: t('dashboard.stats.avgHeartRate'),
             value: todayMetrics?.avgHeartRate ?? 0,
-            unit: "bpm",
+            unit: t('dashboard.units.bpm'),
             color: "#fd5e61eb",
             icon: <CiHeart color="#fff" size={24} />,
             trendLabel: getTrendLabel(todayMetrics?.avgHeartRate, yesterdayMetrics?.avgHeartRate),
             trendDirection: (todayMetrics?.avgHeartRate ?? 0) < (yesterdayMetrics?.avgHeartRate ?? 0) ? "down" : "up"
         }
-    ]), [activeMinutes.today, activeMinutes.yesterday, todayMetrics, yesterdayMetrics]);
+    ]), [activeMinutes.today, activeMinutes.yesterday, t, todayMetrics, yesterdayMetrics]);
 
     return (
         <div className="dashboard-main-cont">
@@ -70,7 +72,7 @@ const DashboardPage = () => {
                 )}
                 {isLoading && (
                     <div className="dashboard-feedback">
-                        Loading dashboard data...
+                        {t('dashboard.loading')}
                     </div>
                 )}
                 <div className="dashboard-stats-cont">

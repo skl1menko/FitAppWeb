@@ -6,9 +6,11 @@ import SearchResultCard from "../components/SearchResultCard";
 import RoleGate from "../components/RoleGate";
 import useTrainerDirectory from "../hooks/useTrainerDirectory";
 import "./TrainerPage.scss";
+import { useTranslation } from "react-i18next";
 
 const TrainerPage = () => {
     useBodyClass("trainer-page-body");
+    const { t } = useTranslation();
 
     const role = authService.getUser()?.role;
     const {
@@ -32,8 +34,8 @@ const TrainerPage = () => {
         <RoleGate
             role={role}
             allow="athlete"
-            title="Trainer"
-            message="This page is available only for athletes."
+            title={t("trainer_clients.roleGate.trainerTitle")}
+            message={t("trainer_clients.roleGate.trainerMessage")}
             containerClassName="trainer-page-cont"
             contentClassName="trainer-page-content"
         >
@@ -41,8 +43,8 @@ const TrainerPage = () => {
                 <div className="trainer-page-content">
                     <div className="trainer-hero-grid">
                         <div className="trainer-status-card">
-                            <span>Current trainer</span>
-                            <strong>{myTrainer?.trainerName || "Not selected yet"}</strong>
+                            <span>{t("trainer_clients.trainerPage.currentTrainer")}</span>
+                            <strong>{myTrainer?.trainerName || t("trainer_clients.trainerPage.notSelectedYet")}</strong>
                             {myTrainer?.trainerEmail && <p>{myTrainer.trainerEmail}</p>}
                             <button
                                 type="button"
@@ -50,14 +52,14 @@ const TrainerPage = () => {
                                 onClick={handleUnlinkTrainer}
                                 disabled={!myTrainer?.trainerId || activeActionKey === "unlink-trainer"}
                             >
-                                {activeActionKey === "unlink-trainer" ? "Unlinking..." : "Unlink trainer"}
+                                {activeActionKey === "unlink-trainer" ? t("trainer_clients.trainerPage.unlinking") : t("trainer_clients.trainerPage.unlinkTrainer")}
                             </button>
                         </div>
 
                         <div className="trainer-status-card trainer-status-card-requests">
-                            <span>Incoming requests</span>
+                            <span>{t("trainer_clients.trainerPage.incomingRequests")}</span>
                             <div className="trainer-results-list">
-                                {incomingRequests.length === 0 && <p className="trainer-hint-text">No incoming requests.</p>}
+                                {incomingRequests.length === 0 && <p className="trainer-hint-text">{t("trainer_clients.trainerPage.noIncomingRequests")}</p>}
                                 {incomingRequests.map((request) => (
                                     <IncomingRequestCard
                                         key={`${request.athlete?.athleteId}-${request.trainer?.trainerId}`}
@@ -75,10 +77,10 @@ const TrainerPage = () => {
                     </div>
 
                     <SearchPanel
-                        title="Find trainers"
+                        title={t("trainer_clients.trainerPage.findTrainers")}
                         query={query}
                         onQueryChange={setQuery}
-                        placeholder="Trainer name or email"
+                        placeholder={t("trainer_clients.trainerPage.trainerSearchPlaceholder")}
                         isSearching={isSearching}
                         showResults={Boolean(query.trim())}
                         message={message}
@@ -95,7 +97,7 @@ const TrainerPage = () => {
                                     key={trainer.trainerId}
                                     name={trainer.trainerName}
                                     email={trainer.trainerEmail}
-                                    buttonLabel={isCurrent ? "Current trainer" : isPending ? "Request sent" : isLoading ? "Sending..." : "Send request"}
+                                    buttonLabel={isCurrent ? t("trainer_clients.trainerPage.currentTrainerBadge") : isPending ? t("trainer_clients.trainerPage.requestSent") : isLoading ? t("trainer_clients.trainerPage.sending") : t("trainer_clients.trainerPage.sendRequest")}
                                     onAction={() => handleSendRequest(trainer.trainerId)}
                                     disabled={isCurrent || isPending || isLoading}
                                 />

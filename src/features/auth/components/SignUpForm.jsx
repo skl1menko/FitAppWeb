@@ -2,9 +2,11 @@ import { MdEmail, MdOutlineLock, IoMdPerson } from "../../../assets/icons";
 import {useNavigate} from "react-router";
 import { useState, useEffect } from "react";
 import authService from "../../../services/authService";
+import { useTranslation } from "react-i18next";
 
 const SignUpForm = ({ onRoleChange }) => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -33,7 +35,7 @@ const SignUpForm = ({ onRoleChange }) => {
             navigate('/dashboard');
         } catch (error) {
             console.error('Registration failed:', error.response?.data?.message || error.message);
-            alert(`Registration failed: ${error.response?.data?.message || error.message}`);
+            alert(`${t('auth.signup.errorFallback')}: ${error.response?.data?.message || error.message}`);
         }
     }
     
@@ -48,7 +50,7 @@ const SignUpForm = ({ onRoleChange }) => {
                     value={formData.email}
                     onChange={handleChange}
                     type="email"
-                    placeholder="Enter email address"
+                    placeholder={t('auth.signup.emailPlaceholder')}
                     required/>
                 </div>
                 <div className="input-row">
@@ -58,7 +60,7 @@ const SignUpForm = ({ onRoleChange }) => {
                         value={formData.full_name}
                         onChange={handleChange}
                         type="text"
-                        placeholder="Enter your full name"
+                        placeholder={t('auth.signup.fullNamePlaceholder')}
                         required/>
                     </div>
                     <div className="input-cont">
@@ -68,14 +70,14 @@ const SignUpForm = ({ onRoleChange }) => {
                         value={formData.password}
                         onChange={handleChange}
                         type="password"
-                        placeholder="Enter password"
+                        placeholder={t('auth.signup.passwordPlaceholder')}
                         required/>
                     </div>
                     
                 </div>
             </div>
             <div className="role-select-cont">
-                <p className="role-label">Select your role:</p>
+                <p className="role-label">{t('auth.signup.roleLabel')}</p>
                 <div className="role-options">
                     <label className="role-option">
                         <input
@@ -85,7 +87,7 @@ const SignUpForm = ({ onRoleChange }) => {
                         checked={formData.role === 'athlete'}
                         onChange={handleChange}
                         required/>
-                        <span>Athlete</span>
+                        <span>{t('common.role.athlete')}</span>
                     </label>
                     <label className="role-option">
                         <input
@@ -95,12 +97,12 @@ const SignUpForm = ({ onRoleChange }) => {
                         checked={formData.role === 'trainer'}
                         onChange={handleChange}
                         required/>
-                        <span>Trainer</span>
+                        <span>{t('common.role.trainer')}</span>
                     </label>
                 </div>
             </div>
             <div className="submit-btn-cont">
-                <button type="submit" className="submit-btn">Create Account</button>
+                <button type="submit" className="submit-btn">{t('auth.signup.submit')}</button>
             </div>
         </form>
     )

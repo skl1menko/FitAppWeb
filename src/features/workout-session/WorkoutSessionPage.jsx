@@ -8,6 +8,9 @@ import ExerciseCard from "./components/ExerciseCard";
 import WorkoutSessionActions from "./components/WorkoutSessionActions";
 import WorkoutSessionInfo from "./components/WorkoutSessionInfo";
 import WorkoutSessionModals from "./components/WorkoutSessionModals";
+import {useTranslation} from "react-i18next";
+import { useMemo } from "react";
+import { getMuscleGroupTranslationKey } from "../exercises/constants/muscleGroups";
 
 const WorkoutSessionPage = () => {
     const {
@@ -37,6 +40,13 @@ const WorkoutSessionPage = () => {
         removeExerciseFromWorkout,
         refreshSummaryStats
     } = useWorkoutSession();
+    const { t } = useTranslation();
+    const translatedMuscleGroups = useMemo(() => (
+        MUSCLE_GROUPS.map((group) => ({
+            ...group,
+            label: t(`exercises.muscleGroups.${getMuscleGroupTranslationKey(group.value)}`),
+        }))
+    ), [t]);
 
     useBodyClass("workout-session-page-body");
     return (
@@ -67,7 +77,12 @@ const WorkoutSessionPage = () => {
                         />
                     </div>
                     <div className="add-exercise">
-                        <CustomBtn icon={<FaPlus />} text="Add exercise" onClick={openAddExerciseModal} className="add-exercise-btn"/>
+                        <CustomBtn
+                            icon={<FaPlus />}
+                            text={t('workout_session.page.addExercise')}
+                            onClick={openAddExerciseModal}
+                            className="add-exercise-btn"
+                        />
                     </div>
                 </div>
             </div>
@@ -75,7 +90,7 @@ const WorkoutSessionPage = () => {
                 isAddExerciseModalOpen={isAddExerciseModalOpen}
                 isCancelConfirmOpen={isCancelConfirmOpen}
                 isFinishModalOpen={isFinishModalOpen}
-                muscleGroups={MUSCLE_GROUPS}
+                muscleGroups={translatedMuscleGroups}
                 onAddExerciseClose={closeAddExerciseModal}
                 onAddExerciseConfirm={confirmAddExercise}
                 onCancelClose={closeCancelConfirmModal}

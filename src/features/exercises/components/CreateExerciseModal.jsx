@@ -2,8 +2,10 @@ import { FiCamera } from "../../../assets/icons";
 import "./CreateExerciseModal.scss";
 import useCreateExercise from "../hooks/useCreateExercises";
 import MuscleGroupSelect from "../../../components/MuscleGroupSelect";
+import { useTranslation } from "react-i18next";
 
 const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) => {
+    const { t } = useTranslation();
     const {
         newExercise,
         imagePreviewUrl,
@@ -24,18 +26,18 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
             className="create-exercise-modal"
             role="dialog"
             aria-modal="true"
-            aria-label="Create custom exercise"
+            aria-label={t('exercises.createModal.dialogAria')}
         >
             <div className="create-exercise-backdrop" onClick={handleClose} />
             <form className="create-exercise-form" onSubmit={handleCreateExercise}>
                 <div className="create-form-head">
-                    <h2>Create New Exercise</h2>
+                    <h2>{t('exercises.createModal.title')}</h2>
                     <button
                         type="button"
                         className="close-create-modal"
                         onClick={handleClose}
                         disabled={isCreating}
-                        aria-label="Close"
+                        aria-label={t('exercises.createModal.closeAria')}
                     >
                         x
                     </button>
@@ -47,11 +49,11 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
                         type="button"
                         className="image-upload-circle"
                         onClick={() => fileInputRef.current?.click()}
-                        aria-label="Upload exercise image"
+                        aria-label={t('exercises.createModal.uploadAria')}
                         disabled={isCreating}
                     >
                         {imagePreviewUrl ? (
-                            <img src={imagePreviewUrl} alt="Exercise preview" />
+                            <img src={imagePreviewUrl} alt={t('exercises.createModal.previewAlt')} />
                         ) : (
                             <FiCamera />
                         )}
@@ -65,19 +67,19 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
                         disabled={isCreating}
                         onChange={(e) => handleImageFileChange(e.target.files?.[0] || null)}
                     />
-                    <p>Tap the circle to upload a photo</p>
+                    <p>{t('exercises.createModal.uploadHint')}</p>
                     
                 </div>
 
 
                 <div className="create-grid">
                     <label className="field">
-                        <span>Exercise name</span>
+                        <span>{t('exercises.createModal.exerciseName')}</span>
                         <input
                             type="text"
                             value={newExercise.name}
                             onChange={(e) => handleCreateInput("name", e.target.value)}
-                            placeholder="e.g. Cable Fly"
+                            placeholder={t('exercises.createModal.exerciseNamePlaceholder')}
                             disabled={isCreating}
                             aria-invalid={Boolean(fieldErrors.name)}
                         />
@@ -86,24 +88,24 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
 
 
                     <div className="field">
-                        <span>Muscle group</span>
+                        <span>{t('exercises.createModal.muscleGroup')}</span>
                         <MuscleGroupSelect
                             groups={muscleGroups}
                             value={newExercise.muscleGroup}
                             onChange={(groupValue) => handleCreateInput("muscleGroup", groupValue)}
-                            placeholder="Choose muscle group"
+                            placeholder={t('exercises.createModal.muscleGroupPlaceholder')}
                             disabled={isCreating}
                         />
                         {fieldErrors.muscleGroup ? <p className="field-error">{fieldErrors.muscleGroup}</p> : null}
                     </div>
 
                     <label className="field">
-                        <span>Description (optional)</span>
+                        <span>{t('exercises.createModal.description')}</span>
                         <textarea
                             value={newExercise.description}
                             onChange={(e) => handleCreateInput("description", e.target.value)}
                             rows={3}
-                            placeholder="Short exercise description"
+                            placeholder={t('exercises.createModal.descriptionPlaceholder')}
                             disabled={isCreating}
                         />
                     </label>
@@ -111,12 +113,12 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
 
 
                 <label className="field">
-                    <span>Or paste image URL</span>
+                    <span>{t('exercises.createModal.imageUrl')}</span>
                     <input
                         type="url"
                         value={newExercise.imageUrl}
                         onChange={(e) => handleCreateInput("imageUrl", e.target.value)}
-                        placeholder="https://..."
+                        placeholder={t('exercises.createModal.imageUrlPlaceholder')}
                         disabled={isCreating}
                         aria-invalid={Boolean(fieldErrors.imageUrl)}
                     />
@@ -132,10 +134,10 @@ const CreateExerciseModal = ({ isOpen, onClose, onCreated, muscleGroups = [] }) 
                         onClick={handleClose}
                         disabled={isCreating}
                     >
-                        Cancel
+                        {t('exercises.createModal.cancel')}
                     </button>
                     <button type="submit" disabled={isCreating}>
-                        {isCreating ? "Creating..." : "Add Exercise"}
+                        {isCreating ? t('exercises.createModal.creating') : t('exercises.createModal.addExercise')}
                     </button>
                 </div>
             </form>

@@ -12,7 +12,8 @@ const ScheduleProgramsSection = ({
     programs = [],
     programsError = "",
     registerPlanWorkoutsRef = null,
-    role
+    role,
+    t
 }) => {
     return (
         <div className="schedule-page-block right">
@@ -21,8 +22,8 @@ const ScheduleProgramsSection = ({
                     <MdOutlineEditCalendar size={32} color="rgb(0, 157, 255)" />
                 </div>
                 <div className="header-label">
-                    <h1>Upcoming plans</h1>
-                    <p>Each plan contains multiple workouts ready to edit or start.</p>
+                    <h1>{t('schedule.programs.title')}</h1>
+                    <p>{t('schedule.programs.subtitle')}</p>
                 </div>
             </div>
 
@@ -36,27 +37,27 @@ const ScheduleProgramsSection = ({
                                     className={`plans-view-switch-btn ${activePlansView === "personal" ? "active" : ""}`}
                                     onClick={() => onSetActivePlansView?.("personal")}
                                 >
-                                    My plans
+                                    {t('schedule.programs.myPlans')}
                                 </button>
                                 <button
                                     type="button"
                                     className={`plans-view-switch-btn ${activePlansView === "clients" ? "active" : ""}`}
                                     onClick={() => onSetActivePlansView?.("clients")}
                                 >
-                                    Client plans
+                                    {t('schedule.programs.clientPlans')}
                                 </button>
                             </div>
                         ) : null}
 
                         {isLoadingPrograms ? (
-                            <div className="plans-feedback">Loading plans...</div>
+                            <div className="plans-feedback">{t('schedule.programs.loading')}</div>
                         ) : programsError ? (
                             <div className="plans-feedback error">{programsError}</div>
                         ) : programs.length === 0 ? (
                             <div className="plans-feedback">
                                 {role === "trainer" && activePlansView === "clients"
-                                    ? "No client plans yet. Assign any of your plans to a client first."
-                                    : "No plans yet."}
+                                    ? t('schedule.programs.emptyClients')
+                                    : t('schedule.programs.empty')}
                             </div>
                         ) : (
                             <div className="plans-list">
@@ -68,6 +69,7 @@ const ScheduleProgramsSection = ({
                                         isOpen={openPlans.has(program.programId)}
                                         program={program}
                                         registerPlanWorkoutsRef={registerPlanWorkoutsRef}
+                                        t={t}
                                     />
                                 ))}
                             </div>

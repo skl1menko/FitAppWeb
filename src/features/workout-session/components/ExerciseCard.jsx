@@ -6,8 +6,12 @@ import CustomBtn from "../../../components/CustomBtn";
 import { GoPlus, GiWeight, LuX } from "../../../assets/icons";
 import { formatGroupedNumber } from "../../../utils/formatNumber";
 import { showWorkoutAlert } from "../../workout/utils/workoutFeedback";
+import { useTranslation } from "react-i18next";
+import { translateExerciseName } from "../../exercises/utils/translateExerciseName";
+import { translateMuscleGroup } from "../../exercises/utils/translateMuscleGroup";
 
 const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, isPlannedMode = false, onDeleteExercise = null, onSetUpdated = null }) => {
+    const { t } = useTranslation();
     const { getExerciseSets, addDefaultSet, updateSet, deleteSet } = useWorkoutExercisesSet(workoutExercises);
     const {
         getSetKey,
@@ -30,7 +34,7 @@ const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, isPlanned
             }
         } catch (error) {
             console.error("Failed to delete exercise from workout:", error?.response?.data || error);
-            showWorkoutAlert(error?.response?.data?.message || "Failed to delete exercise");
+            showWorkoutAlert(error?.response?.data?.message || t('workout_session.exerciseCard.errors.deleteExercise'));
         }
     };
 
@@ -106,11 +110,24 @@ const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, isPlanned
                                     <img src={exercise?.imageUrl} alt="" />
                                 </div>
                                 <div className="exercise-info-cont">
-                                    <p className="exercise-list-name">{exercise?.exerciseName || "Unnamed exercise"}</p>
+                                    <p className="exercise-list-name">
+                                        {translateExerciseName({
+                                            exerciseName: exercise?.exerciseName,
+                                            muscleGroup: exercise?.muscleGroup,
+                                            t,
+                                            fallback: t('workout_session.exerciseCard.unnamedExercise'),
+                                        })}
+                                    </p>
                                     <div className="exercise-info">
-                                        <span className="exercise-list-group">{exercise?.muscleGroup || "General"}</span>
+                                        <span className="exercise-list-group">
+                                            {translateMuscleGroup({
+                                                muscleGroup: exercise?.muscleGroup,
+                                                t,
+                                                fallback: t('workout_session.exerciseCard.generalGroup'),
+                                            })}
+                                        </span>
                                         <div className="divider"></div>
-                                        <span className="exercise-list-tonnage"><GiWeight size={18} /> {formatGroupedNumber(exercise?.exerciseTonnage || 0)} kg</span>
+                                        <span className="exercise-list-tonnage"><GiWeight size={18} /> {formatGroupedNumber(exercise?.exerciseTonnage || 0)} {t('workout_session.common.kg')}</span>
                                     </div>
                                 </div>
                             </div>
@@ -142,7 +159,7 @@ const ExerciseCard = ({ workoutExercises = [], activeWorkoutId = null, isPlanned
                             <div className="add-set-cont">
                                 <CustomBtn
                                     icon={<GoPlus size={22} />}
-                                    text="Add Set"
+                                    text={t('workout_session.exerciseCard.addSet')}
                                     onClick={() => handleAddSet(workoutExerciseId)}
                                     className="add-set-btn"
                                 />

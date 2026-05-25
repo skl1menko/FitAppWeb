@@ -1,35 +1,37 @@
 import {GoCheckCircleFill} from "../../../assets/icons";
+import { useTranslation } from "react-i18next";
 import "./ProfileSummaryCard.scss";
 
 const ProfileSummaryCard = ({bodyMeasurements, error, fields, formData, isLoading, isSaving, message}) => {
+    const { t } = useTranslation();
     const filledMeasurementsCount = fields.filter((field) => String(bodyMeasurements[field.key] || "").trim()).length;
 
     return (
         <aside className="profile-card-cont profile-card-summary">
             <div className="profile-summary-head">
                 <div>
-                    <h2>Your summary</h2>
-                    <p>Quick access to the key personal details stored on this page.</p>
+                    <h2>{t("profile.summary.title")}</h2>
+                    <p>{t("profile.summary.description")}</p>
                 </div>
             </div>
 
             <div className="profile-summary-list">
                 <div className="profile-summary-item">
-                    <span>Name</span>
-                    <strong>{formData.fullName || "Not set"}</strong>
+                    <span>{t("profile.summary.name")}</span>
+                    <strong>{formData.fullName || t("profile.summary.notSet")}</strong>
                 </div>
                 <div className="profile-summary-item">
-                    <span>Email</span>
-                    <strong>{formData.email || "Not set"}</strong>
+                    <span>{t("profile.summary.email")}</span>
+                    <strong>{formData.email || t("profile.summary.notSet")}</strong>
                 </div>
                 <div className="profile-summary-item">
-                    <span>Measurements filled</span>
+                    <span>{t("profile.summary.measurementsFilled")}</span>
                     <strong>{filledMeasurementsCount}/{fields.length}</strong>
                 </div>
             </div>
 
             <div className="profile-tip-box">
-                <p>Keep measurements up to date to make future progress tracking easier.</p>
+                <p>{t("profile.summary.tip")}</p>
             </div>
 
             {message && (
@@ -41,7 +43,7 @@ const ProfileSummaryCard = ({bodyMeasurements, error, fields, formData, isLoadin
             {error && <p className="profile-error-text">{error}</p>}
 
             <button type="submit" className="profile-primary-btn" disabled={isLoading || isSaving}>
-                {isSaving ? "Saving..." : "Save changes"}
+                {isSaving ? t("profile.summary.saving") : t("profile.summary.saveChanges")}
             </button>
         </aside>
     );

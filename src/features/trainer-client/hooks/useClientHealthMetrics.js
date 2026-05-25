@@ -6,6 +6,7 @@ import {
     isNotFoundError
 } from "../utils/clientTrackingUtils";
 import { getErrorMessage } from "./useAsyncFeedback";
+import { useTranslation } from "react-i18next";
 
 const useClientHealthMetrics = ({
     clientId,
@@ -15,6 +16,7 @@ const useClientHealthMetrics = ({
     workouts = [],
     activePeriod
 } = {}) => {
+    const { t } = useTranslation();
     const [chartData, setChartData] = useState([]);
     const [isChartLoading, setIsChartLoading] = useState(false);
     const [chartError, setChartError] = useState("");
@@ -44,17 +46,17 @@ const useClientHealthMetrics = ({
 
             if (isNotFoundError(chartResult.reason)) {
                 setChartData(buildFallbackChartDataFromWorkouts(workouts, startDate, endDate, activePeriod));
-                setWarning("Health metrics API is unavailable on current backend, so chart is built from workouts.");
+                setWarning(t("trainer_clients.tracking.unavailableMetricsWarning"));
             } else {
                 setChartData([]);
-                setChartError(getErrorMessage(chartResult.reason, "Failed to load chart metrics."));
+                setChartError(getErrorMessage(chartResult.reason, t("trainer_clients.errors.loadChartMetricsFailed")));
             }
 
             setIsChartLoading(false);
         };
 
         loadChart();
-    }, [activePeriod, clientId, endDate, role, startDate, workouts]);
+    }, [activePeriod, clientId, endDate, role, startDate, workouts, t]);
 
     return {
         chartData,

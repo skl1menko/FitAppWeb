@@ -14,10 +14,14 @@ import useBodyClass from "../../../hooks/useBodyClass";
 import { formatGroupedNumber } from "../../../utils/formatNumber";
 import { formatWorkoutDuration } from "../utils/workoutFormatters";
 import { normalizeWorkout } from "../utils/normalizeWorkout";
+import { useTranslation } from "react-i18next";
+import { translateExerciseName } from "../../exercises/utils/translateExerciseName";
+import { translateMuscleGroup } from "../../exercises/utils/translateMuscleGroup";
 
 const WorkoutDetails = () => {
     const { workoutId } = useParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [workout, setWorkout] = useState(null);
 
@@ -94,16 +98,30 @@ const WorkoutDetails = () => {
 
                     <div className="exercises-list">
                         {(workout.exercisesWithSets || []).map((exercise) => (
+                            (() => {
+                                const exerciseName = translateExerciseName({
+                                    exerciseName: exercise?.exerciseName,
+                                    muscleGroup: exercise?.muscleGroup,
+                                    t,
+                                    fallback: t('exercises.statsModal.exerciseFallback'),
+                                });
+                                const muscleGroupLabel = translateMuscleGroup({
+                                    muscleGroup: exercise?.muscleGroup,
+                                    t,
+                                    fallback: "General",
+                                });
+
+                                return (
                             <div key={exercise.id} className="exercise-card">
                                 <div className="exercise-head-cont">
                                     <div className="exercise-img-cont">
-                                        <img src={exercise.imageUrl} alt={exercise.exerciseName} />
+                                        <img src={exercise.imageUrl} alt={exerciseName} />
                                     </div>
                                     <div className="exercise-head">
-                                        <h1>{exercise.exerciseName}</h1>
+                                        <h1>{exerciseName}</h1>
                                         <span className="muscle-group-tag">
                                             <FaDumbbell aria-hidden="true" />
-                                            {exercise.muscleGroup || "General"}
+                                            {muscleGroupLabel}
                                         </span>
                                     </div>
 
@@ -136,6 +154,8 @@ const WorkoutDetails = () => {
                                     </table>
                                 </div>
                             </div>
+                                );
+                            })()
                         ))}
                     </div>
                 </>

@@ -5,8 +5,10 @@ import {
     normalizeTrainerClientInfo
 } from "../utils/normalizeTrainerClient";
 import { getErrorMessage } from "./useAsyncFeedback";
+import { useTranslation } from "react-i18next";
 
 const useClientWorkouts = ({ clientId, role, optimisticClientInfo } = {}) => {
+    const { t } = useTranslation();
     const [clientInfo, setClientInfo] = useState(optimisticClientInfo);
     const [workouts, setWorkouts] = useState([]);
     const [error, setError] = useState("");
@@ -34,11 +36,11 @@ const useClientWorkouts = ({ clientId, role, optimisticClientInfo } = {}) => {
             }
 
             setWorkouts([]);
-            setError(getErrorMessage(workoutsResult.reason, "Failed to load client workouts."));
+            setError(getErrorMessage(workoutsResult.reason, t("trainer_clients.errors.loadClientWorkoutsFailed")));
         };
 
         loadWorkouts();
-    }, [clientId, role]);
+    }, [clientId, role, t]);
 
     return {
         clientInfo,

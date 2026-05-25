@@ -1,4 +1,5 @@
 import CustomBtn from "../../../components/CustomBtn";
+import { useTranslation } from "react-i18next";
 
 const WorkoutSessionActions = ({
     isPlannedMode = false,
@@ -7,21 +8,23 @@ const WorkoutSessionActions = ({
     onOpenCancelConfirm = null,
     onStartNow = null
 }) => {
+    const { t } = useTranslation();
+
     return (
         <div className="end-workout-btn">
             <CustomBtn
-                text={isPlannedMode ? "SAVE WORKOUT" : "FINISH WORKOUT"}
+                text={isPlannedMode ? t('workout_session.workoutSessionActions.saveWorkout') : t('workout_session.workoutSessionActions.finishWorkout')}
                 onClick={onFinish}
             />
             {isPlannedMode ? (
                 <CustomBtn
-                    text="START NOW"
+                    text={t('workout_session.workoutSessionActions.startWorkout')}
                     onClick={onStartNow}
                     className="start-now-btn"
                 />
             ) : null}
             <CustomBtn
-                text={isPlannedMode ? "DELETE" : "CANCEL"}
+                text={isPlannedMode ? t('workout_session.workoutSessionActions.deleteWorkout') : t('workout_session.workoutSessionActions.cancelWorkout')}
                 onClick={isPlannedMode ? onCancel : onOpenCancelConfirm}
                 className="cancel-btn"
             />

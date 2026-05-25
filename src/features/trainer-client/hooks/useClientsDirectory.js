@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import trainerService from "../../../services/trainerService";
 import {
     normalizeAthletes,
@@ -8,8 +8,10 @@ import {
 import useActionKey from "./useActionKey";
 import useAsyncFeedback, { getErrorMessage } from "./useAsyncFeedback";
 import useClientProgramAssignments from "./useClientProgramAssignments";
+import { useTranslation } from "react-i18next";
 
 const useClientsDirectory = ({ role } = {}) => {
+    const { t } = useTranslation();
     const [query, setQuery] = useState("");
     const [athletes, setAthletes] = useState([]);
     const [clients, setClients] = useState([]);
@@ -42,7 +44,7 @@ const useClientsDirectory = ({ role } = {}) => {
         onError: setFailure
     });
 
-    const loadClients = async () => {
+    const loadClients = useCallback(async () => {
         setIsLoadingClients(true);
         try {
             const response = await trainerService.getClients();
@@ -52,22 +54,22 @@ const useClientsDirectory = ({ role } = {}) => {
         } finally {
             setIsLoadingClients(false);
         }
-    };
+    }, []);
 
-    const loadRequests = async () => {
+    const loadRequests = useCallback(async () => {
         const [incomingRes, outgoingRes] = await Promise.all([
             trainerService.getIncomingRequests(),
             trainerService.getOutgoingRequests()
         ]);
         setIncomingRequests(normalizeTrainerRequests(incomingRes?.data?.data));
         setOutgoingRequests(normalizeTrainerRequests(outgoingRes?.data?.data));
-    };
+    }, []);
 
-    const searchAthletes = async (searchValue) => {
+    const searchAthletes = useCallback(async (searchValue) => {
         const response = await trainerService.searchAthletes(searchValue);
         const results = normalizeAthletes(response?.data?.data);
         setAthletes(results.filter((athlete) => !athlete.isAssignedToYou));
-    };
+    }, []);
 
     useEffect(() => {
         if (role !== "trainer") {
@@ -79,7 +81,7 @@ const useClientsDirectory = ({ role } = {}) => {
             setIncomingRequests([]);
             setOutgoingRequests([]);
         });
-    }, [role]);
+    }, [loadClients, loadPrograms, loadRequests, role]);
 
     useEffect(() => {
         if (role !== "trainer") {
@@ -99,7 +101,7 @@ const useClientsDirectory = ({ role } = {}) => {
             try {
                 await searchAthletes(query);
             } catch (searchError) {
-                setFailure(getErrorMessage(searchError, "Failed to search athletes"));
+                setFailure(getErrorMessage(searchError, t("trainer_clients.errors.searchAthletesFailed")));
                 setAthletes([]);
             } finally {
                 setIsSearching(false);
@@ -107,7 +109,7 @@ const useClientsDirectory = ({ role } = {}) => {
         }, 300);
 
         return () => clearTimeout(timeoutId);
-    }, [query, role]);
+    }, [clearFeedback, query, role, searchAthletes, setFailure, t]);
 
     const pendingOutgoingByAthleteId = useMemo(() => {
         const map = new Map();
@@ -123,10 +125,10 @@ const useClientsDirectory = ({ role } = {}) => {
 
         try {
             const response = await trainerService.addClientById(clientId);
-            setSuccess(response?.data?.message || "Request sent to athlete");
+            setSuccess(response?.data?.message || t("trainer_clients.errors.requestSentToAthlete"));
             await Promise.all([loadRequests(), searchAthletes(query)]);
         } catch (actionError) {
-            setFailure(getErrorMessage(actionError, "Failed to send request"));
+            setFailure(getErrorMessage(actionError, t("trainer_clients.errors.sendRequestFailed")));
         } finally {
             finishAction();
         }
@@ -138,10 +140,10 @@ const useClientsDirectory = ({ role } = {}) => {
 
         try {
             const response = await trainerService.approveRequest(athleteId, trainerId);
-            setSuccess(response?.data?.message || "Request approved");
+            setSuccess(response?.data?.message || t("trainer_clients.errors.requestApproved"));
             await Promise.all([loadClients(), loadRequests(), searchAthletes(query)]);
         } catch (actionError) {
-            setFailure(getErrorMessage(actionError, "Failed to approve request"));
+            setFailure(getErrorMessage(actionError, t("trainer_clients.errors.approveRequestFailed")));
         } finally {
             finishAction();
         }
@@ -153,11 +155,11 @@ const useClientsDirectory = ({ role } = {}) => {
 
         try {
             const response = await trainerService.rejectRequest(athleteId, trainerId);
-            setSuccess(response?.data?.message || "Request rejected");
+            setSuccess(response?.data?.message || t("trainer_clients.errors.requestRejected"));
             await loadRequests();
             setAthletes((previous) => previous.filter((athlete) => Number(athlete.clientId) !== Number(athleteId)));
         } catch (actionError) {
-            setFailure(getErrorMessage(actionError, "Failed to reject request"));
+            setFailure(getErrorMessage(actionError, t("trainer_clients.errors.rejectRequestFailed")));
         } finally {
             finishAction();
         }
@@ -169,11 +171,11 @@ const useClientsDirectory = ({ role } = {}) => {
 
         try {
             const response = await trainerService.removeClientById(clientId);
-            setSuccess(response?.data?.message || "Client removed");
+            setSuccess(response?.data?.message || t("trainer_clients.errors.clientRemoved"));
             await loadClients();
             setAthletes((previous) => previous.filter((athlete) => Number(athlete.clientId) !== Number(clientId)));
         } catch (actionError) {
-            setFailure(getErrorMessage(actionError, "Failed to remove client"));
+            setFailure(getErrorMessage(actionError, t("trainer_clients.errors.removeClientFailed")));
         } finally {
             finishAction();
         }

@@ -1,5 +1,6 @@
 import {GoCheckCircleFill} from "../../../assets/icons";
 import "./SearchPanel.scss";
+import { useTranslation } from "react-i18next";
 
 const VARIANT_CLASSES = {
     trainer: {
@@ -39,6 +40,7 @@ const SearchPanel = ({
     resultsClassName,
     children
 }) => {
+    const { t } = useTranslation();
     const variantClasses = VARIANT_CLASSES[variant] || VARIANT_CLASSES.trainer;
     const panelClasses = panelClassName || variantClasses.panel;
     const searchRowClasses = searchRowClassName || variantClasses.searchRow;
@@ -58,7 +60,7 @@ const SearchPanel = ({
                     placeholder={placeholder}
                 />
             </div>
-            {showSearching && isSearching && <p className={hintClasses}>Searching...</p>}
+            {showSearching && isSearching && <p className={hintClasses}>{t("trainer_clients.searchPanel.searching")}</p>}
 
             {message && (
                 <p className={messageClasses}>

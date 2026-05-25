@@ -2,9 +2,11 @@ import { useNavigate } from "react-router";
 import workoutService from "../../../services/WorkoutServices/workoutService";
 import { showWorkoutAlert } from "../../workout/utils/workoutFeedback";
 import { setStoredWorkoutSession } from "../../workout-session/utils/workoutSessionStorage";
+import { useTranslation } from "react-i18next";
 
 const useScheduleWorkoutActions = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const editPlannedWorkout = (workoutId) => {
         navigate(`/workout/session?workoutId=${workoutId}&mode=planned`, {
@@ -30,7 +32,7 @@ const useScheduleWorkoutActions = () => {
             });
             navigate("/workout/session");
         } catch (error) {
-            showWorkoutAlert(error?.response?.data?.message || "Failed to start workout");
+            showWorkoutAlert(error?.response?.data?.message || t('schedule.programCard.errors.startWorkout'));
         }
     };
 

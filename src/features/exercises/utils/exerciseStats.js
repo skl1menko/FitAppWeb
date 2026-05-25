@@ -4,14 +4,14 @@ const getSetWeight = (set) => Number(set?.weightKg ?? set?.weight_kg ?? 0) || 0;
 
 const getSetReps = (set) => Number(set?.reps ?? 0) || 0;
 
-export const formatChartDate = (dateValue) => {
+export const formatChartDate = (dateValue, language) => {
     const date = new Date(dateValue);
 
     if (Number.isNaN(date.getTime())) {
-        return "Unknown";
+        return language === 'uk' ? 'Невідомо' : 'Unknown';
     }
 
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString(language === 'uk' ? "uk-UA" : "en-US", {
         month: "short",
         day: "numeric"
     });
@@ -27,7 +27,9 @@ export const getRecentWorkouts = (workouts = [], historyLimit = HISTORY_LIMIT) =
 export const buildExerciseStats = ({
     exerciseId,
     workouts = [],
-    workoutDetails = []
+    workoutDetails = [],
+    t,
+    language
 } = {}) => {
     const points = [];
     let maxWeight = 0;
@@ -57,9 +59,9 @@ export const buildExerciseStats = ({
 
         points.push({
             workoutId: workout.workoutId,
-            workoutName: workout.workoutName || workout.name || "Workout",
+            workoutName: workout.workoutName || workout.name || t?.('exercises.misc.workoutFallback') || "Workout",
             dateValue: workoutDate,
-            label: formatChartDate(workoutDate),
+            label: formatChartDate(workoutDate, language),
             weightKg: workoutWeight,
             reps: workoutReps,
             volumeKg: workoutVolume

@@ -6,6 +6,8 @@ import { NavLink, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import authService from '../services/authService';
 import { syncActiveWorkoutState } from '../features/workout/services/workoutSessionManager';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 import {
     ACTIVE_WORKOUT_ID_KEY,
     TIMER_START_AT_KEY,
@@ -13,23 +15,23 @@ import {
     getStoredTimerStartAt
 } from '../features/workout-session/utils/workoutSessionStorage';
 
-
+const getUserProfile = (fallbackName = 'Користувач') => {
+    const user = authService.getUser() || {};
+    return {
+        name: user.fullName || user.full_name || fallbackName,
+        role: user.role || "",
+        avatarUrl: user.avatarUrl || user.avatar_url || ""
+    };
+};
 
 const MainHeader = () => {
-    const getUserProfile = () => {
-        const user = authService.getUser() || {};
-        return {
-            name: user.fullName || user.full_name || "User",
-            role: user.role || "",
-            avatarUrl: user.avatarUrl || user.avatar_url || ""
-        };
-    };
+    const { t } = useTranslation();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
-    const [userName, setUserName] = useState(() => getUserProfile().name);
-    const [userRole, setUserRole] = useState(() => getUserProfile().role);
-    const [userAvatar, setUserAvatar] = useState(() => getUserProfile().avatarUrl);
+    const [userName, setUserName] = useState(() => getUserProfile(t('common.userFallback')).name);
+    const [userRole, setUserRole] = useState(() => getUserProfile(t('common.userFallback')).role);
+    const [userAvatar, setUserAvatar] = useState(() => getUserProfile(t('common.userFallback')).avatarUrl);
     const [isBurgerOpen, setIsBurgerOpen] = useState(false);
     const [isWorkoutsDropdownOpen, setIsWorkoutsDropdownOpen] = useState(false);
     const [isWorkoutsDropdownLocked, setIsWorkoutsDropdownLocked] = useState(false);
@@ -38,11 +40,12 @@ const MainHeader = () => {
     });
     const navigate = useNavigate();
     const connectionsRoute = userRole === 'trainer' ? '/clients' : '/trainers';
-    const connectionsLabel = userRole === 'trainer' ? 'Clients' : 'Trainer';
+    const connectionsLabel = userRole === 'trainer' ? t('navigation.clients') : t('navigation.trainers');
+    const displayRole = userRole ? t(`common.role.${userRole}`, { defaultValue: userRole }) : '';
 
     useEffect(() =>{
         const syncUserProfile = () => {
-            const profile = getUserProfile();
+            const profile = getUserProfile(t('common.userFallback'));
             setUserName(profile.name);
             setUserRole(profile.role);
             setUserAvatar(profile.avatarUrl);
@@ -54,7 +57,7 @@ const MainHeader = () => {
         return () => {
             window.removeEventListener(authService.PROFILE_UPDATED_EVENT, syncUserProfile);
         };
-    },[]);
+    }, [t]);
 
     useEffect(() => {
         let isMounted = true;
@@ -132,7 +135,7 @@ const MainHeader = () => {
     return(
         <header className='main-header'>
             <div className="header-left">
-                <button className="burger-btn" onClick={toggleBurger} aria-label="Toggle navigation">
+                <button className="burger-btn" onClick={toggleBurger} aria-label={t('navigation.toggleMenu')}>
                     {isBurgerOpen ? <LuX className="burger-icon" /> : <LuMenu className="burger-icon" />}
                 </button>
                 <div className="main-header logo-cont">
@@ -142,7 +145,7 @@ const MainHeader = () => {
             </div>
             <div className="main-header nav-cont">
                 <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'active' : ''}>
-                    <LuLayoutDashboard className="main-header-icon"/> Dashboard
+                    <LuLayoutDashboard className="main-header-icon"/> {t('navigation.dashboard')}
                 </NavLink>
                 <div
                     className={`workouts-dropdown ${isWorkoutsDropdownOpen ? 'open' : ''}`}
@@ -153,68 +156,69 @@ const MainHeader = () => {
                 >
                     <NavLink to="/workouts" className={({ isActive }) => isActive ? 'active workouts-nav-link' : 'workouts-nav-link'}>
                         <PiBarbellLight className="main-header-icon"/>
-                        Workouts
-                        {isWorkoutActive && <span className="workout-live-dot" aria-label="Workout in progress" />}
+                        {t('navigation.workouts')}
+                        {isWorkoutActive && <span className="workout-live-dot" aria-label={t('navigation.workoutInProgress')} />}
                     </NavLink>
                     {isWorkoutActive && (
                         <div className="workouts-dropdown-menu">
                             <NavLink to="/workout/session" className="workouts-dropdown-link" onClick={handleActiveWorkoutClick}>
-                                Аctive workout
+                                {t('navigation.activeWorkout')}
                             </NavLink>
                         </div>
                     )}
                 </div>
                 <NavLink to="/schedule" className={({ isActive }) => isActive ? 'active' : ''}>
-                    <FiCalendar className="main-header-icon" /> Schedule
+                    <FiCalendar className="main-header-icon" /> {t('navigation.schedule')}
                 </NavLink>
                 <NavLink to="/exercises" className={({ isActive }) => isActive ? 'active' : ''}>
-                    <MdSportsGymnastics className="main-header-icon"/> Exercises
+                    <MdSportsGymnastics className="main-header-icon"/> {t('navigation.exercises')}
                 </NavLink>
                 <NavLink to={connectionsRoute} className={({ isActive }) => isActive ? 'active' : ''}>
                     <IoMdPerson className="main-header-icon"/> {connectionsLabel}
                 </NavLink>
                 
             </div>
-            <div className="main-header user-cont" onClick={toggleMenu}>
-                <img src={userAvatar || Avatar} alt="" className="user-avatar" />
-                <div className="main-header-username-cont">
-                    <h1 className='main-header-username'>{userName}</h1>
-                    <span className='main-header-user-role'>{userRole}</span>
-                </div>
-                <BsChevronDown className="main-header-icon" />
-                {isMenuOpen && (
-                    <div className={`user-dropdown ${isAnimating ? 'closing' : ''}`}>
-                        <NavLink to="/profile">Profile</NavLink>
-                        <button className="logout" onClick={handleLogout}>Logout</button>
+            <div className="header-right">
+                <LanguageSwitcher compact className="main-header-language-switcher" />
+                <div className="main-header user-cont" onClick={toggleMenu}>
+                    <img src={userAvatar || Avatar} alt="" className="user-avatar" />
+                    <div className="main-header-username-cont">
+                        <h1 className='main-header-username'>{userName}</h1>
+                        <span className='main-header-user-role'>{displayRole}</span>
                     </div>
-                )}
-                
+                    <BsChevronDown className="main-header-icon" />
+                    {isMenuOpen && (
+                        <div className={`user-dropdown ${isAnimating ? 'closing' : ''}`}>
+                            <NavLink to="/profile">{t('navigation.profile')}</NavLink>
+                            <button className="logout" onClick={handleLogout}>{t('navigation.logout')}</button>
+                        </div>
+                    )}
+                </div>
             </div>
             {isBurgerOpen && (
                 <div className="mobile-nav">
                     <NavLink to="/dashboard" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
-                        <LuLayoutDashboard className="main-header-icon"/> Dashboard
+                        <LuLayoutDashboard className="main-header-icon"/> {t('navigation.dashboard')}
                     </NavLink>
                     <NavLink to="/workouts" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
                         <PiBarbellLight className="main-header-icon"/>
-                        Workouts
-                        {isWorkoutActive && <span className="workout-live-dot" aria-label="Workout in progress" />}
+                        {t('navigation.workouts')}
+                        {isWorkoutActive && <span className="workout-live-dot" aria-label={t('navigation.workoutInProgress')} />}
                     </NavLink>
                     {isWorkoutActive && (
                         <NavLink to="/workout/session" onClick={() => setIsBurgerOpen(false)} className="workouts-active-link">
-                            Аctive workout
+                            {t('navigation.activeWorkout')}
                         </NavLink>
                     )}
                     <NavLink to="/schedule" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
-                        <FiCalendar className="main-header-icon" /> Schedule
+                        <FiCalendar className="main-header-icon" /> {t('navigation.schedule')}
                     </NavLink>
                     <NavLink to="/exercises" onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
-                        <MdSportsGymnastics className="main-header-icon"/> Exercises
+                        <MdSportsGymnastics className="main-header-icon"/> {t('navigation.exercises')}
                     </NavLink>
                     <NavLink to={connectionsRoute} onClick={() => setIsBurgerOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}>
                         <IoMdPerson className="main-header-icon"/> {connectionsLabel}
                     </NavLink>
-                   
                 </div>
             )}
         </header>

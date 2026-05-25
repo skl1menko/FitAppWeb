@@ -7,8 +7,10 @@ import useScheduleBuilder from "./hooks/useScheduleBuilder";
 import useSchedulePrograms from "./hooks/useSchedulePrograms";
 import useScheduleWorkoutActions from "./hooks/useScheduleWorkoutActions";
 import "./SchedulePage.scss";
+import { useTranslation } from "react-i18next";
 
 const SchedulePage = () => {
+    const { t } = useTranslation();
     const role = authService.getUser()?.role;
     const [isBuilderOpen, setIsBuilderOpen] = useState(true);
     const {
@@ -78,6 +80,7 @@ const SchedulePage = () => {
                 setProgramName={setProgramName}
                 showDescription={showDescription}
                 workouts={workouts}
+                t={t}
             />
             <ScheduleProgramsSection
                 activePlansView={activePlansView}
@@ -90,6 +93,7 @@ const SchedulePage = () => {
                 programsError={programsError}
                 registerPlanWorkoutsRef={registerPlanWorkoutsRef}
                 role={role}
+                t={t}
             />
         </div>
     );

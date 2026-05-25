@@ -7,13 +7,13 @@ import useBodyClass from "../../../hooks/useBodyClass";
 import ActivityChart from "../../dashboard/components/ActivityOverview/ActivityChart";
 import usePill from "../../dashboard/components/ActivityOverview/usePill";
 import {getWeekLabel, getWeekRange, getMonthLabel, getMonthRange} from "../../dashboard/components/ActivityOverview/dateRangeUtils";
-import {STAT_CONFIG} from "../../dashboard/components/ActivityOverview/chartUtils";
+import {getPeriodConfig, getStatConfig} from "../../dashboard/components/ActivityOverview/chartUtils";
 import {isWorkoutCompleted} from "../../workout/utils/workoutStatus";
 import {formatGroupedNumber} from "../../../utils/formatNumber";
 import { normalizeTrainerClientInfo } from "../utils/normalizeTrainerClient";
 import {
     formatWorkoutDuration,
-    MEASUREMENT_FIELDS
+    getMeasurementFields
 } from "../utils/clientTrackingUtils";
 import useClientWorkouts from "../hooks/useClientWorkouts";
 import useClientHealthMetrics from "../hooks/useClientHealthMetrics";
@@ -21,9 +21,11 @@ import useClientMeasurementProgress from "../hooks/useClientMeasurementProgress"
 import RoleGate from "../components/RoleGate";
 import "./ClientTrackingPage.scss";
 import "../../workout/components/WorkoutsListCard.scss";
+import { useTranslation } from "react-i18next";
 
 const ClientTrackingPage = () => {
     useBodyClass("client-tracking-body");
+    const { t } = useTranslation();
 
     const navigate = useNavigate();
     const {state} = useLocation();
@@ -36,6 +38,9 @@ const ClientTrackingPage = () => {
     const [weekOffset, setWeekOffset] = useState(0);
     const [monthOffset, setMonthOffset] = useState(0);
     const [activeMeasurementField, setActiveMeasurementField] = useState("body_weight");
+    const measurementFields = useMemo(() => getMeasurementFields(t), [t]);
+    const statConfig = getStatConfig(t);
+    const periodConfig = getPeriodConfig(t);
 
     const isWeek = activePeriod === 0;
     const pickerLabel = isWeek ? getWeekLabel(weekOffset) : getMonthLabel(monthOffset);
@@ -75,8 +80,8 @@ const ClientTrackingPage = () => {
     const statPill = usePill(activeStat);
     const periodPill = usePill(activePeriod);
     const activeMeasurementMeta = useMemo(
-        () => MEASUREMENT_FIELDS.find((field) => field.key === activeMeasurementField) || MEASUREMENT_FIELDS[0],
-        [activeMeasurementField]
+        () => measurementFields.find((field) => field.key === activeMeasurementField) || measurementFields[0],
+        [activeMeasurementField, measurementFields]
     );
     const completedWorkouts = useMemo(() => {
         return workouts
@@ -89,8 +94,8 @@ const ClientTrackingPage = () => {
         <RoleGate
             role={role}
             allow="trainer"
-            title="Client tracking"
-            message="This page is available only for trainers."
+            title={t("trainer_clients.roleGate.trackingTitle")}
+            message={t("trainer_clients.roleGate.trackingMessage")}
             containerClassName="client-tracking-page-cont"
             contentClassName="client-tracking-page-content"
         >
@@ -102,7 +107,7 @@ const ClientTrackingPage = () => {
                         onClick={() => navigate("/clients")}
                     >
                         <FiArrowLeft/>
-                        Back to clients
+                        {t("trainer_clients.tracking.backToClients")}
                     </button>
 
                 <div className="client-tracking-hero">
@@ -124,7 +129,7 @@ const ClientTrackingPage = () => {
                 <div className="client-tracking-panel-cont metrics">
                     <div className="client-tracking-chart-header-cont">
                         <div className="client-tracking-chart-header">
-                            <h2>Health metrics trend</h2>
+                            <h2>{t("trainer_clients.tracking.healthMetricsTrend")}</h2>
                             <div className="client-tracking-period-picker">
                                 <button
                                     type="button"
@@ -146,7 +151,7 @@ const ClientTrackingPage = () => {
                         <div className="client-tracking-selector-row">
                             <div className="client-tracking-selector-cont">
                                 <div className="client-tracking-selector-pill" style={statPill.style}/>
-                                {STAT_CONFIG.map((item, index) => (
+                                {statConfig.map((item, index) => (
                                     <button
                                         key={item.dataKey}
                                         ref={(element) => {
@@ -162,9 +167,9 @@ const ClientTrackingPage = () => {
                             </div>
                             <div className="client-tracking-selector-cont">
                                 <div className="client-tracking-selector-pill" style={periodPill.style}/>
-                                {["Week", "Month"].map((label, index) => (
+                                {periodConfig.map((period, index) => (
                                     <button
-                                        key={label}
+                                        key={period.value}
                                         ref={(element) => {
                                             periodPill.refs.current[index] = element;
                                         }}
@@ -172,7 +177,7 @@ const ClientTrackingPage = () => {
                                         className={`client-tracking-selector-btn ${activePeriod === index ? "client-tracking-selector-btn active" : ""}`}
                                         onClick={() => setActivePeriod(index)}
                                     >
-                                        {label}
+                                        {period.label}
                                     </button>
                                 ))}
                             </div>
@@ -184,34 +189,36 @@ const ClientTrackingPage = () => {
                             endDate={endDate}
                             activeStat={activeStat}
                             activePeriod={activePeriod}
+                            statConfig={statConfig}
                             chartData={chartData}
                             loading={isChartLoading}
+                            emptyText={t('dashboard.loading')}
                         />
                     </div>
                 </div>
 
                 <div className="client-tracking-panel-cont measurements">
-                    <MeasurementProgressSection
-                        title="Body measurements progress"
-                        description="Track how the client's body measurements change across saved snapshots."
-                        fields={MEASUREMENT_FIELDS}
+                        <MeasurementProgressSection
+                        title={t("trainer_clients.tracking.bodyMeasurementsProgress")}
+                        description={t("trainer_clients.tracking.bodyMeasurementsDescription")}
+                        fields={measurementFields}
                         activeField={activeMeasurementField}
                         onFieldChange={setActiveMeasurementField}
                         data={measurementProgressData}
                         unit={activeMeasurementMeta.unit}
                         isLoading={isMeasurementsLoading}
-                        emptyText="No body measurement history yet."
+                        emptyText={t("trainer_clients.tracking.noBodyMeasurements")}
                     />
                 </div>
 
                 <div className="client-tracking-panel-cont workouts">
                     <div className="client-tracking-workouts-header">
                         <div>
-                            <h2>Completed workouts</h2>
+                            <h2>{t("trainer_clients.tracking.completedWorkouts")}</h2>
                         </div>
                     </div>
                     {completedWorkouts.length === 0 && (
-                        <p className="client-tracking-hint-text">No completed workouts yet.</p>
+                        <p className="client-tracking-hint-text">{t("trainer_clients.tracking.noCompletedWorkouts")}</p>
                     )}
                     {completedWorkouts.map((workout) => {
                         const workoutId = workout.workoutId || workout.id;
@@ -235,24 +242,24 @@ const ClientTrackingPage = () => {
                                     </div>
                                     <div className="workout-info-cont">
                                         <div className="workout-label">
-                                            <span>{workout.workoutName || "Workout"}</span>
+                                            <span>{workout.workoutName || t("trainer_clients.tracking.workoutFallback")}</span>
                                             <CiCircleCheck size={18} color="#10B981" className="completed-icon" />
                                         </div>
                                         <div className="workout-stat-cont">
                                             <span className="workout-stat">
                                                 <FiCalendar size={14} className="calendar-icon" />
-                                                {workoutDate ? new Date(workoutDate).toLocaleDateString("en-US", {
+                                                {workoutDate ? new Date(workoutDate).toLocaleDateString(t("common.localeCode"), {
                                                     month: "short",
                                                     day: "numeric",
                                                     year: "numeric"
-                                                }) : "No date"}
+                                                }) : t("trainer_clients.tracking.noDate")}
                                             </span>
                                             <span className="workout-stat">
                                                 <FaRegClock size={14} className="clock-icon" />
-                                                {formatWorkoutDuration(workout.startTime || workout.start_time, endTime)}
+                                                {formatWorkoutDuration(workout.startTime || workout.start_time, endTime, t)}
                                             </span>
                                             <span className="workout-stat">
-                                                {Number(workout.exerciseCount) || 0} exercises
+                                                {t("trainer_clients.tracking.exercisesCount", { count: Number(workout.exerciseCount) || 0 })}
                                             </span>
                                         </div>
                                     </div>

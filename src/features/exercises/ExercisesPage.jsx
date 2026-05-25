@@ -10,6 +10,7 @@ import { useState } from "react";
 import { MUSCLE_GROUPS } from "./constants/muscleGroups";
 import useExercisesPageData from "./hooks/useExercisesPageData";
 import useExerciseStats from "./hooks/useExerciseStats";
+import { useTranslation } from "react-i18next";
 
 const getListState = ({
     selectedGroup,
@@ -18,20 +19,20 @@ const getListState = ({
     exercisesError,
     isCustomLoading,
     customError
-}) => {
+}, t) => {
     if (selectedGroup === "custom") {
         if (isCustomLoading) {
             return {
                 type: "loading",
-                title: "Loading custom exercises...",
-                message: "Fetching your saved custom exercises."
+                title: t('exercises.page.loadingCustomTitle'),
+                message: t('exercises.page.loadingCustomMessage')
             };
         }
 
         if (customError) {
             return {
                 type: "error",
-                title: "Could not load custom exercises",
+                title: t('exercises.page.customErrorTitle'),
                 message: customError
             };
         }
@@ -39,8 +40,8 @@ const getListState = ({
         if (filteredExercises.length === 0) {
             return {
                 type: "empty",
-                title: "No custom exercises yet",
-                message: "Create your first custom exercise to see it here."
+                title: t('exercises.page.customEmptyTitle'),
+                message: t('exercises.page.customEmptyMessage')
             };
         }
 
@@ -50,15 +51,15 @@ const getListState = ({
     if (isExercisesLoading) {
         return {
             type: "loading",
-            title: "Loading exercises...",
-            message: "Building your exercise library."
+            title: t('exercises.page.loadingTitle'),
+            message: t('exercises.page.loadingMessage')
         };
     }
 
     if (exercisesError) {
         return {
             type: "error",
-            title: "Could not load exercises",
+            title: t('exercises.page.errorTitle'),
             message: exercisesError
         };
     }
@@ -67,13 +68,13 @@ const getListState = ({
         return selectedGroup === "all"
             ? {
                 type: "empty",
-                title: "No exercises found",
-                message: "The exercise library is currently empty."
+                title: t('exercises.page.emptyTitle'),
+                message: t('exercises.page.emptyMessage')
             }
             : {
                 type: "empty",
-                title: "No exercises in this group",
-                message: "Try another muscle group or create a custom exercise."
+                title: t('exercises.page.emptyGroupTitle'),
+                message: t('exercises.page.emptyGroupMessage')
             };
     }
 
@@ -81,6 +82,7 @@ const getListState = ({
 };
 
 const ExercisesPage = () => {
+    const { t } = useTranslation();
     const [selectedExercise, setSelectedExercise] = useState(null);
     const {
         filteredExercises,
@@ -108,7 +110,7 @@ const ExercisesPage = () => {
         exercisesError,
         isCustomLoading,
         customError
-    });
+    }, t);
 
     
     useBodyClass("exercise-page-body");
@@ -130,9 +132,9 @@ const ExercisesPage = () => {
             <div className="exercise-page-content">
                 <div className="create-exercise-cont">
                     <CustomBtn
-                    className="create-exercise-btn"
+                        className="create-exercise-btn"
                         icon={<FaPlus />}
-                        text="Create New Exercise"
+                        text={t('exercises.page.createNew')}
                         onClick={handleOpenCreateModal}
                     />
                 </div>

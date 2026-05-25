@@ -1,8 +1,10 @@
 import {useCallback, useEffect, useRef, useState} from "react";
+import { useTranslation } from "react-i18next";
 import profileService from "../../services/profileService";
 import {normalizeProfileProgressData} from "./utils/profileProgressUtils";
 
 const useProfilePage = (measurementFields) => {
+    const { t, i18n } = useTranslation();
     const fileInputRef = useRef(null);
     const [formData, setFormData] = useState({
         fullName: "",
@@ -27,13 +29,13 @@ const useProfilePage = (measurementFields) => {
             const response = await profileService.getMeasurementProgress(fieldKey);
             const points = Array.isArray(response?.progressData) ? response.progressData : [];
             const unit = measurementFields.find((field) => field.key === fieldKey)?.unit || "";
-            setProgressData(normalizeProfileProgressData(points, unit));
+            setProgressData(normalizeProfileProgressData(points, unit, i18n.resolvedLanguage));
         } catch {
             setProgressData([]);
         } finally {
             setIsProgressLoading(false);
         }
-    }, [activeProgressField, measurementFields]);
+    }, [activeProgressField, i18n.resolvedLanguage, measurementFields]);
 
     useEffect(() => {
         const loadProfile = async () => {
@@ -49,14 +51,14 @@ const useProfilePage = (measurementFields) => {
                 });
                 setBodyMeasurements(response.bodyMeasurements);
             } catch {
-                setError("Failed to load profile.");
+                setError(t("profile.errors.loadProfileFailed"));
             } finally {
                 setIsLoading(false);
             }
         };
 
         loadProfile();
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         refreshProgress(activeProgressField);
@@ -112,7 +114,7 @@ const useProfilePage = (measurementFields) => {
 
         const trimmedName = formData.fullName.trim();
         if (!trimmedName) {
-            setError("Name is required.");
+            setError(t("profile.errors.nameRequired"));
             return;
         }
 
@@ -146,10 +148,12 @@ const useProfilePage = (measurementFields) => {
                 URL.revokeObjectURL(previewUrl);
                 setPreviewUrl("");
             }
-            setMessage(profileResult.savedToServer && measurementsResult.savedToServer ? "Profile updated successfully." : "Profile updated successfully.");
+            setMessage(profileResult.savedToServer && measurementsResult.savedToServer
+                ? t("profile.success.profileUpdated")
+                : t("profile.success.profileUpdated"));
             await refreshProgress();
         } catch {
-            setError("Failed to save profile. Check Cloudinary preset and backend availability.");
+            setError(t("profile.errors.saveProfileFailed"));
         } finally {
             setIsSaving(false);
         }

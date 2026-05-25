@@ -1,12 +1,12 @@
 import { transformMetrics, transformMonthMetrics } from "../../dashboard/components/ActivityOverview/chartUtils";
 
-export const MEASUREMENT_FIELDS = [
-    { key: "body_weight", label: "Weight", unit: "kg" },
-    { key: "height", label: "Height", unit: "cm" },
-    { key: "chest", label: "Chest", unit: "cm" },
-    { key: "waist", label: "Waist", unit: "cm" },
-    { key: "hips", label: "Hips", unit: "cm" },
-    { key: "biceps", label: "Biceps", unit: "cm" }
+export const getMeasurementFields = (t) => [
+    { key: "body_weight", label: t("trainer_clients.measurements.fields.body_weight"), unit: t("trainer_clients.measurements.units.kg") },
+    { key: "height", label: t("trainer_clients.measurements.fields.height"), unit: t("trainer_clients.measurements.units.cm") },
+    { key: "chest", label: t("trainer_clients.measurements.fields.chest"), unit: t("trainer_clients.measurements.units.cm") },
+    { key: "waist", label: t("trainer_clients.measurements.fields.waist"), unit: t("trainer_clients.measurements.units.cm") },
+    { key: "hips", label: t("trainer_clients.measurements.fields.hips"), unit: t("trainer_clients.measurements.units.cm") },
+    { key: "biceps", label: t("trainer_clients.measurements.fields.biceps"), unit: t("trainer_clients.measurements.units.cm") }
 ];
 
 export const formatDateInput = (date) => {
@@ -18,7 +18,7 @@ export const formatDateInput = (date) => {
 
 export const isNotFoundError = (error) => Number(error?.response?.status) === 404;
 
-export const formatWorkoutDuration = (startValue, endValue) => {
+export const formatWorkoutDuration = (startValue, endValue, t) => {
     if (!startValue || !endValue) {
         return "-";
     }
@@ -33,16 +33,18 @@ export const formatWorkoutDuration = (startValue, endValue) => {
     const totalMinutes = Math.floor((end - start) / 60000);
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
+    const minLabel = t ? t("trainer_clients.duration.min") : "min";
+    const hourLabel = t ? t("trainer_clients.duration.hour") : "h";
 
     if (hours === 0) {
-        return `${minutes} min`;
+        return `${minutes} ${minLabel}`;
     }
 
     if (minutes === 0) {
-        return `${hours} h`;
+        return `${hours} ${hourLabel}`;
     }
 
-    return `${hours} h ${minutes} min`;
+    return `${hours} ${hourLabel} ${minutes} ${minLabel}`;
 };
 
 const getWorkoutDateKey = (workout) => {
@@ -102,25 +104,27 @@ export const buildFallbackChartDataFromWorkouts = (workouts, startDate, endDate,
     return buildChartData(pseudoMetrics, startDate, endDate, activePeriod);
 };
 
-export const formatMeasurementLabel = (dateValue) => {
+const getLocale = (language = "en") => language === "uk" ? "uk-UA" : "en-GB";
+
+export const formatMeasurementLabel = (dateValue, language = "en") => {
     const date = new Date(dateValue);
     if (Number.isNaN(date.getTime())) {
         return "";
     }
 
-    return date.toLocaleDateString("en-GB", {
+    return date.toLocaleDateString(getLocale(language), {
         day: "2-digit",
         month: "short"
     });
 };
 
-export const formatMeasurementDateTime = (dateValue) => {
+export const formatMeasurementDateTime = (dateValue, language = "en") => {
     const date = new Date(dateValue);
     if (Number.isNaN(date.getTime())) {
         return "";
     }
 
-    return date.toLocaleString("en-GB", {
+    return date.toLocaleString(getLocale(language), {
         day: "2-digit",
         month: "short",
         hour: "2-digit",

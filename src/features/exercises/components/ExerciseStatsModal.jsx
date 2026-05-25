@@ -13,6 +13,9 @@ import {
 } from "recharts";
 import { formatGroupedNumber } from "../../../utils/formatNumber";
 import "./ExerciseStatsModal.scss";
+import { useTranslation } from "react-i18next";
+import { getMuscleGroupTranslationKey } from "../constants/muscleGroups";
+import { translateExerciseName } from "../utils/translateExerciseName";
 
 const StatCard = ({ label, value, suffix }) => {
     return (
@@ -27,6 +30,7 @@ const StatCard = ({ label, value, suffix }) => {
 };
 
 const ChartTooltip = ({ active, payload, label }) => {
+    const { t } = useTranslation();
     if (!active || !payload?.length) {
         return null;
     }
@@ -37,14 +41,14 @@ const ChartTooltip = ({ active, payload, label }) => {
         <div className="exercise-chart-tooltip">
             <p className="tooltip-date">{label}</p>
             <p className="tooltip-row">
-                <span>Weight</span>
-                <strong>{formatGroupedNumber(point.weightKg || 0)} kg</strong>
+                <span>{t('exercises.statsModal.weight')}</span>
+                <strong>{formatGroupedNumber(point.weightKg || 0)}{t('exercises.statsModal.kgSuffix')}</strong>
             </p>
         </div>
     );
 };
 
-const renderSelectableDot = (selectedWorkoutId, setSelectedPoint, totalPoints) => (props) => {
+const renderSelectableDot = (selectedWorkoutId, setSelectedPoint, totalPoints, kgSuffix) => (props) => {
     const { cx, cy, payload, index } = props;
 
     if (cx == null || cy == null || !payload) {
@@ -92,7 +96,7 @@ const renderSelectableDot = (selectedWorkoutId, setSelectedPoint, totalPoints) =
                     textAnchor={labelAnchor}
                     className="exercise-chart-point-label"
                 >
-                    {formatGroupedNumber(payload.weightKg || 0)} kg
+                    {formatGroupedNumber(payload.weightKg || 0)}{kgSuffix}
                 </text>
             ) : null}
         </g>
@@ -100,6 +104,7 @@ const renderSelectableDot = (selectedWorkoutId, setSelectedPoint, totalPoints) =
 };
 
 const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, error = "", onClose }) => {
+    const { t } = useTranslation();
     const [selectedPoint, setSelectedPoint] = useState(null);
 
     if (!isOpen) {
@@ -108,8 +113,13 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
 
     const chartData = Array.isArray(stats?.chartData) ? stats.chartData : [];
     const hasData = chartData.length > 0;
-    const exerciseName = exercise?.name || "Exercise";
-    const muscleGroup = exercise?.muscleGroup || "General";
+    const exerciseName = translateExerciseName({
+        exerciseName: exercise?.name,
+        muscleGroup: exercise?.muscleGroup,
+        t,
+        fallback: t('exercises.statsModal.exerciseFallback'),
+    });
+    const muscleGroup = t(`exercises.muscleGroups.${getMuscleGroupTranslationKey(exercise?.muscleGroup)}`);
     const imageUrl = exercise?.imageUrl || "";
     const lastSession = chartData.at(-1);
 
@@ -123,7 +133,7 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
                             {imageUrl ? <img src={imageUrl} alt={exerciseName} /> : <IoStatsChart aria-hidden="true" />}
                         </div>
                         <div className="exercise-stats-title-block">
-                            <span className="exercise-stats-kicker">Exercise statistics</span>
+                            <span className="exercise-stats-kicker">{t('exercises.statsModal.titleKicker')}</span>
                             <h2 id="exercise-stats-title">{exerciseName}</h2>
                             <div className="exercise-stats-meta">
                                 <span>{muscleGroup}</span>
@@ -131,34 +141,34 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
                             </div>
                         </div>
                     </div>
-                    <button type="button" className="exercise-stats-close" onClick={onClose} aria-label="Close exercise statistics">
+                    <button type="button" className="exercise-stats-close" onClick={onClose} aria-label={t('exercises.statsModal.closeAria')}>
                         x
                     </button>
                 </div>
 
                 {error ? <div className="exercise-stats-state error">{error}</div> : null}
-                {isLoading ? <div className="exercise-stats-state">Loading stats...</div> : null}
+                {isLoading ? <div className="exercise-stats-state">{t('exercises.statsModal.loading')}</div> : null}
 
                 {!isLoading && !error ? (
                     <>
                         <div className="exercise-stats-grid">
                             <StatCard
-                                label="Max reps"
+                                label={t('exercises.statsModal.maxReps')}
                                 value={formatGroupedNumber(stats?.maxReps || 0)}
-                                suffix=" reps"
+                                suffix={t('exercises.statsModal.repsSuffix')}
                             />
                             <StatCard
-                                label="Max weight"
+                                label={t('exercises.statsModal.maxWeight')}
                                 value={formatGroupedNumber(stats?.maxWeight || 0)}
-                                suffix=" kg"
+                                suffix={t('exercises.statsModal.kgSuffix')}
                             />
                             <StatCard
-                                label="Max volume"
+                                label={t('exercises.statsModal.maxVolume')}
                                 value={formatGroupedNumber(stats?.maxVolume || 0)}
-                                suffix=" kg"
+                                suffix={t('exercises.statsModal.kgSuffix')}
                             />
                             <StatCard
-                                label="Workouts"
+                                label={t('exercises.statsModal.workouts')}
                                 value={formatGroupedNumber(stats?.trackedWorkouts || 0)}
                             />
                         </div>
@@ -166,9 +176,9 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
                         <div className="exercise-stats-main">
                             <div className="exercise-stats-chart-card">
                                 <div className="exercise-stats-section-head">
-                                    <span className="section-kicker"><FaArrowTrendUp aria-hidden="true" /> Weight trend</span>
+                                    <span className="section-kicker"><FaArrowTrendUp aria-hidden="true" /> {t('exercises.statsModal.weightTrend')}</span>
                                     <span className="section-note">
-                                        {hasData ? `Last session: ${lastSession?.label || "-"}` : "No completed workouts yet"}
+                                        {hasData ? t('exercises.statsModal.lastSession', { label: lastSession?.label || "-" }) : t('exercises.statsModal.noCompletedHistory')}
                                     </span>
                                 </div>
 
@@ -203,7 +213,7 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
                                                     stroke="#2563eb"
                                                     strokeWidth={3}
                                                     fill="url(#exercise-weight-gradient)"
-                                                    dot={renderSelectableDot(selectedPoint?.workoutId, setSelectedPoint, chartData.length)}
+                                                    dot={renderSelectableDot(selectedPoint?.workoutId, setSelectedPoint, chartData.length, t('exercises.statsModal.kgSuffix'))}
                                                     activeDot={false}
                                                 />
                                             </LineChart>
@@ -211,7 +221,7 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
                                     ) : (
                                         <div className="exercise-stats-empty">
                                             <IoStatsChart aria-hidden="true" />
-                                            <p>There is not enough completed workout history for this exercise yet.</p>
+                                            <p>{t('exercises.statsModal.notEnoughHistory')}</p>
                                         </div>
                                     )}
                                 </div>
@@ -220,15 +230,15 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
 
                             <div className="exercise-stats-list-card">
                                 <div className="exercise-stats-section-head">
-                                    <span className="section-kicker"><FiCalendar aria-hidden="true" /> Recent sessions</span>
-                                    <span className="section-note">Workout volume and best set per session</span>
+                                    <span className="section-kicker"><FiCalendar aria-hidden="true" /> {t('exercises.statsModal.recentSessions')}</span>
+                                    <span className="section-note">{t('exercises.statsModal.recentSessionsNote')}</span>
                                 </div>
 
                                 <div className="exercise-session-list">
                                     {chartData.length === 0 ? (
                                         <div className="exercise-session-empty">
                                             <FiClock aria-hidden="true" />
-                                            <span>No sessions to show</span>
+                                            <span>{t('exercises.statsModal.noSessions')}</span>
                                         </div>
                                     ) : chartData.slice().reverse().map((point) => (
                                         <div className="exercise-session-row" key={`${point.workoutId}-${point.dateValue}`}>
@@ -237,8 +247,8 @@ const ExerciseStatsModal = ({ isOpen, exercise, stats = {}, isLoading = false, e
                                                 <span>{point.label}</span>
                                             </div>
                                             <div className="exercise-session-values">
-                                                <span>Max weight: {formatGroupedNumber(point.weightKg)} kg</span>
-                                                <span>Volume: {formatGroupedNumber(point.volumeKg)} kg</span>
+                                                <span>{t('exercises.statsModal.maxWeightRow', { value: formatGroupedNumber(point.weightKg) })}</span>
+                                                <span>{t('exercises.statsModal.volumeRow', { value: formatGroupedNumber(point.volumeKg) })}</span>
                                             </div>
                                         </div>
                                     ))}

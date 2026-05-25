@@ -8,11 +8,13 @@ import { showWorkoutAlert } from "../../workout/utils/workoutFeedback";
 import useWorkoutSessionLifecycle from "./useWorkoutSessionLifecycle";
 import useWorkoutSessionModals from "./useWorkoutSessionModals";
 import useWorkoutSessionRouteState from "./useWorkoutSessionRouteState";
+import { useTranslation } from "react-i18next";
 
 // Orchestrates workout session lifecycle: active workout resolution, timer state,
 // modal visibility, finish/cancel actions, and summary refresh.
 const useWorkoutSession = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const {
         isPlannedMode,
         isSessionReady,
@@ -83,7 +85,7 @@ const useWorkoutSession = () => {
     const confirmFinishWorkout = async () => {
         const trimmedName = workoutName.trim();
         if (!isPlannedMode && !trimmedName) {
-            setWorkoutNameError("Please enter workout name");
+            setWorkoutNameError(t('workout_session.errors.enterWorkoutName'));
             return;
         }
 
@@ -100,7 +102,7 @@ const useWorkoutSession = () => {
                     });
                 }
             } catch (error) {
-                const message = error?.response?.data?.message || (isPlannedMode ? "Failed to save workout" : "Failed to finish workout");
+                const message = error?.response?.data?.message || (isPlannedMode ? t('workout_session.errors.saveWorkout') : t('workout_session.errors.finishWorkout'));
                 console.error(isPlannedMode ? "Save planned workout failed:" : "Finish workout failed:", error?.response?.data || error);
                 showWorkoutAlert(message);
                 return;
@@ -120,7 +122,7 @@ const useWorkoutSession = () => {
             try {
                 await workoutService.delete(activeWorkoutId);
             } catch (error) {
-                const message = error?.response?.data?.message || "Failed to cancel workout";
+                const message = error?.response?.data?.message || t('workout_session.errors.cancelWorkout');
                 console.error("Cancel workout failed:", error?.response?.data || error);
                 showWorkoutAlert(message);
                 return;
@@ -151,7 +153,7 @@ const useWorkoutSession = () => {
             });
             navigate("/workout/session");
         } catch (error) {
-            const message = error?.response?.data?.message || "Failed to start planned workout";
+            const message = error?.response?.data?.message || t('workout_session.errors.startPlannedWorkout');
             console.error("Start planned workout failed:", error?.response?.data || error);
             showWorkoutAlert(message);
         }

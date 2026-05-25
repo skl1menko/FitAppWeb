@@ -8,7 +8,8 @@ const WorkoutsListCard = ({
     variant = "recent",
     isLoading = false,
     errorMessage = "",
-    onDeleteWorkout
+    onDeleteWorkout,
+    t
 }) => {
     const filteredWorkouts = useMemo(() => {
         const active = [];
@@ -47,8 +48,8 @@ const WorkoutsListCard = ({
             {!isLoading && !errorMessage && filteredWorkouts.length === 0 ? (
                 <div className="workouts-empty-state">
                     {variant === "planned"
-                        ? "No planned workouts yet."
-                        : "No recent workouts yet."}
+                        ? t('workout.plannedWorkout.noWorkouts')
+                        : t('workout.recentWorkout.noWorkouts') }
                 </div>
             ) : null}
             {filteredWorkouts.map((workout) => (

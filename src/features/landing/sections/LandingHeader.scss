@@ -52,7 +52,12 @@
 
     .navbar-btns-cont{
         display: flex;
+        align-items: center;
         gap:16px;
+
+        .landing-language-switcher{
+            margin-right: 2px;
+        }
 
         .log-in-btn{
             border: none;
@@ -226,6 +231,10 @@
             align-items: center;
         }
 
+        .navbar-btns-cont .landing-language-switcher {
+            display: none;
+        }
+
         .navbar-btns-cont .desktop-only {
             display: none !important;
         }
@@ -252,4 +261,3 @@
         }
     }
 }
-

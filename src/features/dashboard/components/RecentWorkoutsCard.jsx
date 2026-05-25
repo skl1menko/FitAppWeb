@@ -12,6 +12,8 @@ import { formatGroupedNumber } from '../../../utils/formatNumber';
 import { isWorkoutCompleted } from '../../workout/utils/workoutStatus';
 import useDashboardWorkouts from '../hooks/useDashboardWorkouts';
 import { formatRelativeWorkoutDate, getWorkoutDurationMinutes } from '../utils/dashboardWorkoutUtils';
+import { useTranslation } from 'react-i18next';
+import dashboard from '../../../i18n/locales/en/dashboard';
 
 const ICON_STYLES = [
     { bg: '#d1fae5', color: '#10b981', Icon: GoPulse },
@@ -27,13 +29,13 @@ const RecentWorkoutsCard = () => {
     const completedWorkouts = useMemo(() => {
         return workouts.filter((workout) => isWorkoutCompleted(workout));
     }, [workouts]);
-
+    const { t } = useTranslation();
     return (
         <div className="recent-workout-cont">
             <div className="recent-workout-header">
-                <h2>Recent Workouts</h2>
+                <h2>{t('dashboard.recentWorkouts.recentWorkoutsHeader')}</h2>
                 <Link to="/workouts" className="rw-view-all">
-                    View All <BsChevronRight />
+                    {t('dashboard.recentWorkouts.viewAll')} <BsChevronRight />
                 </Link>
             </div>
 
@@ -69,7 +71,7 @@ const RecentWorkoutsCard = () => {
                     );
                 })}
                 {!error && !isLoading && completedWorkouts.length === 0 && (
-                    <span className="rw-stats">No completed workouts yet.</span>
+                    <span className="rw-stats">{t('dashboard.recentWorkouts.noWorkouts')}</span>
                 )}
             </div>
         </div>

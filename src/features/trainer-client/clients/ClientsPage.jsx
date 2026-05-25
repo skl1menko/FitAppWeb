@@ -8,9 +8,11 @@ import AthleteSearchSection from "./components/AthleteSearchSection";
 import IncomingClientRequestsSection from "./components/IncomingClientRequestsSection";
 import ManagedClientsSection from "./components/ManagedClientsSection";
 import "./ClientsPage.scss";
+import { useTranslation } from "react-i18next";
 
 const ClientsPage = () => {
     useBodyClass("clients-page-body");
+    const { t } = useTranslation();
 
     const navigate = useNavigate();
     const role = authService.getUser()?.role;
@@ -52,8 +54,8 @@ const ClientsPage = () => {
         <RoleGate
             role={role}
             allow="trainer"
-            title="Clients"
-            message="This page is available only for trainers."
+            title={t("trainer_clients.roleGate.clientsTitle")}
+            message={t("trainer_clients.roleGate.clientsMessage")}
             containerClassName="clients-page-cont"
             contentClassName="clients-page-content"
         >

@@ -4,8 +4,10 @@ import authService from "../../../services/authService";
 import AuthPageHeader from "./AuthPageHeader";
 import "./AuthCont.scss";
 import "../components/AuthForm.scss";
+import { useTranslation } from "react-i18next";
 
 const GoogleCallback = () => {
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const [roleRequired, setRoleRequired] = useState(false);
@@ -46,7 +48,7 @@ const GoogleCallback = () => {
 
     const handleCompleteRole = async () => {
         if (!selectedRole) {
-            setErrorMessage("Please select your role to continue.");
+            setErrorMessage(t('auth.googleCallback.roleError'));
             return;
         }
 
@@ -56,7 +58,7 @@ const GoogleCallback = () => {
             await authService.completeGoogleRole(setupToken, selectedRole);
             navigate('/dashboard');
         } catch (error) {
-            setErrorMessage(error?.response?.data?.message || "Failed to complete Google sign-in");
+            setErrorMessage(error?.response?.data?.message || t('auth.googleCallback.errorFallback'));
         } finally {
             setIsSubmitting(false);
         }
@@ -68,8 +70,8 @@ const GoogleCallback = () => {
                 <AuthPageHeader />
                 <div className="auth-content-container">
                     <div className="auth-content-heading-cont">
-                        <h1>Welcome to PowerFit</h1>
-                        <p>{emailFromParams ? `Account: ${emailFromParams}` : "Almost done!"}</p>
+                        <h1>{t('auth.welcomeTitle')}</h1>
+                        <p>{emailFromParams ? t('auth.googleCallback.accountLabel', { email: emailFromParams }) : t('auth.googleCallback.almostDone')}</p>
                     </div>
                     <div className="auth-form-cont">
                         <form
@@ -80,7 +82,7 @@ const GoogleCallback = () => {
                             }}
                         >
                             <div className="role-select-cont">
-                                <p className="role-label">Choose your role to finish Google sign-in:</p>
+                                <p className="role-label">{t('auth.googleCallback.rolePrompt')}</p>
                                 <div className="role-options">
                                     <label className="role-option">
                                         <input
@@ -91,7 +93,7 @@ const GoogleCallback = () => {
                                             onChange={(event) => setSelectedRole(event.target.value)}
                                             required
                                         />
-                                        <span>Athlete</span>
+                                        <span>{t('common.role.athlete')}</span>
                                     </label>
                                     <label className="role-option">
                                         <input
@@ -102,14 +104,14 @@ const GoogleCallback = () => {
                                             onChange={(event) => setSelectedRole(event.target.value)}
                                             required
                                         />
-                                        <span>Trainer</span>
+                                        <span>{t('common.role.trainer')}</span>
                                     </label>
                                 </div>
                             </div>
                             {errorMessage ? <p className="auth-form-error">{errorMessage}</p> : null}
                             <div className="submit-btn-cont">
                                 <button type="submit" className="submit-btn" disabled={isSubmitting}>
-                                    {isSubmitting ? "Finishing..." : "Continue"}
+                                    {isSubmitting ? t('auth.googleCallback.submitting') : t('auth.googleCallback.submit')}
                                 </button>
                             </div>
                         </form>
@@ -121,7 +123,7 @@ const GoogleCallback = () => {
 
     return(
         <div className="google-callback-container">
-            <h2>Processing Google Sign-In...</h2>
+            <h2>{t('auth.googleCallback.processing')}</h2>
         </div>
     )
 }

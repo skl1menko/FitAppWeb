@@ -1,0 +1,67 @@
+const schedule = {
+    page: {
+        title: 'Schedule',
+    },
+    builder: {
+        title: 'Create a workout plan',
+        hide: 'Hide',
+        show: 'Show',
+        planName: 'Plan name',
+        planNamePlaceholder: 'Enter plan name',
+        addDescription: 'Add description',
+        removeDescription: 'Remove description',
+        description: 'Description',
+        descriptionPlaceholder: 'Short description',
+        workoutsTitle: 'Workouts inside the plan',
+        workoutsSubtitle: 'Fill in the workout name and optional start time.',
+        workoutLabel: 'Workout {{index}}',
+        removeWorkout: 'Remove',
+        workoutNamePlaceholder: 'Enter workout name',
+        addDate: 'Add date',
+        removeDate: 'Remove date',
+        addWorkout: 'Add workout',
+        saving: 'Saving...',
+        createPlan: 'Create plan',
+        errors: {
+            planNameRequired: 'Plan name is required',
+            workoutNameRequired: 'At least one workout with a name is required',
+            createPlanFailed: 'Failed to create plan',
+        },
+        success: {
+            created: 'Plan created successfully',
+        },
+    },
+    programs: {
+        title: 'Upcoming plans',
+        subtitle: 'Each plan contains multiple workouts ready to edit or start.',
+        myPlans: 'My plans',
+        clientPlans: 'Client plans',
+        loading: 'Loading plans...',
+        empty: 'No plans yet.',
+        emptyClients: 'No client plans yet. Assign any of your plans to a client first.',
+        errors: {
+            loadPlans: 'Failed to load plans',
+        },
+    },
+    programCard: {
+        assignedByTrainer: 'Assigned by trainer: {{name}}',
+        trainerFallback: 'trainer',
+        workoutsCount: '{{count}} workouts',
+        deletePlan: 'Delete plan',
+        completed: 'Completed',
+        editWorkout: 'Edit workout',
+        startNow: 'Start now',
+        adding: 'Adding...',
+        addWorkout: 'Add workout',
+        hideWorkouts: 'Hide workouts',
+        showWorkouts: 'Show workouts',
+        errors: {
+            addWorkoutToPlan: 'Failed to add workout to plan',
+            deletePlan: 'Failed to delete plan',
+            startWorkout: 'Failed to start workout',
+        },
+        newWorkoutName: 'Workout {{number}}',
+    },
+};
+
+export default schedule;

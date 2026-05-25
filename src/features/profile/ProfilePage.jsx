@@ -5,19 +5,21 @@ import ProfileMeasurementsSection from "./components/ProfileMeasurementsSection"
 import ProfilePersonalInfoSection from "./components/ProfilePersonalInfoSection";
 import ProfileSummaryCard from "./components/ProfileSummaryCard";
 import useProfilePage from "./useProfilePage";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import "./ProfilePage.scss";
 
-const BODY_MEASUREMENT_FIELDS = [
-    {key: "height", label: "Height", placeholder: "170", unit: "cm"},
-    {key: "weight", label: "Weight", placeholder: "68", unit: "kg"},
-    {key: "chest", label: "Chest", placeholder: "95", unit: "cm"},
-    {key: "waist", label: "Waist", placeholder: "78", unit: "cm"},
-    {key: "hips", label: "Hips", placeholder: "98", unit: "cm"},
-    {key: "biceps", label: "Biceps", placeholder: "34", unit: "cm"}
-];
-
 const ProfilePage = () => {
+    const { t } = useTranslation();
     useBodyClass("profile-page-body");
+    const BODY_MEASUREMENT_FIELDS = useMemo(() => ([
+        {key: "height", label: t("profile.measurements.fields.height"), placeholder: "170", unit: t("profile.measurements.units.cm")},
+        {key: "weight", label: t("profile.measurements.fields.weight"), placeholder: "68", unit: t("profile.measurements.units.kg")},
+        {key: "chest", label: t("profile.measurements.fields.chest"), placeholder: "95", unit: t("profile.measurements.units.cm")},
+        {key: "waist", label: t("profile.measurements.fields.waist"), placeholder: "78", unit: t("profile.measurements.units.cm")},
+        {key: "hips", label: t("profile.measurements.fields.hips"), placeholder: "98", unit: t("profile.measurements.units.cm")},
+        {key: "biceps", label: t("profile.measurements.fields.biceps"), placeholder: "34", unit: t("profile.measurements.units.cm")}
+    ]), [t]);
     const {
         fileInputRef,
         formData,
@@ -72,16 +74,16 @@ const ProfilePage = () => {
 
                 <section className="profile-card-cont profile-progress-card">
                     <MeasurementProgressSection
-                        title="Measurement progress"
-                        description="Track how your body measurements change across saved snapshots."
+                        title={t("profile.measurements.progressTitle")}
+                        description={t("profile.measurements.progressDescription")}
                         fields={BODY_MEASUREMENT_FIELDS}
                         activeField={activeProgressField}
                         onFieldChange={setActiveProgressField}
                         data={progressData}
                         unit={activeFieldMeta.unit}
                         isLoading={isProgressLoading}
-                        loadingText="Loading progress..."
-                        emptyText="No measurement history yet. Save your stats to start tracking changes."
+                        loadingText={t("profile.measurements.progressLoading")}
+                        emptyText={t("profile.measurements.progressEmpty")}
                     />
                 </section>
             </div>

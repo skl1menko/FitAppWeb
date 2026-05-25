@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import exercisesService from "../../../services/exercisesService";
+import { useTranslation } from "react-i18next";
 
 const INITIAL_FORM_STATE = {
     name: "",
@@ -17,6 +18,7 @@ const getRequestErrorMessage = (error, fallbackMessage) => (
 );
 
 const useCreateExercise = ({ onClose, onCreated } = {}) => {
+    const { t } = useTranslation();
     const [isCreating, setIsCreating] = useState(false);
     const [createError, setCreateError] = useState("");
     const [fieldErrors, setFieldErrors] = useState({});
@@ -106,22 +108,22 @@ const useCreateExercise = ({ onClose, onCreated } = {}) => {
 
         const nextFieldErrors = {};
         if (!newExercise.name.trim()) {
-            nextFieldErrors.name = "Exercise name is required";
+            nextFieldErrors.name = t('exercises.errors.exerciseNameRequired');
         }
 
         if (!newExercise.muscleGroup.trim()) {
-            nextFieldErrors.muscleGroup = "Muscle group is required";
+            nextFieldErrors.muscleGroup = t('exercises.errors.muscleGroupRequired');
         }
 
         if (!newExercise.imageFile && !newExercise.imageUrl.trim()) {
-            nextFieldErrors.imageFile = "Upload image file or provide image URL";
+            nextFieldErrors.imageFile = t('exercises.errors.uploadOrUrlRequired');
         }
 
         if (!newExercise.imageFile && newExercise.imageUrl.trim()) {
             try {
                 new URL(newExercise.imageUrl.trim());
-            } catch (error) {
-                nextFieldErrors.imageUrl = "Invalid image URL";
+            } catch {
+                nextFieldErrors.imageUrl = t('exercises.errors.invalidImageUrl');
             }
         }
 
@@ -139,11 +141,11 @@ const useCreateExercise = ({ onClose, onCreated } = {}) => {
                     const uploadResponse = await exercisesService.uploadImage(newExercise.imageFile);
                     imageUrl = uploadResponse?.data?.secure_url || uploadResponse?.data?.data?.imageUrl || "";
                     if (!imageUrl) {
-                        setFieldErrors({ imageFile: "Image upload failed, please try again" });
+                        setFieldErrors({ imageFile: t('exercises.errors.imageUploadFailed') });
                         return;
                     }
                 } catch (error) {
-                    const message = getRequestErrorMessage(error, "Image upload failed, please try again");
+                    const message = getRequestErrorMessage(error, t('exercises.errors.imageUploadFailed'));
                     setFieldErrors({ imageFile: message });
                     return;
                 }
@@ -166,9 +168,9 @@ const useCreateExercise = ({ onClose, onCreated } = {}) => {
                 return;
             }
             
-            setCreateError("Exercise was created, but the app did not receive the saved record.");
+            setCreateError(t('exercises.errors.createdButMissingRecord'));
         } catch (error) {
-            setCreateError(getRequestErrorMessage(error, "Failed to create exercise"));
+            setCreateError(getRequestErrorMessage(error, t('exercises.errors.createFailed')));
         } finally {
             isCreateInFlightRef.current = false;
             setIsCreating(false);

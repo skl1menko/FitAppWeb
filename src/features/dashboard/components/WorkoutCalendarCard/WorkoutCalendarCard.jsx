@@ -12,6 +12,8 @@ import {
     getWorkoutDurationMinutes
 } from '../../utils/dashboardWorkoutUtils';
 import './WorkoutCalendarCard.scss';
+import { useTranslation } from 'react-i18next';
+import dashboard from '../../../../i18n/locales/en/dashboard';
 
 const DayWithWorkoutBadge = (props) => {
     const { day, outsideCurrentMonth, workoutsByDate, onDayClick, ...other } = props;
@@ -92,11 +94,11 @@ const WorkoutCalendarCard = () => {
             window.removeEventListener('wheel', handleScroll, true);
         };
     }, [anchorEl, activeDateWorkouts.length]);
-
+    const { t } = useTranslation();
     return (
         <div className="workout-calendar-card">
             <div className="calendar-header">
-                <h2>Workout Calendar</h2>
+                <h2>{t('dashboard.workoutCalendar.calendarHeader')}</h2>
             </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateCalendar

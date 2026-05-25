@@ -1,0 +1,67 @@
+const schedule = {
+    page: {
+        title: 'Розклад',
+    },
+    builder: {
+        title: 'Створити план тренувань',
+        hide: 'Сховати',
+        show: 'Показати',
+        planName: 'Назва плану',
+        planNamePlaceholder: 'Введіть назву плану',
+        addDescription: 'Додати опис',
+        removeDescription: 'Прибрати опис',
+        description: 'Опис',
+        descriptionPlaceholder: 'Короткий опис',
+        workoutsTitle: 'Тренування в плані',
+        workoutsSubtitle: "Вкажіть назву тренування та, за бажанням, час старту.",
+        workoutLabel: 'Тренування {{index}}',
+        removeWorkout: 'Видалити',
+        workoutNamePlaceholder: 'Введіть назву тренування',
+        addDate: 'Додати дату',
+        removeDate: 'Прибрати дату',
+        addWorkout: 'Додати тренування',
+        saving: 'Збереження...',
+        createPlan: 'Створити план',
+        errors: {
+            planNameRequired: "Назва плану є обов'язковою",
+            workoutNameRequired: 'Потрібне щонайменше одне тренування з назвою',
+            createPlanFailed: 'Не вдалося створити план',
+        },
+        success: {
+            created: 'План успішно створено',
+        },
+    },
+    programs: {
+        title: 'Майбутні плани',
+        subtitle: 'Кожен план містить кілька тренувань, готових до редагування або старту.',
+        myPlans: 'Мої плани',
+        clientPlans: 'Плани клієнтів',
+        loading: 'Завантаження планів...',
+        empty: 'Планів ще немає.',
+        emptyClients: 'Планів клієнтів ще немає. Спочатку призначте будь-який зі своїх планів клієнту.',
+        errors: {
+            loadPlans: 'Не вдалося завантажити плани',
+        },
+    },
+    programCard: {
+        assignedByTrainer: 'Призначено тренером: {{name}}',
+        trainerFallback: 'тренер',
+        workoutsCount: '{{count}} тренувань',
+        deletePlan: 'Видалити план',
+        completed: 'Завершено',
+        editWorkout: 'Редагувати тренування',
+        startNow: 'Почати зараз',
+        adding: 'Додавання...',
+        addWorkout: 'Додати тренування',
+        hideWorkouts: 'Сховати тренування',
+        showWorkouts: 'Показати тренування',
+        errors: {
+            addWorkoutToPlan: 'Не вдалося додати тренування до плану',
+            deletePlan: 'Не вдалося видалити план',
+            startWorkout: 'Не вдалося почати тренування',
+        },
+        newWorkoutName: 'Тренування {{number}}',
+    },
+};
+
+export default schedule;

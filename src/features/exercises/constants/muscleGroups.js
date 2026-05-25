@@ -28,3 +28,26 @@ export const MUSCLE_GROUPS = [
     { value: "calves", label: "Calves", imageUrl: "https://res.cloudinary.com/daehniaa8/image/upload/q_auto/f_auto/v1776081639/calves_bsxe0u.png" },
    
 ];
+
+const MUSCLE_GROUP_KEY_BY_VALUE = {
+    abs: "abs",
+    shoulders: "shoulders",
+    chest: "chest",
+    "upper back": "upper_back",
+    lats: "lats",
+    biceps: "biceps",
+    triceps: "triceps",
+    forearms: "forearms",
+    abductors: "abductors",
+    adductors: "adductors",
+    glutes: "glutes",
+    quads: "quads",
+    hamstrings: "hamstrings",
+    calves: "calves",
+    general: "general",
+};
+
+export const getMuscleGroupTranslationKey = (value = "") => {
+    const normalized = String(value).trim().toLowerCase();
+    return MUSCLE_GROUP_KEY_BY_VALUE[normalized] || "general";
+};

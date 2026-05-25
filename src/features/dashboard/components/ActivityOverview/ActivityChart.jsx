@@ -4,8 +4,8 @@ import {
     ResponsiveContainer
 } from "recharts";
 import "./ActivityChart.scss";
-import { STAT_CONFIG } from "./chartUtils";
 import useActivityMetrics from "../../hooks/useActivityMetrics";
+import { useTranslation } from "react-i18next";
 
 const CustomTooltip = ({ active, payload, label, unit }) => {
     if (!active || !payload?.length) return null;
@@ -24,11 +24,14 @@ const ActivityChart = ({
     endDate,
     activeStat = 0,
     activePeriod = 0,
+    statConfig = [],
     chartData: externalChartData,
     loading: externalLoading,
     emptyText = "Loading..."
 }) => {
-    const { dataKey, color, unit } = STAT_CONFIG[activeStat];
+    const { t } = useTranslation();
+    const currentStat = statConfig[activeStat] ?? statConfig[0] ?? { dataKey: 'steps', color: '#155DFC', unit: '' };
+    const { dataKey, color, unit } = currentStat;
     const isMonth = activePeriod === 1;
     const hasExternalData = Array.isArray(externalChartData);
     const {
@@ -61,7 +64,7 @@ const ActivityChart = ({
     }
 
     if (!chartData?.length) {
-        return <div className="activity-chart-empty">No data available.</div>;
+        return <div className="activity-chart-empty">{t('dashboard.noData')}</div>;
     }
 
     return (

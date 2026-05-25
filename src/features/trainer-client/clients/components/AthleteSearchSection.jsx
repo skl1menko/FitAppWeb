@@ -1,5 +1,6 @@
 import SearchPanel from "../../components/SearchPanel";
 import SearchResultCard from "../../components/SearchResultCard";
+import { useTranslation } from "react-i18next";
 
 const AthleteSearchSection = ({
     query,
@@ -12,13 +13,14 @@ const AthleteSearchSection = ({
     pendingOutgoingByAthleteId,
     onSendRequest
 }) => {
+    const { t } = useTranslation();
     return (
         <SearchPanel
-            title="Add new client"
+            title={t("trainer_clients.clientsPage.addNewClient")}
             variant="clients"
             query={query}
             onQueryChange={onQueryChange}
-            placeholder="Athlete name or email"
+            placeholder={t("trainer_clients.clientsPage.athleteSearchPlaceholder")}
             isSearching={isSearching}
             showResults={Boolean(query.trim())}
             message={message}
@@ -37,17 +39,17 @@ const AthleteSearchSection = ({
                         name={athlete.clientName}
                         email={athlete.clientEmail}
                         meta={athlete.assignedTrainer
-                            ? `Assigned to: ${athlete.assignedTrainer.trainerName || "another trainer"}`
+                            ? t("trainer_clients.clientsPage.assignedTo", { name: athlete.assignedTrainer.trainerName || t("trainer_clients.clientsPage.anotherTrainer") })
                             : ""}
                         buttonLabel={isMine
-                            ? "Already your client"
+                            ? t("trainer_clients.clientsPage.alreadyYourClient")
                             : unavailable
-                                ? "Unavailable"
+                                ? t("trainer_clients.clientsPage.unavailable")
                                 : isPending
-                                    ? "Request sent"
+                                    ? t("trainer_clients.clientsPage.requestSent")
                                     : isLoading
-                                        ? "Sending..."
-                                        : "Send request"}
+                                        ? t("trainer_clients.clientsPage.sending")
+                                        : t("trainer_clients.clientsPage.sendRequest")}
                         onAction={() => onSendRequest(athlete.clientId)}
                         disabled={unavailable || isMine || isPending || isLoading}
                     />

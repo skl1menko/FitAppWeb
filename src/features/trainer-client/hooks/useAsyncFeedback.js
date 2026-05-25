@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export const getErrorMessage = (error, fallbackMessage) => (
     error?.response?.data?.message
@@ -11,20 +11,20 @@ const useAsyncFeedback = () => {
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
 
-    const clearFeedback = () => {
+    const clearFeedback = useCallback(() => {
         setMessage("");
         setError("");
-    };
+    }, []);
 
-    const setSuccess = (nextMessage) => {
+    const setSuccess = useCallback((nextMessage) => {
         setError("");
         setMessage(nextMessage);
-    };
+    }, []);
 
-    const setFailure = (nextError) => {
+    const setFailure = useCallback((nextError) => {
         setMessage("");
         setError(nextError);
-    };
+    }, []);
 
     return {
         message,

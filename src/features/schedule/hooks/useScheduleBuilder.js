@@ -2,6 +2,7 @@ import { useState } from "react";
 import trainingProgramService from "../../../services/trainingProgramService";
 import { createWorkoutRow } from "../utils/scheduleFactories";
 import { normalizePlannedDate } from "../utils/scheduleFormatters";
+import { useTranslation } from "react-i18next";
 
 const buildCreateProgramPayload = ({ programDescription, programName, workouts }) => {
     const payloadWorkouts = workouts
@@ -19,6 +20,7 @@ const buildCreateProgramPayload = ({ programDescription, programName, workouts }
 };
 
 const useScheduleBuilder = ({ onProgramCreated }) => {
+    const { t } = useTranslation();
     const [programName, setProgramName] = useState("");
     const [programDescription, setProgramDescription] = useState("");
     const [showDescription, setShowDescription] = useState(false);
@@ -64,7 +66,7 @@ const useScheduleBuilder = ({ onProgramCreated }) => {
         setFormSuccess("");
 
         if (!programName.trim()) {
-            setFormError("Plan name is required");
+            setFormError(t('schedule.builder.errors.planNameRequired'));
             return;
         }
 
@@ -75,7 +77,7 @@ const useScheduleBuilder = ({ onProgramCreated }) => {
         });
 
         if (payload.workouts.length === 0) {
-            setFormError("At least one workout with a name is required");
+            setFormError(t('schedule.builder.errors.workoutNameRequired'));
             return;
         }
 
@@ -84,10 +86,10 @@ const useScheduleBuilder = ({ onProgramCreated }) => {
         try {
             await trainingProgramService.createWithWorkouts(payload);
             resetForm();
-            setFormSuccess("Plan created successfully");
+            setFormSuccess(t('schedule.builder.success.created'));
             await onProgramCreated?.();
         } catch (error) {
-            setFormError(error?.response?.data?.message || "Failed to create plan");
+            setFormError(error?.response?.data?.message || t('schedule.builder.errors.createPlanFailed'));
         } finally {
             setIsSubmitting(false);
         }

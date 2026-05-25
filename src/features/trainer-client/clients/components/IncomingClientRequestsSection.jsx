@@ -1,4 +1,5 @@
 import IncomingRequestCard from "../../components/IncomingRequestCard";
+import { useTranslation } from "react-i18next";
 
 const IncomingClientRequestsSection = ({
     incomingRequests = [],
@@ -6,11 +7,12 @@ const IncomingClientRequestsSection = ({
     onApprove,
     onReject
 }) => {
+    const { t } = useTranslation();
     return (
         <div className="clients-panel-cont">
-            <h2>Incoming requests</h2>
+            <h2>{t("trainer_clients.clientsPage.incomingRequests")}</h2>
             <div className="clients-results-list">
-                {incomingRequests.length === 0 && <p className="clients-hint-text">No incoming requests.</p>}
+                {incomingRequests.length === 0 && <p className="clients-hint-text">{t("trainer_clients.clientsPage.noIncomingRequests")}</p>}
                 {incomingRequests.map((request) => (
                     <IncomingRequestCard
                         variant="clients"

@@ -1,12 +1,33 @@
-export const STAT_CONFIG = [
-    { dataKey: "steps",     label: "Steps",      color: "#155DFC", unit: "" },
-    { dataKey: "calories",  label: "Calories",   color: "#F97316", unit: " kcal" },
-    { dataKey: "heartRate", label: "Heart Rate", color: "#ea2e67", unit: " bpm" },
+export const getStatConfig = (t) => [
+    {
+        dataKey: t('date.statconfig.dataKey.steps'),
+        label: t('date.statconfig.label.steps'),
+        color: "#155DFC",
+        unit: t('date.statconfig.unit.steps'),
+    },
+    {
+        dataKey: t('date.statconfig.dataKey.calories'),
+        label: t('date.statconfig.label.calories'),
+        color: "#F97316",
+        unit: ` ${t('date.statconfig.unit.calories')}`,
+    },
+    {
+        dataKey: t('date.statconfig.dataKey.heartRate'),
+        label: t('date.statconfig.label.heartRate'),
+        color: "#ea2e67",
+        unit: ` ${t('date.statconfig.unit.heartRate')}`,
+    },
 ];
 
-export const PERIOD_CONFIG = [
-    { label: "Week", value: "week" },
-    { label: "Month", value: "month" },
+export const getPeriodConfig = (t) => [
+    {
+        label: t('date.periodConfig.label.week'),
+        value: t('date.periodConfig.value.week'),
+    },
+    {
+        label: t('date.periodConfig.label.month'),
+        value: t('date.periodConfig.value.month'),
+    },
 ];
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

@@ -2,12 +2,7 @@ import { memo } from "react";
 import "./ExerciseSetRow.scss";
 import CustomBtn from "../../../components/CustomBtn";
 import { LuX } from "../../../assets/icons";
-
-const FIELD_CONFIG = [
-    { key: "weight_kg", label: "WEIGHT KG", placeholder: "KG", inputMode: "numeric", pattern: "[0-9]*" },
-    { key: "reps", label: "REPS", placeholder: "REPS", inputMode: "numeric", pattern: "[0-9]*" },
-    { key: "rpe", label: "RPE", placeholder: "RPE", inputMode: "numeric", pattern: "[0-9]*" }
-];
+import { useTranslation } from "react-i18next";
 
 const ExerciseSetRow = ({
     index,
@@ -19,6 +14,12 @@ const ExerciseSetRow = ({
     onCheckedChange,
     onDelete
 }) => {
+    const { t } = useTranslation();
+    const FIELD_CONFIG = [
+        { key: "weight_kg", label: t('workout_session.exerciseSetRow.weightKg'), placeholder: t('workout_session.exerciseSetRow.placeholders.kg'), inputMode: "numeric", pattern: "[0-9]*" },
+        { key: "reps", label: t('workout_session.exerciseSetRow.reps'), placeholder: t('workout_session.exerciseSetRow.placeholders.reps'), inputMode: "numeric", pattern: "[0-9]*" },
+        { key: "rpe", label: t('workout_session.exerciseSetRow.rpe'), placeholder: t('workout_session.exerciseSetRow.placeholders.rpe'), inputMode: "numeric", pattern: "[0-9]*" }
+    ];
     const isPendingCreate = Boolean(set?.isPendingCreate);
 
     return (

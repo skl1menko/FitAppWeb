@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import exerciseService from "../../../services/exercisesService";
 import { normalizeExercise, normalizeExercises } from "../utils/normalizeExercise";
 import { filterExercises } from "../utils/filterExercises";
+import { useTranslation } from "react-i18next";
 
 const useExercisesPageData = () => {
+    const { t } = useTranslation();
     const [exercises, setExercises] = useState([]);
     const [customExercises, setCustomExercises] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState("all");
@@ -14,18 +16,39 @@ const useExercisesPageData = () => {
     const [customError, setCustomError] = useState("");
 
     useEffect(() => {
-        setIsExercisesLoading(true);
-        setExercisesError("");
+        let isMounted = true;
 
-        exerciseService.getAll().then((response) => {
-            setExercises(normalizeExercises(response?.data?.data));
-        }).catch(() => {
-            setExercises([]);
-            setExercisesError("Failed to load exercises");
-        }).finally(() => {
-            setIsExercisesLoading(false);
-        });
-    }, []);
+        const loadExercises = async () => {
+            setIsExercisesLoading(true);
+            setExercisesError("");
+
+            try {
+                const response = await exerciseService.getAll();
+                if (!isMounted) {
+                    return;
+                }
+
+                setExercises(normalizeExercises(response?.data?.data));
+            } catch {
+                if (!isMounted) {
+                    return;
+                }
+
+                setExercises([]);
+                setExercisesError(t('exercises.errors.loadExercisesFailed'));
+            } finally {
+                if (isMounted) {
+                    setIsExercisesLoading(false);
+                }
+            }
+        };
+
+        loadExercises();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [t]);
 
     const handleGroupChange = (group) => {
         setSelectedGroup(group);
@@ -38,7 +61,7 @@ const useExercisesPageData = () => {
                 setCustomExercises(normalizeExercises(response?.data?.data));
             }).catch(() => {
                 setCustomExercises([]);
-                setCustomError("Failed to load your custom exercises");
+                setCustomError(t('exercises.errors.loadCustomExercisesFailed'));
             }).finally(() => {
                 setIsCustomLoading(false);
             });

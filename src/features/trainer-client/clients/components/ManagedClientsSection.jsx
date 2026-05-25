@@ -1,5 +1,6 @@
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { IoMdPerson } from "../../../../assets/icons";
+import { useTranslation } from "react-i18next";
 
 const ManagedClientsSection = ({
     clients = [],
@@ -13,13 +14,14 @@ const ManagedClientsSection = ({
     onOpenClientTracking,
     onRemoveClient
 }) => {
+    const { t } = useTranslation();
     return (
         <div className="clients-panel-cont clients">
-            <h2>Your clients</h2>
-            {isLoadingClients && clients.length === 0 && <p className="clients-hint-text">Loading clients...</p>}
+            <h2>{t("trainer_clients.clientsPage.yourClients")}</h2>
+            {isLoadingClients && clients.length === 0 && <p className="clients-hint-text">{t("trainer_clients.clientsPage.loadingClients")}</p>}
             <div className="clients-results-list">
                 {!isLoadingClients && clients.length === 0 && (
-                    <p className="clients-hint-text">You do not have clients yet.</p>
+                    <p className="clients-hint-text">{t("trainer_clients.clientsPage.noClients")}</p>
                 )}
                 {clients.map((client) => (
                     <div key={client.clientId} className="clients-result-card clients">
@@ -33,7 +35,7 @@ const ManagedClientsSection = ({
                             </div>
                         </div>
                         <div className="clients-program-actions">
-                            <span>Training program</span>
+                            <span>{t("trainer_clients.clientsPage.trainingProgram")}</span>
                             <div className="clients-program-dropdown">
                                 <FormControl fullWidth size="small">
                                     <Select
@@ -62,7 +64,7 @@ const ManagedClientsSection = ({
                                         }}
                                     >
                                         <MenuItem className="clients-program-menu-item" value="none">
-                                            No program
+                                            {t("trainer_clients.clientsPage.noProgram")}
                                         </MenuItem>
                                         {programs.map((program) => (
                                             <MenuItem
@@ -82,7 +84,7 @@ const ManagedClientsSection = ({
                                     onClick={() => onAssignProgram(client.clientId)}
                                     disabled={activeProgramClientId === client.clientId}
                                 >
-                                    {activeProgramClientId === client.clientId ? "Applying..." : "Apply"}
+                                    {activeProgramClientId === client.clientId ? t("trainer_clients.clientsPage.applying") : t("trainer_clients.clientsPage.apply")}
                                 </button>
                             </div>
                         </div>
@@ -92,7 +94,7 @@ const ManagedClientsSection = ({
                                 className="clients-secondary-btn"
                                 onClick={() => onOpenClientTracking(client)}
                             >
-                                Track progress
+                                {t("trainer_clients.clientsPage.trackProgress")}
                             </button>
 
                             <button
@@ -101,7 +103,7 @@ const ManagedClientsSection = ({
                                 onClick={() => onRemoveClient(client.clientId)}
                                 disabled={activeActionKey === `remove-${client.clientId}`}
                             >
-                                {activeActionKey === `remove-${client.clientId}` ? "Removing..." : "Remove client"}
+                                {activeActionKey === `remove-${client.clientId}` ? t("trainer_clients.clientsPage.removing") : t("trainer_clients.clientsPage.removeClient")}
                             </button>
                         </div>
                     </div>

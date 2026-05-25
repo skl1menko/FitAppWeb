@@ -3,8 +3,10 @@ import trainingProgramService from "../../../services/trainingProgramService";
 import workoutService from "../../../services/WorkoutServices/workoutService";
 import { showWorkoutAlert } from "../../workout/utils/workoutFeedback";
 import { normalizeProgram } from "../utils/scheduleMappers";
+import { useTranslation } from "react-i18next";
 
 const useSchedulePrograms = ({ role }) => {
+    const { t } = useTranslation();
     const [openPlans, setOpenPlans] = useState(new Set());
     const [activePlansView, setActivePlansView] = useState("personal");
     const [programs, setPrograms] = useState([]);
@@ -32,11 +34,11 @@ const useSchedulePrograms = ({ role }) => {
             );
             setPrograms(detailed);
         } catch {
-            setProgramsError("Failed to load plans");
+            setProgramsError(t('schedule.programs.errors.loadPlans'));
         } finally {
             setIsLoadingPrograms(false);
         }
-    }, [role]);
+    }, [role, t]);
 
     useEffect(() => {
         void loadPrograms();
@@ -66,7 +68,7 @@ const useSchedulePrograms = ({ role }) => {
         try {
             const response = await workoutService.create({
                 program_id: programId,
-                name: `Workout ${nextWorkoutNumber}`,
+                name: t('schedule.programCard.newWorkoutName', { number: nextWorkoutNumber }),
                 is_started: false
             });
 
@@ -82,7 +84,7 @@ const useSchedulePrograms = ({ role }) => {
                 )));
             }
         } catch (error) {
-            showWorkoutAlert(error?.response?.data?.message || "Failed to add workout to plan");
+            showWorkoutAlert(error?.response?.data?.message || t('schedule.programCard.errors.addWorkoutToPlan'));
         } finally {
             setCreatingWorkoutPlanId(null);
         }
@@ -97,7 +99,7 @@ const useSchedulePrograms = ({ role }) => {
             await trainingProgramService.delete(programId);
             await loadPrograms();
         } catch (error) {
-            showWorkoutAlert(error?.response?.data?.message || "Failed to delete plan");
+            showWorkoutAlert(error?.response?.data?.message || t('schedule.programCard.errors.deletePlan'));
         }
     };
 

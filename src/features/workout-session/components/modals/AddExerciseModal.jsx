@@ -2,8 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import MuscleGroupSelect from "../../../../components/MuscleGroupSelect";
 import exercisesService from "../../../../services/exercisesService";
 import "./AddExerciseModal.scss";
+import { useTranslation } from "react-i18next";
+import { translateExerciseName } from "../../../exercises/utils/translateExerciseName";
+import { translateMuscleGroup } from "../../../exercises/utils/translateMuscleGroup";
 
 const AddExerciseModal = ({ isOpen, onClose, onConfirm, muscleGroups = [] }) => {
+    const { t } = useTranslation();
     const [searchValue, setSearchValue] = useState("");
     const [selectedGroup, setSelectedGroup] = useState("all");
     const [exercises, setExercises] = useState([]);
@@ -35,7 +39,7 @@ const AddExerciseModal = ({ isOpen, onClose, onConfirm, muscleGroups = [] }) => 
                     return;
                 }
 
-                setLoadError("Could not load exercises");
+                setLoadError(t('workout_session.addExerciseModal.errors.loadExercises'));
                 setExercises([]);
             })
             .finally(() => {
@@ -47,21 +51,31 @@ const AddExerciseModal = ({ isOpen, onClose, onConfirm, muscleGroups = [] }) => 
         return () => {
             isMounted = false;
         };
-    }, [isOpen]);
+    }, [isOpen, t]);
 
     const filteredExercises = useMemo(() => {
         const normalizedSearch = searchValue.trim().toLowerCase();
 
         return exercises.filter((exercise) => {
-            const exerciseName = (exercise?.exerciseName || exercise?.name || "").toLowerCase();
+            const originalExerciseName = String(exercise?.exerciseName || exercise?.name || "");
+            const translatedExerciseName = translateExerciseName({
+                exerciseName: originalExerciseName,
+                muscleGroup: exercise?.muscleGroup || exercise?.muscle_group,
+                t,
+                fallback: "",
+            });
+            const exerciseName = originalExerciseName.toLowerCase();
+            const localizedExerciseName = translatedExerciseName.toLowerCase();
             const exerciseGroup = (exercise?.muscleGroup || exercise?.muscle_group || "").toLowerCase();
 
             const groupMatches = selectedGroup === "all" || exerciseGroup.includes(selectedGroup.toLowerCase());
-            const searchMatches = !normalizedSearch || exerciseName.includes(normalizedSearch);
+            const searchMatches = !normalizedSearch
+                || exerciseName.includes(normalizedSearch)
+                || localizedExerciseName.includes(normalizedSearch);
 
             return groupMatches && searchMatches;
         });
-    }, [exercises, searchValue, selectedGroup]);
+    }, [exercises, searchValue, selectedGroup, t]);
 
     const handleClose = () => {
         setSearchValue("");
@@ -132,8 +146,8 @@ const AddExerciseModal = ({ isOpen, onClose, onConfirm, muscleGroups = [] }) => 
 
             <div className="add-exercise-card">
                 <div className="add-exercise-head">
-                    <h2 id="add-exercise-title">Add exercise</h2>
-                    <button type="button" className="close-btn" onClick={handleClose} aria-label="Close add exercise modal">
+                    <h2 id="add-exercise-title">{t('workout_session.addExerciseModal.title')}</h2>
+                    <button type="button" className="close-btn" onClick={handleClose} aria-label={t('workout_session.addExerciseModal.closeAria')}>
                         x
                     </button>
                 </div>
@@ -141,7 +155,7 @@ const AddExerciseModal = ({ isOpen, onClose, onConfirm, muscleGroups = [] }) => 
                 <div className="find-exercise-cont">
                     <input
                         type="text"
-                        placeholder="Find exercise"
+                        placeholder={t('workout_session.addExerciseModal.searchPlaceholder')}
                         value={searchValue}
                         onChange={(event) => setSearchValue(event.target.value)}
                     />
@@ -151,7 +165,7 @@ const AddExerciseModal = ({ isOpen, onClose, onConfirm, muscleGroups = [] }) => 
                         onChange={setSelectedGroup}
                         includeAll
                         className="muscle-filter"
-                        allLabel="All muscle groups"
+                        allLabel={t('workout_session.addExerciseModal.allMuscleGroups')}
                     />
                 </div>
 
@@ -159,16 +173,27 @@ const AddExerciseModal = ({ isOpen, onClose, onConfirm, muscleGroups = [] }) => 
                 {loadError ? <p className="add-exercise-error">{loadError}</p> : null}
 
                 <div className="exercise-options-list">
-                    {isLoading ? <p className="hint-text">Loading exercises...</p> : null}
+                    {isLoading ? <p className="hint-text">{t('workout_session.addExerciseModal.loading')}</p> : null}
 
                     {!isLoading && filteredExercises.length === 0 ? (
-                        <p className="hint-text">No exercises found for selected filters</p>
+                        <p className="hint-text">{t('workout_session.addExerciseModal.empty')}</p>
                     ) : null}
 
                     {!isLoading && filteredExercises.map((exercise) => {
                         const exerciseId = exercise?.exerciseId || exercise?.id;
                         const exerciseImage = exercise?.imageUrl || exercise?.image_url || "";
                         const isSelected = selectedExerciseIds.includes(exerciseId);
+                        const exerciseName = translateExerciseName({
+                            exerciseName: exercise?.exerciseName || exercise?.name,
+                            muscleGroup: exercise?.muscleGroup || exercise?.muscle_group,
+                            t,
+                            fallback: t('workout_session.exerciseCard.unnamedExercise'),
+                        });
+                        const muscleGroupLabel = translateMuscleGroup({
+                            muscleGroup: exercise?.muscleGroup || exercise?.muscle_group,
+                            t,
+                            fallback: t('workout_session.addExerciseModal.noGroup'),
+                        });
 
                         return (
                             <button
@@ -183,12 +208,12 @@ const AddExerciseModal = ({ isOpen, onClose, onConfirm, muscleGroups = [] }) => 
                                         {exerciseImage ? (
                                             <img src={exerciseImage} alt="" />
                                         ) : (
-                                            <span className="exercise-icon-fallback">IMG</span>
+                                            <span className="exercise-icon-fallback">{t('workout_session.addExerciseModal.imageFallback')}</span>
                                         )}
                                     </div>
                                     <div className="exercise-info">
-                                        <p className="exercise-name">{exercise?.exerciseName || exercise?.name || "Unnamed exercise"}</p>
-                                        <p className="exercise-group">{exercise?.muscleGroup || "No group"}</p>
+                                        <p className="exercise-name">{exerciseName}</p>
+                                        <p className="exercise-group">{muscleGroupLabel}</p>
                                     </div>
                                 </div>
                                 <input
@@ -206,10 +231,12 @@ const AddExerciseModal = ({ isOpen, onClose, onConfirm, muscleGroups = [] }) => 
 
                 <div className="add-exercise-actions">
                     <button type="button" className="cancel-btn" onClick={handleClose} disabled={isSubmitting}>
-                        Cancel
+                        {t('workout_session.common.cancel')}
                     </button>
                     <button type="button" className="submit-btn" onClick={handleAddSelected} disabled={isSubmitting || selectedExerciseIds.length === 0}>
-                        {isSubmitting ? "Adding..." : `Add selected (${selectedExerciseIds.length})`}
+                        {isSubmitting
+                            ? t('workout_session.addExerciseModal.adding')
+                            : t('workout_session.addExerciseModal.addSelected', { count: selectedExerciseIds.length })}
                     </button>
                 </div>
             </div>

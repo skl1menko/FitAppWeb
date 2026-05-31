@@ -5,6 +5,7 @@ import AuthPageHeader from "./AuthPageHeader";
 import "./AuthCont.scss";
 import "../components/AuthForm.scss";
 import { useTranslation } from "react-i18next";
+import { MdOutlineLock } from "../../../assets/icons";
 
 const GoogleCallback = () => {
     const { t } = useTranslation();
@@ -13,6 +14,7 @@ const GoogleCallback = () => {
     const [roleRequired, setRoleRequired] = useState(false);
     const [setupToken, setSetupToken] = useState("");
     const [selectedRole, setSelectedRole] = useState("");
+    const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const emailFromParams = searchParams.get("email") || "";
@@ -52,10 +54,21 @@ const GoogleCallback = () => {
             return;
         }
 
+        if (!password) {
+            setErrorMessage(t('auth.googleCallback.passwordRequired'));
+            return;
+        }
+
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            setErrorMessage(t('auth.googleCallback.passwordHint'));
+            return;
+        }
+
         setErrorMessage("");
         setIsSubmitting(true);
         try {
-            await authService.completeGoogleRole(setupToken, selectedRole);
+            await authService.completeGoogleRole(setupToken, selectedRole, password);
             navigate('/dashboard');
         } catch (error) {
             setErrorMessage(error?.response?.data?.message || t('auth.googleCallback.errorFallback'));
@@ -106,6 +119,20 @@ const GoogleCallback = () => {
                                         />
                                         <span>{t('common.role.trainer')}</span>
                                     </label>
+                                </div>
+                            </div>
+                            <div className="input-container">
+                                <div className="input-cont">
+                                    <MdOutlineLock />
+                                    <input
+                                        name="password"
+                                        value={password}
+                                        onChange={(event) => setPassword(event.target.value)}
+                                        type="password"
+                                        placeholder={t('auth.googleCallback.passwordPlaceholder')}
+                                        autoComplete="new-password"
+                                        required
+                                    />
                                 </div>
                             </div>
                             {errorMessage ? <p className="auth-form-error">{errorMessage}</p> : null}

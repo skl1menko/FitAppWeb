@@ -50,10 +50,11 @@ const authService ={
         window.location.href = `${base}/auth/google?role=${role}`;
     },
 
-    completeGoogleRole: async (setupToken, role) => {
+    completeGoogleRole: async (setupToken, role, password) => {
         const response = await api.post('/auth/google/complete-role', {
             setup_token: setupToken,
-            role
+            role,
+            password
         });
 
         if (response.data.data) {

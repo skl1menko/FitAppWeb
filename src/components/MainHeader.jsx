@@ -1,6 +1,6 @@
 import './MainHeader.scss'
 import Logo from '../assets/Logo.svg'
-import Avatar from '../assets/mobile-bg.jpg'
+import Avatar from '../assets/mobile-bg.JPG'
 import { LuLayoutDashboard, LuMenu, LuX, PiBarbellLight, MdSportsGymnastics, FiCalendar, BsChevronDown, IoMdPerson } from "../assets/icons";
 import { NavLink, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';

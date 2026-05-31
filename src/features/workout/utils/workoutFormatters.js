@@ -1,3 +1,5 @@
+import {formatDateOnly} from "../../../utils/dateOnly";
+
 export const formatWorkoutDuration = (startValue, endValue, fallback = null) => {
     if (!startValue || !endValue) {
         return fallback;
@@ -24,12 +26,7 @@ export const formatWorkoutDate = (dateValue, locale = "en-US") => {
         return "";
     }
 
-    const parsedDate = new Date(dateValue);
-    if (Number.isNaN(parsedDate.getTime())) {
-        return "";
-    }
-
-    return parsedDate.toLocaleDateString(locale, {
+    return formatDateOnly(dateValue, locale, {
         month: "short",
         day: "numeric",
         year: "numeric"

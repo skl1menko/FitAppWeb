@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import {formatDateOnly, getDateOnlyKey} from "../../../utils/dateOnly";
 
 export const getWorkoutStartTime = (workout) => {
     return workout?.startTime ?? workout?.start_time ?? null;
@@ -33,7 +34,7 @@ export const getWorkoutDateKey = (workout) => {
         return null;
     }
 
-    return dayjs(startTime).format("YYYY-MM-DD");
+    return getDateOnlyKey(startTime);
 };
 
 export const formatWorkoutTime = (workout) => {
@@ -71,5 +72,5 @@ export const formatRelativeWorkoutDate = (workout) => {
         return `Yesterday, ${timeLabel}`;
     }
 
-    return `${date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}, ${timeLabel}`;
+    return `${formatDateOnly(startTime, "en-US", { month: "short", day: "numeric" })}, ${timeLabel}`;
 };

@@ -1,4 +1,5 @@
 import { transformMetrics, transformMonthMetrics } from "../../dashboard/components/ActivityOverview/chartUtils";
+import {formatDateOnly} from "../../../utils/dateOnly";
 
 export const getMeasurementFields = (t) => [
     { key: "body_weight", label: t("trainer_clients.measurements.fields.body_weight"), unit: t("trainer_clients.measurements.units.kg") },
@@ -107,27 +108,23 @@ export const buildFallbackChartDataFromWorkouts = (workouts, startDate, endDate,
 const getLocale = (language = "en") => language === "uk" ? "uk-UA" : "en-GB";
 
 export const formatMeasurementLabel = (dateValue, language = "en") => {
-    const date = new Date(dateValue);
-    if (Number.isNaN(date.getTime())) {
-        return "";
-    }
-
-    return date.toLocaleDateString(getLocale(language), {
+    return formatDateOnly(dateValue, getLocale(language), {
         day: "2-digit",
         month: "short"
     });
 };
 
 export const formatMeasurementDateTime = (dateValue, language = "en") => {
-    const date = new Date(dateValue);
-    if (Number.isNaN(date.getTime())) {
-        return "";
-    }
-
-    return date.toLocaleString(getLocale(language), {
+    return formatDateOnly(dateValue, getLocale(language), {
         day: "2-digit",
-        month: "short",
-        hour: "2-digit",
-        minute: "2-digit"
+        month: "short"
     });
 };
+
+export const formatTrackingCardDate = (dateValue, locale = "en-US") => (
+    formatDateOnly(dateValue, locale, {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+    })
+);

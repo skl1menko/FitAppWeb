@@ -1,3 +1,5 @@
+import {formatDateOnly} from "../../../utils/dateOnly";
+
 const getLocale = (language = "en") => language === "uk" ? "uk-UA" : "en-GB";
 
 export const formatProfileProgressLabel = (dateValue, language = "en") => {
@@ -5,12 +7,7 @@ export const formatProfileProgressLabel = (dateValue, language = "en") => {
         return "";
     }
 
-    const date = new Date(dateValue);
-    if (Number.isNaN(date.getTime())) {
-        return "";
-    }
-
-    return date.toLocaleDateString(getLocale(language), {
+    return formatDateOnly(dateValue, getLocale(language), {
         day: "2-digit",
         month: "short"
     });
@@ -21,16 +18,9 @@ export const formatProfileProgressDateTime = (dateValue, language = "en") => {
         return "";
     }
 
-    const date = new Date(dateValue);
-    if (Number.isNaN(date.getTime())) {
-        return "";
-    }
-
-    return date.toLocaleString(getLocale(language), {
+    return formatDateOnly(dateValue, getLocale(language), {
         day: "2-digit",
-        month: "short",
-        hour: "2-digit",
-        minute: "2-digit"
+        month: "short"
     });
 };
 

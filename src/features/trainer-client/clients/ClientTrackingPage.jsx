@@ -12,6 +12,7 @@ import {isWorkoutCompleted} from "../../workout/utils/workoutStatus";
 import {formatGroupedNumber} from "../../../utils/formatNumber";
 import { normalizeTrainerClientInfo } from "../utils/normalizeTrainerClient";
 import {
+    formatTrackingCardDate,
     formatWorkoutDuration,
     getMeasurementFields
 } from "../utils/clientTrackingUtils";
@@ -248,11 +249,7 @@ const ClientTrackingPage = () => {
                                         <div className="workout-stat-cont">
                                             <span className="workout-stat">
                                                 <FiCalendar size={14} className="calendar-icon" />
-                                                {workoutDate ? new Date(workoutDate).toLocaleDateString(t("common.localeCode"), {
-                                                    month: "short",
-                                                    day: "numeric",
-                                                    year: "numeric"
-                                                }) : t("trainer_clients.tracking.noDate")}
+                                                {workoutDate ? formatTrackingCardDate(workoutDate, t("common.localeCode")) : t("trainer_clients.tracking.noDate")}
                                             </span>
                                             <span className="workout-stat">
                                                 <FaRegClock size={14} className="clock-icon" />

@@ -46,7 +46,7 @@ const authService ={
     },
 
     loginWithGoogle: async (role = '') => {
-        const base = 'http://localhost:3000/api';
+        const base = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
         window.location.href = `${base}/auth/google?role=${role}`;
     },
 
